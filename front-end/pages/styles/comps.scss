@@ -1,0 +1,26 @@
+// colors
+$blue : #4b72f3 ;
+$grey : #aaacae ;
+$text : #2c2d2e;
+$default-bg : #f3f4f5;
+
+
+.button{
+    border:none;
+    padding:5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    &:focus, &:active{
+        outline: none;
+    }
+    &:hover{
+        border: 2px solid black;
+    }
+    font-family: 'Montserrat', sans-serif;
+}
+.input{
+        width: 100%;
+        margin:10px auto;
+        padding: 5px 5px;
+        font-size: 16px;
+}

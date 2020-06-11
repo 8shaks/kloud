@@ -1,0 +1,57 @@
+@import "./comps";
+
+.page {
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    background-color: $default-bg;
+    padding-top: 8em;
+}
+.heading{
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+    h1{
+        margin-bottom: 40px;
+        font-size: 60px;
+    }
+    button{
+        @extend .button;
+        background-color: $blue;
+        color: white;
+        border-radius: 15px;
+        font-size: 20px;
+        padding: 10px 15px;
+        margin: 20px auto 0 auto;
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .heading{
+        width: 95%;
+        h1{
+            font-size: 40px;
+        }
+    }
+
+}
+  
+/* Tablet */
+@media only screen and (max-width:769px) and (min-width:551px) {
+    .heading{
+        width: 85%;
+        h1{
+            font-size: 50px;
+        }
+    }
+
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+    .heading{
+        width: 70%;
+        h1{
+            font-size: 50px;
+        }
+    }
+}
+  

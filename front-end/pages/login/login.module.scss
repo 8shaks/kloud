@@ -1,0 +1,35 @@
+@import "../styles//comps";
+.page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5em;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.heading{
+    display: block;
+    font-size: 40px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form{
+    width: 15%;
+    input{
+        @extend .input;
+    }
+
+}
+.loginButton, .registerButton{
+    @extend .button;
+    background-color: $blue;
+    color: white;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.registerButton{
+    margin-left: 20px;
+    color: $text;
+    background-color: $default-bg;
+}
