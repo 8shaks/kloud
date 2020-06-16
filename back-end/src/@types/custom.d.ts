@@ -8,38 +8,11 @@ export interface IProfile extends mongoose.Document {
     youtube?:string,
     twitter?:string,
     instagram?:string,
-    facebook?:string
+    facebook?:string,
+    soundcloud?:string
   },
   credits?: string[],
-  friends:{
-    userId:string,
-    username:string
-  }[],
-  friendRequestsRecieved:{
-    userId:string,
-    username:string
-  } [],
-  friendRequestsSent:{
-    userId:string,
-    username:string
-  }[],
-  date:Date
-
-}
-
-export interface IUser extends mongoose.Document {
-  // user: string,
-  email: string,
-  username:string,
-  password: string,
-  date:Date
-  // leave the company field
-
-}
-
-export interface IFriend extends mongoose.Document {
-  user: string,
-  username:string,
+  posts:string[],
   friends:{
     userId:string,
     username:string,
@@ -53,6 +26,27 @@ export interface IFriend extends mongoose.Document {
     userId:string,
     username:string
   }[],
+  date:Date
+}
+
+export interface IUser extends mongoose.Document {
+  // user: string,
+  email: string,
+  username:string,
+  password: string,
+  date:Date
+  // leave the company field
+
+}
+
+export interface IPost extends mongoose.Document {
+  user: string,
+  username:string,
+  title:string,
+  description:string,
+  date:Date
+  // leave the company field
+
 }
 
 export interface ICollab extends mongoose.Document {

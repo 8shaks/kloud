@@ -4,8 +4,7 @@ const router = express.Router();
 import auth from '../../middleware/auth';
 import validateFriendRequest from "../../validation/friendRequest"
 import Profile from "../../models/Profile"
-import Friend from "../../models/Friend"
-// FIND OBJECT IN ARRAY AND DELETE
+// import Friend from "../../models/Friend"
 
 // @route    GET api/friends
 // @desc     Get all a users friends
@@ -17,12 +16,12 @@ router.get('/', auth, async (req, res) => {
   }
 try {
   let user = req.user!
-  const userFriend = await Friend.findOne({user:user.id});
-  if (!userFriend) {
-    return res.status(400).json({errors: { friends: "You do not have a friend's list" }});
+  const userProfile = await Profile.findOne({user:user.id});
+  if (!userProfile) {
+    return res.status(400).json({errors: { friends: "You do not have a Profile" }});
   }
   //Return all of a user's friends
-  return res.json({ success: true, friends: userFriend.friends });
+  return res.json({ success: true, friends: userProfile.friends });
 } catch (err) {
   console.error(err.message);
   res.status(500).json({errors: { server: 'Server error' }});
@@ -39,12 +38,12 @@ router.post('/send_req', auth, async (req, res) => {
     }
   try {
     let user = req.user!
-    const userFriend = await Friend.findOne({user:user.id});
+    const userFriend = await Profile.findOne({user:user.id});
     if (!userFriend) {
-      return res.status(400).json({errors: { friends: "You do not have a friend's list" }});
+      return res.status(400).json({errors: { friends: "You do not have a Profile" }});
     }
     // find user they want to send request to
-    const friendtoAdd = await Friend.findOne({username:req.body.username});
+    const friendtoAdd = await Profile.findOne({username:req.body.username});
     if(!friendtoAdd)  return res.status(400).json({errors: { friends: 'We could not find the friend you wanted to add' }});
     if(friendtoAdd.username === user.username) return res.status(400).json({errors: { friends: 'You cannot add yourself' }});
 
@@ -85,12 +84,12 @@ router.post('/status', auth, async (req, res) => {
   }
   try {
     let user = req.user!
-    const userFriend = await Friend.findOne({user:user.id});
+    const userFriend = await Profile.findOne({user:user.id});
     if (!userFriend) {
       return res.status(400).json({errors: { friends: "You do not have a friend's list yet" }});
     }
     // find user they want to accept
-    const friendtoAccept = await Friend.findOne({username:req.body.username});
+    const friendtoAccept = await Profile.findOne({username:req.body.username});
     if(!friendtoAccept)  return res.status(400).json({errors: { friends: 'We could not find the friend you wanted to add' }});
     if(friendtoAccept.username === user.username) return res.status(400).json({errors: { friends: 'You cannot add yourself' }});
 
@@ -133,19 +132,18 @@ router.post('/unfriend', auth, async (req, res) => {
   }
 try {
   let user = req.user!
-  const userFriend = await Friend.findOne({user:user.id});
+  const userFriend = await Profile.findOne({user:user.id});
   if (!userFriend) {
-    return res.status(400).json({errors: { friends: "You do not have a friend's list yet" }});
+    return res.status(400).json({errors: { friends: "You do not have a Profile yet" }});
   }
   // find user they want to unfriend
-  const friendtoUnfriend = await Friend.findOne({username:req.body.username});
+  const friendtoUnfriend = await Profile.findOne({username:req.body.username});
   if(!friendtoUnfriend)  return res.status(400).json({errors: { friends: 'We could not find the friend you wanted to unfriend' }});
   if(friendtoUnfriend.username === user.username) return res.status(400).json({errors: { friends: 'You cannot unfriend yourself' }});
 
   if(friendtoUnfriend.friends.filter(u => u.username === user.username).length === 0 || userFriend.friends.filter(u => u.username === friendtoUnfriend.username).length === 0){
     return res.status(400).json({errors:{friends: "You are not friends with this user"}})
   }
-
 
   userFriend.friends = userFriend.friends.filter((friend)=>{
     return friend.userId !== friendtoUnfriend.user;

@@ -12,15 +12,30 @@ $default-bg : #f3f4f5;
     font-size: 16px;
     &:focus, &:active{
         outline: none;
+        zoom: 0;
     }
     &:hover{
-        border: 2px solid black;
+        border: 1px solid black;
+        outline: none;
+        transform: none;
     }
     font-family: 'Montserrat', sans-serif;
+}
+.default_button{
+    @extend .button;
+    background-color: $blue;
+    color: white;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 .input{
         width: 100%;
         margin:10px auto;
         padding: 5px 5px;
         font-size: 16px;
+}
+.error{
+    color: red;
+    margin: 5px 0;
+    font-size: 14px;
 }

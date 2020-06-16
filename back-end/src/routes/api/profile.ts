@@ -15,11 +15,11 @@ router.get('/me', auth, async (req, res) => {
       return res.status(400).json({errors: { profile: 'There is no profile for this user' }});
     }
     // only populate from user document if profile exists
-    res.json(profile)
+    return res.json(profile)
     // res.json(profile.populate('user'));
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({errors: { server: 'Server error' }});
+    return res.status(500).json({errors: { server: 'Server error' }});
   }
 });
 
@@ -66,10 +66,10 @@ router.post('/', auth, async (req, res) => {
 // @desc     Get profile by user ID
 // @access   Public
 router.get(
-  '/user/:username',
-  async ({ params: { username } }, res) => {
+  '/user/:id',
+  async ({ params: { id } }, res) => {
     try {
-      const profile = await Profile.findOne({username});
+      const profile = await Profile.findOne({user:id});
       
       if (!profile) return res.status(400).json({ msg: 'Profile not found' });
 

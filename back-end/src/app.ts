@@ -1,21 +1,23 @@
-import express, { Router, Express } from 'express'
-import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
+import express, { Router, Express } from 'express';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 const passport = require("passport");
 // const courts = require("./routes/api/courts");
 // const path = require("path");
-import users from "./routes/api/user"
-import auth from "./routes/api/auth"
-import profiles from "./routes/api/profile"
-import friends from "./routes/api/friends"
-import collabs from "./routes/api/collabs"
-
+import users from "./routes/api/user";
+import posts from "./routes/api/post";
+import auth from "./routes/api/auth";
+import profiles from "./routes/api/profile";
+import friends from "./routes/api/friends";
+import collabs from "./routes/api/collabs";
+var cors = require('cors');
 
 const app: Express = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(cors());
 const db = require("./config/keys").mongoURI;
 
 app.use(passport.initialize());
@@ -34,13 +36,15 @@ mongoose
   .then(() => {
     console.log("MongoDB connected");
   })
-  // .catch(err => console.log(err.data);
+  
+
 
 app.use("/api/auth", auth);
 app.use("/api/users", users);
 app.use("/api/profile", profiles);
 app.use("/api/friends", friends);
 app.use("/api/collabs", collabs);
+app.use("/api/posts", posts);
 // app.use("/api/courts", courts);
 
 // Server static assets if in production

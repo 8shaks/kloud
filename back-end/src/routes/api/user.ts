@@ -4,7 +4,6 @@ import bcrypt from 'bcryptjs';
 import User from '../../models/User'
 import validateRegisterInput from "../../validation/register"
 import Profile from '../../models/Profile'
-import Friend from '../../models/Friend'
 
 
 // @route    POST api/users
@@ -47,14 +46,11 @@ router.post('/', async (req, res) => {
 
       let profile = new Profile({
         user:user._id,
-        username: user.username
+        username: user.username,
+        social:{}
       });
-      let friend = new Friend({
-        user:user._id,
-        username: user.username
-      });
-      await friend.save();
       await profile.save();
+      console.log(profile)
       return res.json({success:'Succesfully created User', user});
     } catch (err) {
       console.error(err.message);

@@ -1,8 +1,8 @@
-import express from 'express'
+import express from 'express';
 const router = express.Router();
 import auth from '../../middleware/auth';
 import validateFriendRequest from "../../validation/friendRequest"
-import Collab from "../../models/Collab"
+import Collab from "../../models/Collab";
 
 
 

@@ -4,11 +4,12 @@
     background: $default-bg;
     font-family: 'Montserrat', sans-serif;
     -webkit-box-shadow: 0px 14px 202px -18px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 14px 202px -18pxx rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 14px 202px -18px rgba(0,0,0,0.75);
     box-shadow: 0px 14px 202px -18px rgba(0,0,0,0.75);
     position: fixed;
     width: 100%;
     height: 105px;
+    z-index: 10;
 }
 .linksList{
     list-style-type: none;

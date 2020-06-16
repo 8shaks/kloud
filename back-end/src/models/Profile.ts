@@ -27,8 +27,12 @@ const ProfileSchema = new Schema({
     },
     instagram: {
       type: String
+    },
+    soundcloud:{
+      type: String
     }
   },
+  posts:[String],
   credits:[String],
   friends: [{
     userId:{
@@ -38,14 +42,30 @@ const ProfileSchema = new Schema({
     username:{
       type:String,
       required:true
-    }
+    },
+    date: {
+        type: Date,
+        default: Date.now
+      }
   }],
-  friendRequestsRecieved:[{userId: String, username: String }],
-  friendRequestsSent:[{userId: String, username: String }],
-  // notifications:[{
-  //   type:String,
-    
+  friendRequestsRecieved:[{userId: String, username: String, date: {type: Date,default: Date.now} }],
+  friendRequestsSent:[{userId: String, username: String, date: {type: Date,default: Date.now} }],
+  // collabs: [{
+  //   userId:{
+  //     type:String,
+  //     required:true
+  //   },
+  //   username:{
+  //     type:String,
+  //     required:true
+  //   },
+  //   date: {
+  //       type: Date,
+  //       default: Date.now
+  //     }
   // }],
+  // collabRequestsRecieved:[{userId: String, username: String }],
+  // collabRequestsSent:[{userId: String, username: String }],
   date: {
     type: Date,
     default: Date.now

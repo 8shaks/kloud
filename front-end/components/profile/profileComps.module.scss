@@ -1,0 +1,30 @@
+@import "../../pages/styles/comps.scss";
+.friendReqCard{
+    position: relative;
+    border: 2px solid $grey;
+    padding: 1em;
+    border-radius: 5px;
+
+}
+.acceptButton, .denyButton{
+    @extend .button;
+    background-color: $blue;
+    color: white !important;
+    border-radius: 15px;
+    padding: 12px 10px;
+    margin-top: 30px;
+}
+.denyButton{
+    margin-left: 10px;
+    background-color: red;
+}
+.profileLink{
+    color: $blue;
+    &:hover{
+        text-decoration: underline;
+    }
+}
+.flexCardHeader{
+    display: flex;
+    justify-content: space-between;
+}
