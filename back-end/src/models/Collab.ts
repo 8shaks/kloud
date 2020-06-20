@@ -4,26 +4,38 @@ const Schema = mongoose.Schema;
 import { ICollab } from '../@types/custom';
 
 const CollabSchema = new Schema({
-  user: {
-      type: String,
-      required:true
+  user1: {
+      user:{
+        type: String,
+        required:true
+      },
+      username:{
+        type: String,
+        required:true
+      }
   },
-  collabs: [{
-    userId:{
-      type:String,
+  user2: {
+    user:{
+      type: String,
       required:true
     },
     username:{
-      type:String,
+      type: String,
       required:true
-    },
-    date: {
-        type: Date,
-        default: Date.now
-      }
-  }],
-  collabRequestsRecieved:[{userId: String, username: String }],
-  collabRequestsSent:[{userId: String, username: String }],
+    }
+  },
+  title:{
+    type: String,
+    required:true
+  },
+  description:{
+    type: String,
+    required:true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 

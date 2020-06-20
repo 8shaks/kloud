@@ -75,6 +75,7 @@ function getMyPosts(profile:IProfile):Promise<any>{
     });
   });
 }
+
 router.get('/user/:id', auth, async (req, res) => {
   if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
   try {

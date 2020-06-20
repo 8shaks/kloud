@@ -150,3 +150,35 @@ export const unfriendUser = (username:string) => async (dispatch:Dispatch) => {
 };
 
 
+// change Collab req status
+export const changeCollabRecStatus = (collabReq:{username:string, accept:boolean}) => async (dispatch:Dispatch) => {
+  try {
+    const res = await axios.post('http://localhost:5000/api/collabs/status', collabReq);
+    if(res.data.success) window.location.reload();
+    // dispatch({
+    //   type: GET_PROFILE,
+    //   payload: res.data
+    // });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};
+//send collab req
+export const sendCollabReq = (username:string, title:string, description:string) => async (dispatch:Dispatch) => {
+  try {
+    const res = await axios.post('http://localhost:5000/api/collabs/send_req', {username, title, description});
+    if(res.data.success) window.location.reload();
+    // dispatch({
+    //   type: GET_PROFILE,
+    //   payload: res.data
+    // });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+};

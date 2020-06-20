@@ -39,8 +39,8 @@ const Profile = (props:Props) => {
     }, [props.loading])
     useEffect(() => {
       if (props.profile.profile) {
-        setProfile(props.profile.profile)
-        props.profile.profile.social ? setSocial(props.profile.profile.social) : null
+        setProfile(props.profile.profile);
+        props.profile.profile.social ? setSocial(props.profile.profile.social) : null;
         if(props.profile.profile.posts.length > 0){
           axios.get(`http://localhost:5000/api/posts/user/${props.profile.profile.user}`).then((res)=>{
             setMyPosts(res.data)
@@ -115,7 +115,7 @@ const Profile = (props:Props) => {
         friendRecs = (
         <Fragment>
           {profile.friendRequestsRecieved.map((friendRec)=>{
-             <FriendReqCard changeFriendReqStatus={changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
+             <FriendReqCard changeFriendReqStatus={props.changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
           })}
         </Fragment>
         )
@@ -131,7 +131,7 @@ const Profile = (props:Props) => {
         friends = (
         <Fragment>
           {profile.friends.map((friendRec)=>{
-             <FriendCard unfriendUser={unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
+             <FriendCard unfriendUser={props.unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
           })}
         </Fragment>
         )
@@ -158,9 +158,10 @@ const Profile = (props:Props) => {
             {friendRecs}
           </div>
           <div className={profileStyles.friendsList}>
-            <h2>Friends</h2>
+            <h2 id="friends">Friends</h2>
             {friends}
           </div>
+          <Link href="/collabs/my-collabs"><a>Check your collabs</a></Link>
         </div>
         {myPostsContent}
       </div>

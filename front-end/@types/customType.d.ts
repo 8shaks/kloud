@@ -11,6 +11,7 @@ export interface ProfileType {
     },
     credits?: string[],
     posts:string[],
+    collabs:string[],
     friends:{
       userId:string,
       username:string,
@@ -24,8 +25,36 @@ export interface ProfileType {
       userId:string,
       username:string
     }[],
+    collabRequestsRecieved:{
+      userId:string,
+      username:string,
+      title: string,
+      description: string,
+      date:Date
+    } [],
+    collabRequestsSent:{
+      userId:string,
+      username:string,
+      title: string,
+      description: string,
+      date:Date
+    }[],
     date:Date
-  }
+}
+export interface CollabType{
+  _id:string,
+  user1:{
+    userId:string,
+    username:string
+  },
+  user2:{
+    userId:string,
+    username:string
+  },
+  title:string,
+  description:string,
+  date?:Date
+}
   
 export interface profileError{
     bio?:string| null, 

@@ -15,24 +15,24 @@ export interface layoutProps  {
  }
 
 const Layout =  ( props : layoutProps) => {
+    const test = async (decoded:{exp:number}) =>{
+      await store.dispatch(setCurrentUser(decoded));
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp < currentTime) {
+        store.dispatch(logoutUser());
+        store.dispatch(clearProfile());
+
+        Router.push("/login")
+      }
+      store.dispatch({type:LOADING_DONE})
+    }
     useEffect(  () => {
         if (localStorage.token) {
           setAuthToken(localStorage.token);
           const decoded:{exp:number} = jwt_decode(localStorage.token);
-          const test = async () =>{
-            await store.dispatch(setCurrentUser(decoded));
-            const currentTime = Date.now() / 1000;
-            if (decoded.exp < currentTime) {
-              store.dispatch(logoutUser());
-              store.dispatch(clearProfile());
-   
-              Router.push("/login")
-            }
-            store.dispatch({type:LOADING_DONE})
-          }
-          test();
+          test(decoded);
         }
-     
+        store.dispatch({type:LOADING_DONE})
       }, []);
     return (
         <div className={layoutStyles.page}>

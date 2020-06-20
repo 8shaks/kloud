@@ -20,12 +20,12 @@ export default function validateProfileInput(data: postData ) {
 
     if(data.description){
       if(data.description?.length > 300 || data.description?.length < 20 ){
-        errors.description = "Please enter a bio below 300 characters"
+        errors.description = "Please enter a description below 300 characters"
       }
     }
     if(data.title){
       if(data.title?.length > 100 || data.title?.length < 10 ){
-        errors.title = "Please enter a bio below 100 characters"
+        errors.title = "Please enter a title below 100 characters"
       }
     }
     return {

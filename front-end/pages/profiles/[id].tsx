@@ -3,12 +3,13 @@ import profileStyles from"./profile.module.scss";
 import Layout from '../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq } from '../../redux/actions/profileActions'
-import React, { useState, useEffect } from 'react';
+import { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq } from '../../redux/actions/profileActions'
+import React, { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { ProfileType, PostType } from "../../@types/customType";
 import axios from "axios";
 import PostCard from "../../components/posts/postCard"
+import CollabReqModal from "../../components/collabs/collabReqModal";
 
 interface Props{
   auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}},
@@ -17,6 +18,7 @@ interface Props{
   loading:boolean,
   unfriendUser: (username:string) => void,
   sendFriendReq: (username:string) => void,
+  sendCollabReq: (username:string, title: string, description:string) => void,
   changeFriendReqStatus:(friendReq:{username:string, accept:boolean}) => void,
   // profile:{profile: any, profiles:[any], isLoading:boolean },
 //  loginUser:  ({username, password}: loginError) => void,
@@ -27,13 +29,23 @@ interface friendError{
   friends:null|string,
   server:null|string
 }
+interface collabError{
+  title:null|string,
+  description:null|string,
+  server? : null|string
+}
 
 const Profile = (props:Props) => {
     const router = useRouter()
     const { id } = router.query
-    const [friendStatus, setStatus] = useState({ friend:false, friendRequestReceived:false, friendRequestSent:false });
+    const [friendStatus, setStatus] = useState({ friend:false, friendRequestReceived:false, friendRequestSent:false, collabRequestSent: false });
     const [userPosts, setUserPosts] = useState<PostType[]>([])
     const [errors, setErrors] = useState<friendError>({ friends:null, server: null});
+    const [collabModal, setCollabModal] = useState(false);
+    const [collabReqInfo, setCollabReqInfo] = useState({title:"", description:""})
+    const [collabReqErrors, setCollabReqErrors] = useState<collabError>({ title:null, description:null, server:null});
+ 
+
     useEffect(() => {
       if(!props.loading){
         if(typeof id === "string"){
@@ -45,12 +57,15 @@ const Profile = (props:Props) => {
     useEffect(() => {
       if(props.auth.isAuthenticated){
         if(props.profile.profile.friends.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({friend:true, friendRequestReceived:false, friendRequestSent:false });
+          setStatus({...friendStatus, friend:true, friendRequestReceived:false, friendRequestSent:false });
         }else if(props.profile.profile.friendRequestsSent.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({friend:false, friendRequestReceived:true, friendRequestSent:false });
+          setStatus({...friendStatus, friend:false, friendRequestReceived:true, friendRequestSent:false });
         }else if(props.profile.profile.friendRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({friend:false, friendRequestReceived:false, friendRequestSent:true });
+          setStatus({...friendStatus, friend:false, friendRequestReceived:false, friendRequestSent:true });
         }
+      }
+      if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
+        setStatus({...friendStatus, collabRequestSent:true});
       }
       if(props.profile.profile !==null){
         if(props.profile.profile.posts.length > 0){
@@ -64,11 +79,33 @@ const Profile = (props:Props) => {
     useEffect(() => {
       return setErrors(props.errors);
     }, [props.errors])
+
+    const toggleModal = () => {
+      setCollabModal(!collabModal);
+    }
     const onUnfriend = () =>{
       props.unfriendUser(props.profile.profile.username);
     }
-    const sendReq = () =>{
+    const sendFriendReq = () =>{
       props.unfriendUser(props.profile.profile.username);
+    }
+
+    const checkCollabReqInfo = () => {
+      let errorsNew:collabError = {description:null, title: null};
+      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a bio below 300 characters" : null;
+      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a bio below 300 characters" : null;
+      setCollabReqErrors(errorsNew);
+      if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true
+      else return false
+    }
+    const sendCollabReq = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if(checkCollabReqInfo()){
+      props.sendCollabReq(props.profile.profile.username,collabReqInfo.title, collabReqInfo.description);
+      }
+    }
+    const cancelCollabRequest = () =>{
+      props.sendCollabReq(props.profile.profile.username, "sd", "sd");
     }
     const onAcceptRequest = () =>{
       props.changeFriendReqStatus({username:props.profile.profile.username, accept:true});
@@ -76,7 +113,10 @@ const Profile = (props:Props) => {
     const onDenyRequest = () =>{
       props.changeFriendReqStatus({username:props.profile.profile.username, accept:false});
     }
-
+    const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+      setCollabReqInfo({...collabReqInfo, [e.target.name]: e.target.value})
+    }
+ 
     let profileContent = <div className={profileStyles.page}>Loading...</div>
     let userPostsContent;
     let friendSection = (
@@ -87,7 +127,7 @@ const Profile = (props:Props) => {
     if (props.auth.isAuthenticated && props.auth.user.user.id !== props.profile.profile.user){
       friendSection = (
           <div className={profileStyles.friendSection}>
-            <button onClick={sendReq} className={profileStyles.addFriendButton}>Add Friend</button>
+            <button onClick={sendFriendReq} className={profileStyles.addFriendButton}>Add Friend</button>
             {<span className={profileStyles.error}>{errors.friends}</span>}
             {<span className={profileStyles.error}>{errors.server}</span>}
           </div>
@@ -95,6 +135,7 @@ const Profile = (props:Props) => {
       if(friendStatus.friend){
         friendSection = (
           <div className={profileStyles.friendSection}>
+            {!friendStatus.collabRequestSent ? <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button> : <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>}
             <button onClick={onUnfriend} className={profileStyles.removeFriendButton}>Remove Friend</button>
             {<span className={profileStyles.error}>{errors.friends}</span>}
             {<span className={profileStyles.error}>{errors.server}</span>}
@@ -104,7 +145,7 @@ const Profile = (props:Props) => {
       if(friendStatus.friendRequestSent){
         friendSection = (
           <div className={profileStyles.friendSection}>
-            <button onClick={sendReq} className={profileStyles.removeFriendButton}>Cancel Friend Request</button>
+            <button onClick={sendFriendReq} className={profileStyles.removeFriendButton}>Cancel Friend Request</button>
             {<span className={profileStyles.error}>{errors.friends}</span>}
             {<span className={profileStyles.error}>{errors.server}</span>}
           </div>
@@ -161,6 +202,7 @@ const Profile = (props:Props) => {
             {friendSection}
           </div>
           {userPostsContent}
+          {collabModal ? <CollabReqModal username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
         </div>);
     }
     return (
@@ -180,5 +222,5 @@ const mapStateToProps = (state: Props) => ({
 
 export default connect(
   mapStateToProps,
-  { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq }
+  { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq }
 )(Profile);

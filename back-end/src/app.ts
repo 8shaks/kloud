@@ -1,7 +1,8 @@
-import express, { Router, Express } from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
+import express, { Router, Express } from "express";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
 const passport = require("passport");
+import socketIo from "socket.io";
 // const courts = require("./routes/api/courts");
 // const path = require("path");
 import users from "./routes/api/user";
@@ -10,7 +11,7 @@ import auth from "./routes/api/auth";
 import profiles from "./routes/api/profile";
 import friends from "./routes/api/friends";
 import collabs from "./routes/api/collabs";
-var cors = require('cors');
+import cors from "cors";
 
 const app: Express = express();
 
@@ -21,6 +22,7 @@ app.use(cors());
 const db = require("./config/keys").mongoURI;
 
 app.use(passport.initialize());
+
 
 // TODO
 // MAKE ERROR INTERFACE
@@ -54,6 +56,27 @@ app.use("/api/posts", posts);
 // app.use(express.static("client/public"));
  
 
-const port = process.env.PORT || 5000;
+const port = 5000;
 
-app.listen(port, () => console.log(`Server running on port ${port}`))
+const server = app.listen(port, () => console.log(`Server running on port ${port}`))
+// const io = socketIo(server);
+// io.of("/chat").on(("connect"), async socket => {
+//   console.log("connected")
+//   socket.on("typing", async msg => {
+//     console.log(msg)
+//     socket.broadcast.emit("typing, { msg: msg.name});")
+//   })
+//   try{
+//     socket.on("msg", async msg => {
+//       io.emit(msg, {chats:{username:msg.name, message:msg.msg}});
+//     })
+//   }catch(err){
+//     console.error(err.message)
+//   }
+//   socket.on("typing", name => {
+//     io.emit("Typing", { name: `${name.name}`})
+//   })
+//   socket.on("disconnected", () => {
+//     console.log("Disconnected")
+//   })
+// })

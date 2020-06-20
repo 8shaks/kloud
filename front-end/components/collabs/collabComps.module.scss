@@ -1,0 +1,84 @@
+@import "../../pages/styles/comps.scss";
+.collabRecCard{
+    position: relative;
+    border: 2px solid $grey;
+    padding: 1em;
+    border-radius: 5px;
+
+}
+.collabCard{
+    position: relative;
+    border: 2px solid $grey;
+    padding: 1em;
+    border-radius: 5px;
+    margin: 2em auto;
+
+}
+.acceptButton, .denyButton{
+    @extend .button;
+    background-color: $blue;
+    color: white !important;
+    border-radius: 15px;
+    padding: 12px 10px;
+    margin-top: 30px;
+}
+.denyButton{
+    margin-left: 10px;
+    background-color: red;
+}
+.profileLink{
+    color: $blue;
+    &:hover{
+        text-decoration: underline;
+    }
+}
+.flexCardHeader{
+    display: flex;
+    justify-content: space-between;
+    margin:10px 0px 2em 0;
+    color: $blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.description{
+    font-size: 17px;
+}
+
+/* The Modal (background) */
+.collabReqModal {
+    // display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal Content/Box */
+  .collabReqModal_content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 35%; /* Could be more or less, depending on screen size */
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .collabReqForm{
+    width: 50%;
+    margin: 2em auto 0 auto;
+    input{
+        @extend .input;
+    }
+
+}

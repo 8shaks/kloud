@@ -12,6 +12,7 @@ export interface IProfile extends mongoose.Document {
     soundcloud?:string
   },
   credits?: string[],
+  collabs:string[],
   posts:string[],
   friends:{
     userId:string,
@@ -25,6 +26,20 @@ export interface IProfile extends mongoose.Document {
   friendRequestsSent:{
     userId:string,
     username:string
+  }[],
+  collabRequestsRecieved:{
+    userId:string,
+    username:string,
+    title: string,
+    description: string,
+    date:number
+  } [],
+  collabRequestsSent:{
+    userId:string,
+    username:string,
+    title: string,
+    description: string,
+    date:number
   }[],
   date:Date
 }
@@ -50,19 +65,15 @@ export interface IPost extends mongoose.Document {
 }
 
 export interface ICollab extends mongoose.Document {
-  user: string,
-  username:string,
-  collabs:{
-    userId:string,
-    username:string,
-    date?:Date
-  }[],
-  collabRequestsRecieved:{
-    userId:string,
+  user1:{
+    user:string,
     username:string
-  } [],
-  collabRequestsSent:{
-    userId:string,
+  },
+  user2:{
+    user:string,
     username:string
-  }[],
+  },
+  title: string,
+  description: string,
+  date?:Date
 }

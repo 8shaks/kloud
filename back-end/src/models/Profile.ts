@@ -33,6 +33,7 @@ const ProfileSchema = new Schema({
     }
   },
   posts:[String],
+  collabs:[String],
   credits:[String],
   friends: [{
     userId:{
@@ -50,6 +51,8 @@ const ProfileSchema = new Schema({
   }],
   friendRequestsRecieved:[{userId: String, username: String, date: {type: Date,default: Date.now} }],
   friendRequestsSent:[{userId: String, username: String, date: {type: Date,default: Date.now} }],
+  collabRequestsRecieved:[{userId: String, username: String, title:String, description: String, date:Date}],
+  collabRequestsSent:[{userId: String, username: String, title:String, description: String,  date:Date}],
   // collabs: [{
   //   userId:{
   //     type:String,
