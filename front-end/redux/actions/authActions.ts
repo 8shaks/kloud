@@ -5,6 +5,8 @@ import jwt_decode from "jwt-decode";
 import { Dispatch } from "redux";
 import Router from 'next/router'
 
+// const host = "http://localhost:5000";
+const host="";
 interface userLogin {
     username:string,
     password:string
@@ -18,7 +20,7 @@ interface userRegister {
 // REGISTERr
 export const registerUser = (userData:userRegister) => (dispatch:Dispatch) => {
   axios
-    .post("http://localhost:5000/api/users", userData)
+    .post(`${host}/api/users`, userData)
     .then(() => Router.push('/'))
     .catch(err =>{
         console.log(err)
@@ -35,7 +37,7 @@ export const registerUser = (userData:userRegister) => (dispatch:Dispatch) => {
 
 export const loginUser = (userData:userLogin) => (dispatch: Dispatch) => {
   axios
-    .post("http://localhost:5000/api/auth", userData)
+    .post(`${host}/api/auth`, userData)
     .then(res => {
         const { token }:{token:string} = res.data;
         //Set to auth Header

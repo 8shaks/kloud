@@ -44,7 +44,8 @@ const Profile = (props:Props) => {
     const [collabModal, setCollabModal] = useState(false);
     const [collabReqInfo, setCollabReqInfo] = useState({title:"", description:""})
     const [collabReqErrors, setCollabReqErrors] = useState<collabError>({ title:null, description:null, server:null});
- 
+    // const host = "http://localhost:5000";
+    const host="";
 
     useEffect(() => {
       if(!props.loading){
@@ -69,7 +70,7 @@ const Profile = (props:Props) => {
       }
       if(props.profile.profile !==null){
         if(props.profile.profile.posts.length > 0){
-          axios.get(`http://localhost:5000/api/posts/user/${props.profile.profile.user}`).then((res)=>{
+          axios.get(`${host}/api/posts/user/${props.profile.profile.user}`).then((res)=>{
             setUserPosts(res.data)
           })
         }

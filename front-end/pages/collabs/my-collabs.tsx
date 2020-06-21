@@ -22,7 +22,8 @@ interface Props{
   changeCollabRecStatus : (collabReq:{username:string, accept:boolean}) => void
 }
 const Profile = (props:Props) => {
-
+    // const host = "http://localhost:5000";
+    const host="";
     const [myCollabs, setMyCollabs] = useState<CollabType[]>([])
     useEffect(() => {
       if(!props.loading){
@@ -33,7 +34,7 @@ const Profile = (props:Props) => {
     useEffect(() => {
       if (props.profile.profile) {
         if(props.profile.profile.collabs.length > 0){
-          axios.get(`http://localhost:5000/api/collabs/mycollabs`).then((res)=>{
+          axios.get(`${host}/api/collabs/mycollabs`).then((res)=>{
             setMyCollabs(res.data)
           })
         }

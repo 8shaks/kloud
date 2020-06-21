@@ -37,7 +37,7 @@ const Layout =  ( props : layoutProps) => {
     return (
         <div className={layoutStyles.page}>
             <Navbar/>
-        <main className={layoutStyles.main}>{props.children}</main>
+            <main className={layoutStyles.main}>{props.children}</main>
         </div>
     )
 }

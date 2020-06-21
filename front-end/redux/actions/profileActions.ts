@@ -12,13 +12,17 @@ import {
 import { Dispatch } from 'redux';
 import axios from "axios";
 import {ProfileType} from "../../@types/customType";
+// CHANGE HOST FOR COLLABS PAGE AND PRFILE PAGE
 
+
+// const host = "http://localhost:5000";
+const host="";
 
 // Get current users profile
 export const getCurrentProfile = () => async (dispatch:Dispatch) => {
 
   try {
-    const res = await axios.get('http://localhost:5000/api/profile/me');
+    const res = await axios.get(`${host}/api/profile/me`);
 
     dispatch({
       type: GET_PROFILE,
@@ -63,7 +67,7 @@ export const clearProfile = () => async (dispatch:Dispatch) => {
 export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
   // dispatch({type:IS_LOADING})
   try {
-    const res = await axios.get(`http://localhost:5000/api/profile/user/${userId}`);
+    const res = await axios.get(`${host}/api/profile/user/${userId}`);
     dispatch({
       type: GET_PROFILE,
       payload: res.data
@@ -81,7 +85,7 @@ export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
 // Create or update profile
 export const createProfile = (formData:ProfileType) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/profile', formData);
+    const res = await axios.post(`${host}/api/profile`, formData);
 
     dispatch({
       type: GET_PROFILE,
@@ -100,7 +104,7 @@ export const createProfile = (formData:ProfileType) => async (dispatch:Dispatch)
 // send or cancelfriend request
 export const sendFriendReq = (username:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/friends/send_req', {username});
+    const res = await axios.post(`${host}/api/friends/send_req`, {username});
     if(res.data.success) window.location.reload();
     // dispatch({
     //   type: GET_PROFILE,
@@ -118,7 +122,7 @@ export const sendFriendReq = (username:string) => async (dispatch:Dispatch) => {
 // change friend req status
 export const changeFriendReqStatus = (friendReq:{username:string, accept:boolean}) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/friends/status', friendReq);
+    const res = await axios.post(`${host}/api/friends/status`, friendReq);
     if(res.data.success) window.location.reload();
     // dispatch({
     //   type: GET_PROFILE,
@@ -135,7 +139,7 @@ export const changeFriendReqStatus = (friendReq:{username:string, accept:boolean
 // unfriend User
 export const unfriendUser = (username:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/friends/unfriend', username);
+    const res = await axios.post(`${host}/api/friends/unfriend`, username);
     if(res.data.success) window.location.reload();
     // dispatch({
     //   type: GET_PROFILE,
@@ -153,7 +157,7 @@ export const unfriendUser = (username:string) => async (dispatch:Dispatch) => {
 // change Collab req status
 export const changeCollabRecStatus = (collabReq:{username:string, accept:boolean}) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/collabs/status', collabReq);
+    const res = await axios.post(`${host}/api/collabs/status`, collabReq);
     if(res.data.success) window.location.reload();
     // dispatch({
     //   type: GET_PROFILE,
@@ -169,7 +173,7 @@ export const changeCollabRecStatus = (collabReq:{username:string, accept:boolean
 //send collab req
 export const sendCollabReq = (username:string, title:string, description:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/collabs/send_req', {username, title, description});
+    const res = await axios.post(`${host}/api/collabs/send_req`, {username, title, description});
     if(res.data.success) window.location.reload();
     // dispatch({
     //   type: GET_PROFILE,

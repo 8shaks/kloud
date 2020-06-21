@@ -30,6 +30,8 @@ const Profile = (props:Props) => {
     const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", facebook:""});
     const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
     const [myPosts, setMyPosts] = useState<PostType[]>([])
+    // const host = "http://localhost:5000";
+    const host="";
 
     useEffect(() => {
       if(!props.loading){
@@ -42,7 +44,7 @@ const Profile = (props:Props) => {
         setProfile(props.profile.profile);
         props.profile.profile.social ? setSocial(props.profile.profile.social) : null;
         if(props.profile.profile.posts.length > 0){
-          axios.get(`http://localhost:5000/api/posts/user/${props.profile.profile.user}`).then((res)=>{
+          axios.get(`${host}/api/posts/user/${props.profile.profile.user}`).then((res)=>{
             setMyPosts(res.data)
           })
         }

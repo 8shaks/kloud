@@ -11,6 +11,9 @@ import axios from "axios";
 import { PostType } from "../../@types/customType";
 import Router from 'next/router'
 
+// const host = "http://localhost:5000";
+const host="";
+
 // Get posts
 export const getPosts = () => async (dispatch:Dispatch) => {
   try {
@@ -65,7 +68,7 @@ export const getPosts = () => async (dispatch:Dispatch) => {
 // Delete post
 export const deletePost = (id:string) => async (dispatch:Dispatch) => {
   try {
-    await axios.delete(`http://localhost:5000/api/posts/${id}`);
+    await axios.delete(`${host}/api/posts/${id}`);
 
     Router.push("/explore")
   } catch (err) {
@@ -79,7 +82,7 @@ export const deletePost = (id:string) => async (dispatch:Dispatch) => {
 // Add post
 export const addPost = (postData:PostType) => async (dispatch: Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/posts', postData);
+    const res = await axios.post(`${host}/api/posts`, postData);
 
     dispatch({
       type: ADD_POST,
@@ -100,7 +103,7 @@ export const addPost = (postData:PostType) => async (dispatch: Dispatch) => {
 // Edit Post
 export const editPost = (postData:PostType) => async (dispatch: Dispatch) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/posts/edit', postData);
+    const res = await axios.post(`${host}/api/posts/edit`, postData);
     dispatch({
         type: GET_ERRORS,
         payload: {}
@@ -117,7 +120,7 @@ export const editPost = (postData:PostType) => async (dispatch: Dispatch) => {
 // Get post
 export const getPost = (id:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.get(`http://localhost:5000/api/posts/${id}`);
+    const res = await axios.get(`${host}/api/posts/${id}`);
 
     dispatch({
       type: GET_POST,
