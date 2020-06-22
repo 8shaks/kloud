@@ -60,24 +60,11 @@ app.use("/api/posts", posts);
 const port = 5000;
 
 const server = app.listen(port, () => console.log(`Server running on port ${port}`))
-// const io = socketIo(server);
-// io.of("/chat").on(("connect"), async socket => {
-//   console.log("connected")
-//   socket.on("typing", async msg => {
-//     console.log(msg)
-//     socket.broadcast.emit("typing, { msg: msg.name});")
-//   })
-//   try{
-//     socket.on("msg", async msg => {
-//       io.emit(msg, {chats:{username:msg.name, message:msg.msg}});
-//     })
-//   }catch(err){
-//     console.error(err.message)
-//   }
-//   socket.on("typing", name => {
-//     io.emit("Typing", { name: `${name.name}`})
-//   })
-//   socket.on("disconnected", () => {
-//     console.log("Disconnected")
-//   })
-// })
+
+const io = socketIo(server);
+io.on('connection', (socket) => {
+  console.log("we have a new connection!");
+  socket.on("disconnect", ()=> {
+    console.log("user had left");
+  })
+})
