@@ -113,10 +113,11 @@ const Profile = (props:Props) => {
       }
       // Friend Recs Cards
       if(profile.friendRequestsRecieved.length > 0){
+        console.log(profile)
         friendRecs = (
         <Fragment>
           {profile.friendRequestsRecieved.map((friendRec)=>{
-             <FriendReqCard changeFriendReqStatus={props.changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
+             return <FriendReqCard changeFriendReqStatus={props.changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
           })}
         </Fragment>
         )
@@ -132,7 +133,7 @@ const Profile = (props:Props) => {
         friends = (
         <Fragment>
           {profile.friends.map((friendRec)=>{
-             <FriendCard unfriendUser={props.unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
+             return <FriendCard unfriendUser={props.unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
           })}
         </Fragment>
         )
