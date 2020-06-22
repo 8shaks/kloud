@@ -39,7 +39,7 @@ interface collabError{
 const Profile = (props:Props) => {
     const router = useRouter()
     const { id } = router.query
-    const [friendStatus, setStatus] = useState({ friend:false, friendRequestReceived:false, friendRequestSent:false, collabRequestSent: false });
+    const [friendStatus, setStatus] = useState({ friend:false, friendRequestReceived:false, friendRequestSent:false, collabRequestSent: false, collabInProgress: false });
     const [userPosts, setUserPosts] = useState<PostType[]>([])
     const [errors, setErrors] = useState<friendError>({ friends:null, server: null});
     const [collabModal, setCollabModal] = useState(false);
@@ -72,6 +72,9 @@ const Profile = (props:Props) => {
         if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
           setStatus({...friendStatus, collabRequestSent:true});
         }
+        // if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
+        //   setStatus({...friendStatus, collabInProgress:true});
+        // }
       }
 
     }, [props.profile.profile])

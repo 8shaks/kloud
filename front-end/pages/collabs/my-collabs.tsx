@@ -48,13 +48,20 @@ const Profile = (props:Props) => {
     if(props.profile.profile !== null){
       const { profile } = props.profile;
       if(profile.collabs.length > 0){
+        console.log(myCollabs)
         collabs=(
             <Fragment>
               <h2 id="collabs">Collabs</h2>
               {
                 myCollabs.map((myCollab)=>{
-                  if (myCollab.user1.userId === props.auth.user.user.id) return <CollabCard date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
-                  else  return <CollabCard date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                  if (myCollab.user1.userId === props.auth.user.user.id){
+                    console.log("hey")
+                    return <CollabCard date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                  }
+                  else{
+                    console.log("hey")
+                    return <CollabCard date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                  }
                 })
               }
             </Fragment>

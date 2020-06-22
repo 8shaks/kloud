@@ -13,7 +13,7 @@ import { IProfile, ICollab } from "../../@types/custom"
 function getMyCollabs(profile:IProfile):Promise<any>{
   return new Promise<ICollab[]>((resolve, reject) => {
     let myCollabs:ICollab[] = [];
-    if (profile.collabs)  resolve(myCollabs) 
+    if (profile.collabs.length === 0)  resolve(myCollabs) 
     profile!.collabs.forEach(async (collabId) => {
       let collab = await Collab.findById(collabId);
       if (collab)
