@@ -38,7 +38,6 @@ const Explore = (props:Props) => {
         </div>
       )
     }
-    console.log(posts)
     return (
         <Layout>
             <div className={exploreStyles.page}>

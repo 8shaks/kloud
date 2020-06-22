@@ -10,6 +10,7 @@ import CollabCard from "../../components/collabs/collabCard";
 import CollabRecCard from "../../components/collabs/collabRecCard";
 import { CollabType, ProfileType } from "../../@types/customType"
 import axios from "axios";
+import host from "../../vars"
 
 interface Props{
   auth: {isAuthenticated: boolean, user:{ user:{ id:string, username: string}}},
@@ -22,8 +23,7 @@ interface Props{
   changeCollabRecStatus : (collabReq:{username:string, accept:boolean}) => void
 }
 const Profile = (props:Props) => {
-    // const host = "http://localhost:5000";
-    const host="";
+
     const [myCollabs, setMyCollabs] = useState<CollabType[]>([])
     useEffect(() => {
       if(!props.loading){

@@ -1,16 +1,16 @@
 import Head from 'next/head';
-import profileStyles from"./profile.module.scss";
-import Layout from '../../components/layout/layout';
+import profileStyles from"../profile.module.scss";
+import Layout from '../../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq } from '../../redux/actions/profileActions'
+import { getProfileByUsername, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq } from '../../../redux/actions/profileActions'
 import React, { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/router';
-import { ProfileType, PostType } from "../../@types/customType";
+import { ProfileType, PostType } from "../../../@types/customType";
 import axios from "axios";
-import PostCard from "../../components/posts/postCard"
-import CollabReqModal from "../../components/collabs/collabReqModal";
-import host from "../../vars";
+import PostCard from "../../../components/posts/postCard"
+import CollabReqModal from "../../../components/collabs/collabReqModal";
+import host from "../../../vars"
 
 interface Props{
   auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}},
@@ -23,7 +23,7 @@ interface Props{
   changeFriendReqStatus:(friendReq:{username:string, accept:boolean}) => void,
   // profile:{profile: any, profiles:[any], isLoading:boolean },
 //  loginUser:  ({username, password}: loginError) => void,
-  getProfileById:(username:string) => void
+  getProfileByUsername:(username:string) => void
 }
 
 interface friendError{
@@ -38,7 +38,7 @@ interface collabError{
 
 const Profile = (props:Props) => {
     const router = useRouter()
-    const { id } = router.query
+    const { username } = router.query
     const [friendStatus, setStatus] = useState({ friend:false, friendRequestReceived:false, friendRequestSent:false, collabRequestSent: false });
     const [userPosts, setUserPosts] = useState<PostType[]>([])
     const [errors, setErrors] = useState<friendError>({ friends:null, server: null});
@@ -48,8 +48,8 @@ const Profile = (props:Props) => {
 
     useEffect(() => {
       if(!props.loading){
-        if(typeof id === "string"){
-          props.getProfileById(id);
+        if(typeof username === "string"){
+          props.getProfileByUsername(username);
 
         }
       }
@@ -223,5 +223,5 @@ const mapStateToProps = (state: Props) => ({
 
 export default connect(
   mapStateToProps,
-  { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq }
+  { getProfileByUsername, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq }
 )(Profile);

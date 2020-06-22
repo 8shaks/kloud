@@ -140,6 +140,32 @@ router.get('/user/:id', function (_a, res) {
         });
     });
 });
+// @route    GET api/profile/user/:username
+// @desc     Get profile by username
+// @access   Public
+router.get('/username/:username', function (_a, res) {
+    var username = _a.params.username;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var profile, err_4;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, Profile_1.default.findOne({ username: username })];
+                case 1:
+                    profile = _b.sent();
+                    if (!profile)
+                        return [2 /*return*/, res.status(400).json({ msg: 'Profile not found' })];
+                    return [2 /*return*/, res.json(profile)];
+                case 2:
+                    err_4 = _b.sent();
+                    console.error(err_4.message);
+                    return [2 /*return*/, res.status(500).json({ msg: 'Server error' })];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+});
 // // @route    DELETE api/profile
 // // @desc     Delete profile, user & posts
 // // @access   Private

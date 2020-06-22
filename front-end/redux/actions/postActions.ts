@@ -10,14 +10,12 @@ import {
 import axios from "axios";
 import { PostType } from "../../@types/customType";
 import Router from 'next/router'
-
-// const host = "http://localhost:5000";
-const host="";
+import host from "../../vars"
 
 // Get posts
 export const getPosts = () => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.get('http://localhost:5000/api/posts');
+    const res = await axios.get(`${host}/api/posts`);
 
     dispatch({
       type: GET_POSTS,

@@ -12,6 +12,7 @@ import SocialLinksForm from "../../components/profile/socialLinksForm";
 import { ProfileType, profileError, social, PostType } from "../../@types/customType"
 import axios from "axios";
 import PostCard from "../../components/posts/postCard"
+import host from "../../vars"
 
 interface Props{
   auth: {isAuthenticated: boolean, user:{ id:string, username: string}},
@@ -29,9 +30,7 @@ const Profile = (props:Props) => {
     const [profile, setProfile] = useState(props.profile.profile);
     const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", facebook:""});
     const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
-    const [myPosts, setMyPosts] = useState<PostType[]>([])
-    // const host = "http://localhost:5000";
-    const host="";
+    const [myPosts, setMyPosts] = useState<PostType[]>([]);
 
     useEffect(() => {
       if(!props.loading){

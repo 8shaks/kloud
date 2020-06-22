@@ -12,11 +12,7 @@ import {
 import { Dispatch } from 'redux';
 import axios from "axios";
 import {ProfileType} from "../../@types/customType";
-// CHANGE HOST FOR COLLABS PAGE AND PRFILE PAGE
-
-
-// const host = "http://localhost:5000";
-const host="";
+import host from "../../vars"
 
 // Get current users profile
 export const getCurrentProfile = () => async (dispatch:Dispatch) => {
@@ -68,6 +64,23 @@ export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
   // dispatch({type:IS_LOADING})
   try {
     const res = await axios.get(`${host}/api/profile/user/${userId}`);
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    });
+  }
+  dispatch({type:LOADING_DONE})
+};
+
+// Get profile by username
+export const getProfileByUsername = (username:string) => async (dispatch:Dispatch) => {
+  try {
+    const res = await axios.get(`${host}/api/profile/username/${username}`);
     dispatch({
       type: GET_PROFILE,
       payload: res.data

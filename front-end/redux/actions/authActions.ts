@@ -4,9 +4,8 @@ import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 import { Dispatch } from "redux";
 import Router from 'next/router'
+import host from "../../vars"
 
-// const host = "http://localhost:5000";
-const host="";
 interface userLogin {
     username:string,
     password:string
