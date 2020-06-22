@@ -86,7 +86,7 @@ const Profile = (props:Props) => {
       props.unfriendUser(props.profile.profile.username);
     }
     const sendFriendReq = () =>{
-      props.unfriendUser(props.profile.profile.username);
+      props.sendFriendReq(props.profile.profile.username);
     }
 
     const checkCollabReqInfo = () => {

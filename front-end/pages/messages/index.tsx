@@ -12,6 +12,7 @@ import SocialLinksForm from "../../components/profile/socialLinksForm";
 import { ProfileType, profileError, social, PostType } from "../../@types/customType"
 import axios from "axios";
 import io from "socket.io-client";
+import host from "../../vars"
 
 
 interface Props{
@@ -26,9 +27,8 @@ interface Props{
 const Messages = (props:Props) => {
     const [profile, setProfile] = useState(props.profile.profile);
  
-    // const host = "http://localhost:5000";
-    const host="";
-    let socket = io(`http://localhost:5000`)
+
+    let socket = io(host)
 
     useEffect(() => {
       if(!props.loading){
