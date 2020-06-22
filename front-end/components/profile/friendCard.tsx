@@ -16,7 +16,7 @@ export default (props: Props) => {
         <div className={profileCompStyles.friendReqCard}>
             <div className={profileCompStyles.flexCardHeader}>
                 <h3>{props.username}</h3>
-                <Link href="/"><a className={profileCompStyles.profileLink}>View Profile</a></Link> 
+                <Link href={`/profiles/${props.userId}`}><a className={profileCompStyles.profileLink}>View Profile</a></Link> 
             </div>
             <button className={profileCompStyles.acceptButton}>Start a Collab</button><button onClick={onUnfriend} className={profileCompStyles.denyButton}>Remove Friend</button>
         </div>

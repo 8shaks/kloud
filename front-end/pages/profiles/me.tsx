@@ -130,6 +130,7 @@ const Profile = (props:Props) => {
       }
       // Friends Cards
       if(profile.friends.length > 0){
+        console.log(profile.friends)
         friends = (
         <Fragment>
           {profile.friends.map((friendRec)=>{

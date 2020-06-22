@@ -5,6 +5,7 @@ import collabCompStyles from "./collabComps.module.scss";
 interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onSubmit : (e: FormEvent<HTMLFormElement>)  => void,
+  toggleModal : () => void
   username:string,
   collabReqInfo : {title:string, description:string},
   errors:{title?:string | null, description?:string | null, server?:string | null}
@@ -16,7 +17,7 @@ export default function collabReqModal(props:Props) {
     return (
       <div className={collabCompStyles.collabReqModal}>
         <div className={collabCompStyles.collabReqModal_content}>
-        <span className={collabCompStyles.close} >&times;</span>
+        <span onClick={props.toggleModal} className={collabCompStyles.close} >&times;</span>
             <h3>Collab request to {props.username}</h3>
           <form onSubmit={onSubmit} className={collabCompStyles.collabReqForm}>
             <input onChange={onChange} aria-label="title" value={collabReqInfo.title} name="title" placeholder="Title"/>

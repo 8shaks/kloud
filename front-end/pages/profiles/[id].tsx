@@ -203,7 +203,7 @@ const Profile = (props:Props) => {
             {friendSection}
           </div>
           {userPostsContent}
-          {collabModal ? <CollabReqModal username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
+          {collabModal ? <CollabReqModal toggleModal={toggleModal} username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
         </div>);
     }
     return (
