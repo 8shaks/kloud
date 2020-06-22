@@ -152,7 +152,7 @@ export const changeFriendReqStatus = (friendReq:{username:string, accept:boolean
 // unfriend User
 export const unfriendUser = (username:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.post(`${host}/api/friends/unfriend`, username);
+    const res = await axios.post(`${host}/api/friends/unfriend`, {username:username});
     if(res.data.success) window.location.reload();
     // dispatch({
     //   type: GET_PROFILE,
