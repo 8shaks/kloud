@@ -30,42 +30,48 @@ var ProfileSchema = new Schema({
         },
         instagram: {
             type: String
+        },
+        soundcloud: {
+            type: String
         }
     },
+    posts: [String],
+    collabs: [String],
     credits: [String],
     friends: [{
-            id: {
+            userId: {
                 type: String,
                 required: true
             },
             username: {
                 type: String,
                 required: true
-            }
-        }],
-    friendRequestsRecieved: [{
-            id: {
-                type: String,
-                required: true
             },
-            username: {
-                type: String,
-                required: true
+            date: {
+                type: Date,
+                default: Date.now
             }
         }],
-    friendRequestsSent: [{
-            id: {
-                type: String,
-                required: true
-            },
-            username: {
-                type: String,
-                required: true
-            }
-        }],
-    // notifications:[{
-    //   type:String,
+    friendRequestsRecieved: [{ userId: String, username: String, date: { type: Date, default: Date.now } }],
+    friendRequestsSent: [{ userId: String, username: String, date: { type: Date, default: Date.now } }],
+    collabRequestsRecieved: [{ userId: String, username: String, title: String, description: String, date: Date }],
+    collabRequestsSent: [{ userId: String, username: String, title: String, description: String, date: Date }],
+    // collabs: [{
+    //   userId:{
+    //     type:String,
+    //     required:true
+    //   },
+    //   username:{
+    //     type:String,
+    //     required:true
+    //   },
+    //   date: {
+    //       type: Date,
+    //       default: Date.now
+    //     }
     // }],
+    // collabRequestsRecieved:[{userId: String, username: String }],
+    // collabRequestsSent:[{userId: String, username: String }],
     date: {
         type: Date,
         default: Date.now

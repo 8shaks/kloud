@@ -93,9 +93,15 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, user.save()];
             case 6:
                 _d.sent();
-                return [4 /*yield*/, Profile_1.default.findOneAndUpdate({ user: user._id }, { $set: { user: user._id, username: user.username } }, { new: true, upsert: true })];
+                profile = new Profile_1.default({
+                    user: user._id,
+                    username: user.username,
+                    social: {}
+                });
+                return [4 /*yield*/, profile.save()];
             case 7:
-                profile = _d.sent();
+                _d.sent();
+                console.log(profile);
                 return [2 /*return*/, res.json({ success: 'Succesfully created User', user: user })];
             case 8:
                 err_1 = _d.sent();
@@ -106,4 +112,4 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
         }
     });
 }); });
-module.exports = router;
+exports.default = router;

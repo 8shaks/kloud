@@ -61,13 +61,13 @@ router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0,
                     return [2 /*return*/, res.status(400).json({ errors: { profile: 'There is no profile for this user' } })];
                 }
                 // only populate from user document if profile exists
-                res.json(profile);
-                return [3 /*break*/, 3];
+                return [2 /*return*/, res.json(profile)
+                    // res.json(profile.populate('user'));
+                ];
             case 2:
                 err_1 = _a.sent();
                 console.error(err_1.message);
-                res.status(500).json({ errors: { server: 'Server error' } });
-                return [3 /*break*/, 3];
+                return [2 /*return*/, res.status(500).json({ errors: { server: 'Server error' } })];
             case 3: return [2 /*return*/];
         }
     });
@@ -76,20 +76,22 @@ router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0,
 // @desc     Create or update user profile
 // @access   Private
 router.post('/', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, _a, bio, social, credits, profileFields, _b, errors, isValid, profile, err_2;
+    var user, _a, bio, social, credits, friendRequestsRecieved, friendRequestsSent, profileFields, _b, errors, isValid, profile, err_2;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
                 if (!req.user)
                     return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
                 user = req.user;
-                _a = req.body, bio = _a.bio, social = _a.social, credits = _a.credits;
+                _a = req.body, bio = _a.bio, social = _a.social, credits = _a.credits, friendRequestsRecieved = _a.friendRequestsRecieved, friendRequestsSent = _a.friendRequestsSent;
                 profileFields = {
                     user: user.id,
                     username: user.username,
                     bio: bio,
                     credits: credits,
-                    social: social
+                    social: social,
+                    friendRequestsRecieved: friendRequestsRecieved,
+                    friendRequestsSent: friendRequestsSent
                 };
                 _b = profile_1.default(profileFields), errors = _b.errors, isValid = _b.isValid;
                 if (!isValid) {
@@ -115,15 +117,15 @@ router.post('/', auth_1.default, function (req, res) { return __awaiter(void 0, 
 // @route    GET api/profile/user/:user_id
 // @desc     Get profile by user ID
 // @access   Public
-router.get('/user/:username', function (_a, res) {
-    var username = _a.params.username;
+router.get('/user/:id', function (_a, res) {
+    var id = _a.params.id;
     return __awaiter(void 0, void 0, void 0, function () {
         var profile, err_3;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, Profile_1.default.findOne({ username: username })];
+                    return [4 /*yield*/, Profile_1.default.findOne({ user: id })];
                 case 1:
                     profile = _b.sent();
                     if (!profile)
@@ -155,4 +157,4 @@ router.get('/user/:username', function (_a, res) {
 //     res.status(500).send('Server Error');
 //   }
 // });
-module.exports = router;
+exports.default = router;

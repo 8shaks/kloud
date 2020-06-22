@@ -5,8 +5,8 @@ import jwt_decode from "jwt-decode";
 import { Dispatch } from "redux";
 import Router from 'next/router'
 
-const host = "http://localhost:5000";
-// const host="";
+// const host = "http://localhost:5000";
+const host="";
 interface userLogin {
     username:string,
     password:string

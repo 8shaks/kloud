@@ -35,20 +35,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var jwt = require('jsonwebtoken');
 var keys = require('../config/keys');
-var User = require('../models/User');
+var User_1 = __importDefault(require("../models/User"));
 function default_1(req, res, next) {
     var _this = this;
-    // Get token from header
-    var token = req.header('x-auth-token');
-    // Check if not token
-    if (!token) {
-        return res.status(401).json({ msg: 'You need a token!' });
-    }
     // Verify token
     try {
+        var token = req.header('x-auth-token');
+        console.log(token);
+        // Check if not token
+        if (!token) {
+            return res.status(401).json({ msg: 'You need a token!' });
+        }
         jwt.verify(token, keys.secretOrKey, function (error, decoded) { return __awaiter(_this, void 0, void 0, function () {
             var user;
             return __generator(this, function (_a) {
@@ -58,7 +61,7 @@ function default_1(req, res, next) {
                         console.log(error);
                         res.status(401).json({ msg: 'Invalid Token!' });
                         return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, User.findOne({ _id: decoded.user.id })];
+                    case 1: return [4 /*yield*/, User_1.default.findOne({ _id: decoded.user.id })];
                     case 2:
                         user = _a.sent();
                         if (!user)

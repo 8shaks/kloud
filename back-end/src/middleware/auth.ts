@@ -13,16 +13,15 @@ interface decodedUser{
   exp:number
 }
 export default function(req: Request, res: Response, next: NextFunction) {
-  // Get token from header
-  const token = req.header('x-auth-token');
-
-  // Check if not token
-  if (!token) {
-    return res.status(401).json({ msg: 'You need a token!' });
-  }
-
   // Verify token
   try {
+    const token = req.header('x-auth-token')
+    console.log(token)
+    // Check if not token
+    if (!token) {
+      return res.status(401).json({ msg: 'You need a token!' });
+    }
+  
     jwt.verify(token, keys.secretOrKey, async (error: any, decoded: decodedUser) => {
       if (error) {
           console.log(error);

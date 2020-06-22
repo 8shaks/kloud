@@ -44,11 +44,12 @@ var router = express_1.default.Router();
 var auth_1 = __importDefault(require("../../middleware/auth"));
 var friendRequest_1 = __importDefault(require("../../validation/friendRequest"));
 var Profile_1 = __importDefault(require("../../models/Profile"));
-// @route    POST api/profile/send_req
-// @desc     Send a friend Request to a user
+// import Friend from "../../models/Friend"
+// @route    GET api/friends
+// @desc     Get all a users friends
 // @access   Private
-router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, errors, isValid, user, profile, err_1;
+router.get('/', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, errors, isValid, user, userProfile, err_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -62,13 +63,12 @@ router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0,
                 user = req.user;
                 return [4 /*yield*/, Profile_1.default.findOne({ user: user.id })];
             case 2:
-                profile = _b.sent();
-                if (!profile) {
-                    return [2 /*return*/, res.status(400).json({ errors: { profile: 'You do not have a profile yet' } })];
+                userProfile = _b.sent();
+                if (!userProfile) {
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: "You do not have a Profile" } })];
                 }
-                // only populate from user document if profile exists
-                res.json(profile);
-                return [3 /*break*/, 4];
+                //Return all of a user's friends
+                return [2 /*return*/, res.json({ success: true, friends: userProfile.friends })];
             case 3:
                 err_1 = _b.sent();
                 console.error(err_1.message);
@@ -78,36 +78,183 @@ router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0,
         }
     });
 }); });
-// // @route    POST api/profile
-// // @desc     Create or update user profile
-// // @access   Private
-// router.post('/', auth, async (req, res) => {
-//   if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
-//   let user = req.user
-//   const { bio, social, credits } = req.body;
-//   let profileFields = {
-//     user:user.id,
-//     username:user.username,
-//     bio,
-//     credits,
-//     social
-//   };
-//     const { errors, isValid } = validateProfileInput(profileFields);
-//     if (!isValid) {
-//       return res.status(400).json(errors);
-//     }
-//     try {
-//       // Using upsert option (creates new doc if no match is found):
-//       let profile = await Profile.findOneAndUpdate(
-//         { user: req.user.id },
-//         { $set: profileFields },
-//         { new: true, upsert: true }
-//       );
-//       res.json(profile);
-//     } catch (err) {
-//       console.error(err.message);
-//       res.status(500).send('Server Error');
-//     }
-//   }
-// );
-module.exports = router;
+// @route    POST api/friends/send_req
+// @desc     Send a friend Request to a user
+// @access   Private
+router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, errors, isValid, user_1, userFriend, friendtoAdd_1, err_2;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = friendRequest_1.default(req.body), errors = _a.errors, isValid = _a.isValid;
+                if (!isValid) {
+                    return [2 /*return*/, res.status(400).json(errors)];
+                }
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 9, , 10]);
+                user_1 = req.user;
+                return [4 /*yield*/, Profile_1.default.findOne({ user: user_1.id })];
+            case 2:
+                userFriend = _b.sent();
+                if (!userFriend) {
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: "You do not have a Profile" } })];
+                }
+                return [4 /*yield*/, Profile_1.default.findOne({ username: req.body.username })];
+            case 3:
+                friendtoAdd_1 = _b.sent();
+                if (!friendtoAdd_1)
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: 'We could not find the friend you wanted to add' } })];
+                if (friendtoAdd_1.username === user_1.username)
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: 'You cannot add yourself' } })];
+                if (!(friendtoAdd_1.friendRequestsRecieved.filter(function (u) { return u.username === user_1.username; }).length > 0 || userFriend.friendRequestsSent.filter(function (u) { return u.username === friendtoAdd_1.username; }).length > 0)) return [3 /*break*/, 6];
+                userFriend.friendRequestsSent = userFriend.friendRequestsSent.filter(function (reqSent) {
+                    return reqSent.userId !== friendtoAdd_1.user;
+                });
+                friendtoAdd_1.friendRequestsRecieved = friendtoAdd_1.friendRequestsRecieved.filter(function (reqRecieve) {
+                    return reqRecieve.userId !== user_1.id;
+                });
+                return [4 /*yield*/, friendtoAdd_1.save()];
+            case 4:
+                _b.sent();
+                return [4 /*yield*/, userFriend.save()];
+            case 5:
+                _b.sent();
+                return [2 /*return*/, res.json({ success: true, msg: "Cancelled your friend request" })];
+            case 6:
+                friendtoAdd_1.friendRequestsRecieved.push({ userId: user_1.id, username: user_1.username });
+                userFriend.friendRequestsSent.push({ userId: friendtoAdd_1.user, username: friendtoAdd_1.username });
+                return [4 /*yield*/, friendtoAdd_1.save()];
+            case 7:
+                _b.sent();
+                return [4 /*yield*/, userFriend.save()];
+            case 8:
+                _b.sent();
+                return [2 /*return*/, res.json({ success: true, msg: "Your friend message to " + friendtoAdd_1.username + " has been succesfully sent" })];
+            case 9:
+                err_2 = _b.sent();
+                console.error(err_2.message);
+                res.status(500).json({ errors: { server: 'Server error' } });
+                return [3 /*break*/, 10];
+            case 10: return [2 /*return*/];
+        }
+    });
+}); });
+// @route    POST api/friends/status
+// @desc     Change status of friend request(accept or decline)
+// @access   Private
+router.post('/status', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, errors, isValid, user_2, userFriend, friendtoAccept_1, err_3;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = friendRequest_1.default(req.body), errors = _a.errors, isValid = _a.isValid;
+                if (!isValid) {
+                    return [2 /*return*/, res.status(400).json(errors)];
+                }
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 9, , 10]);
+                user_2 = req.user;
+                return [4 /*yield*/, Profile_1.default.findOne({ user: user_2.id })];
+            case 2:
+                userFriend = _b.sent();
+                if (!userFriend) {
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: "You do not have a friend's list yet" } })];
+                }
+                return [4 /*yield*/, Profile_1.default.findOne({ username: req.body.username })];
+            case 3:
+                friendtoAccept_1 = _b.sent();
+                if (!friendtoAccept_1)
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: 'We could not find the friend you wanted to add' } })];
+                if (friendtoAccept_1.username === user_2.username)
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: 'You cannot add yourself' } })];
+                if (userFriend.friendRequestsRecieved.filter(function (u) { return u.username === friendtoAccept_1.username; }).length === 0 || friendtoAccept_1.friendRequestsSent.filter(function (u) { return u.username === user_2.username; }).length === 0)
+                    return [2 /*return*/, res.status(400).json({ errors: { friendRequestRecieved: "You haven't recieved a friend request from this user" } })];
+                userFriend.friendRequestsRecieved = userFriend.friendRequestsRecieved.filter(function (reqSent) {
+                    return reqSent.userId !== friendtoAccept_1.user;
+                });
+                friendtoAccept_1.friendRequestsSent = friendtoAccept_1.friendRequestsSent.filter(function (reqRecieve) {
+                    return reqRecieve.userId !== user_2.id;
+                });
+                if (!(Boolean(req.body.accept) === true)) return [3 /*break*/, 6];
+                userFriend.friends.push({ userId: friendtoAccept_1.user, username: friendtoAccept_1.username });
+                friendtoAccept_1.friends.push({ userId: user_2.id, username: user_2.username });
+                return [4 /*yield*/, friendtoAccept_1.save()];
+            case 4:
+                _b.sent();
+                return [4 /*yield*/, userFriend.save()];
+            case 5:
+                _b.sent();
+                return [2 /*return*/, res.json({ success: true, msg: "You sucessfully accepted " + req.body.username + "'s friend request" })];
+            case 6: return [4 /*yield*/, friendtoAccept_1.save()];
+            case 7:
+                _b.sent();
+                return [4 /*yield*/, userFriend.save()];
+            case 8:
+                _b.sent();
+                return [2 /*return*/, res.json({ success: true, msg: "You sucessfully denied " + req.body.username + "'s friend request" })];
+            case 9:
+                err_3 = _b.sent();
+                console.error(err_3.message);
+                res.status(500).json({ errors: { server: 'Server error' } });
+                return [3 /*break*/, 10];
+            case 10: return [2 /*return*/];
+        }
+    });
+}); });
+// @route    POST api/friends/unfriend
+// @desc     unfriend user
+// @access   Private
+router.post('/unfriend', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, errors, isValid, user_3, userFriend, friendtoUnfriend_1, err_4;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = friendRequest_1.default(req.body), errors = _a.errors, isValid = _a.isValid;
+                if (!isValid) {
+                    return [2 /*return*/, res.status(400).json(errors)];
+                }
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 6, , 7]);
+                user_3 = req.user;
+                return [4 /*yield*/, Profile_1.default.findOne({ user: user_3.id })];
+            case 2:
+                userFriend = _b.sent();
+                if (!userFriend) {
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: "You do not have a Profile yet" } })];
+                }
+                return [4 /*yield*/, Profile_1.default.findOne({ username: req.body.username })];
+            case 3:
+                friendtoUnfriend_1 = _b.sent();
+                if (!friendtoUnfriend_1)
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: 'We could not find the friend you wanted to unfriend' } })];
+                if (friendtoUnfriend_1.username === user_3.username)
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: 'You cannot unfriend yourself' } })];
+                if (friendtoUnfriend_1.friends.filter(function (u) { return u.username === user_3.username; }).length === 0 || userFriend.friends.filter(function (u) { return u.username === friendtoUnfriend_1.username; }).length === 0) {
+                    return [2 /*return*/, res.status(400).json({ errors: { friends: "You are not friends with this user" } })];
+                }
+                userFriend.friends = userFriend.friends.filter(function (friend) {
+                    return friend.userId !== friendtoUnfriend_1.user;
+                });
+                friendtoUnfriend_1.friends = friendtoUnfriend_1.friends.filter(function (friend) {
+                    return friend.userId !== user_3.id;
+                });
+                return [4 /*yield*/, friendtoUnfriend_1.save()];
+            case 4:
+                _b.sent();
+                return [4 /*yield*/, userFriend.save()];
+            case 5:
+                _b.sent();
+                return [2 /*return*/, res.json({ success: true, msg: "You have sucessfully unfriended this user" })];
+            case 6:
+                err_4 = _b.sent();
+                console.error(err_4.message);
+                res.status(500).json({ errors: { server: 'Server error' } });
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
+        }
+    });
+}); });
+exports.default = router;
