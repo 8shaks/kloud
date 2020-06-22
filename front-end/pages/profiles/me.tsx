@@ -30,8 +30,8 @@ const Profile = (props:Props) => {
     const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", facebook:""});
     const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
     const [myPosts, setMyPosts] = useState<PostType[]>([])
-    // const host = "http://localhost:5000";
-    const host="";
+    const host = "http://localhost:5000";
+    // const host="";
 
     useEffect(() => {
       if(!props.loading){

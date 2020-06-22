@@ -15,8 +15,8 @@ import {ProfileType} from "../../@types/customType";
 // CHANGE HOST FOR COLLABS PAGE AND PRFILE PAGE
 
 
-// const host = "http://localhost:5000";
-const host="";
+const host = "http://localhost:5000";
+// const host="";
 
 // Get current users profile
 export const getCurrentProfile = () => async (dispatch:Dispatch) => {
