@@ -28,11 +28,10 @@ interface Props{
 
 let socket:SocketIOClient.Socket;
 if(host.length === 0){
-  socket= io("/api");
+  socket = io("");
 }else{
-  socket= io(host);
+  socket= io("http://localhost:5000");
 }
-
 const Messages = (props:Props) => {
     const [profile, setProfile] = useState(props.profile.profile);
     const [friendListStatus, changeFriendListStatus] = useState(false);

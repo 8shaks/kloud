@@ -52,7 +52,7 @@ function getMyCollabs(profile) {
     var _this = this;
     return new Promise(function (resolve, reject) {
         var myCollabs = [];
-        if (profile.collabs)
+        if (profile.collabs.length === 0)
             resolve(myCollabs);
         profile.collabs.forEach(function (collabId) { return __awaiter(_this, void 0, void 0, function () {
             var collab;
