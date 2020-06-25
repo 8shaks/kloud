@@ -41,6 +41,7 @@ export interface IProfile extends mongoose.Document {
     description: string,
     date:number
   }[],
+  conversations:{date?:string, conversationId:string, username:string}[],
   date:Date
 }
 
@@ -76,4 +77,16 @@ export interface ICollab extends mongoose.Document {
   title: string,
   description: string,
   date?:Date
+}
+
+export interface IConversation extends mongoose.Document{
+  date?,
+  participants:string[],
+  _id:string
+}
+export interface IMessage extends mongoose.Document{
+  date?,
+  sender:string,
+  content:string,
+  conversationId:string
 }

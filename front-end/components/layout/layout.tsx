@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import PropTypes from "prop-types";
 import layoutStyles from "./layout.module.scss";
 import Navbar from  "../navbar/index";
@@ -35,10 +35,10 @@ const Layout =  ( props : layoutProps) => {
         store.dispatch({type:LOADING_DONE})
       }, []);
     return (
-        <div className={layoutStyles.page}>
+        <Fragment>
             <Navbar/>
             <main className={layoutStyles.main}>{props.children}</main>
-        </div>
+        </Fragment>
     )
 }
 

@@ -39,6 +39,7 @@ export interface ProfileType {
       description: string,
       date:Date
     }[],
+    conversations:{date?:string, conversationId:string, username:string}[],
     date:Date
 }
 export interface CollabType{
@@ -84,4 +85,17 @@ export interface PostType {
   date:Date
   _id:string
 
+}
+
+export interface ConversationType {
+  date?,
+  participants:string[]
+  _id?:string
+}
+export interface MessageType{
+  date?,
+  sender:string,
+  content:string,
+  conversationId:string,
+  _id: string
 }

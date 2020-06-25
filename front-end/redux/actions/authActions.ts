@@ -20,7 +20,13 @@ interface userRegister {
 export const registerUser = (userData:userRegister) => (dispatch:Dispatch) => {
   axios
     .post(`${host}/api/users`, userData)
-    .then(() => Router.push('/'))
+    .then(() => {
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      })
+      Router.push('/')
+    })
     .catch(err =>{
         console.log(err)
         dispatch({

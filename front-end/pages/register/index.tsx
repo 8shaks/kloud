@@ -25,7 +25,7 @@ interface Props{
 }
 
 const Register = (props:Props) => {
-  const [formValues, setFormValues] = useState({ email:"", username:"", password:"", password2:"" });
+    const [formValues, setFormValues] = useState({ email:"", username:"", password:"", password2:"" });
     const [errors, setErrors] = useState<registerError>({ email:null, username: null, password: null, password2:null, server: null});
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
@@ -56,20 +56,20 @@ const Register = (props:Props) => {
     useEffect(() => {
       if (props.errors) return setErrors(props.errors)
       return setErrors({ email:null, username: null, password: null, password2:null, server: null});
-    }, [])
+    }, [props.errors])
   return (
     <Layout>
       <div className={registerStyles.page}>
           <h1 className={registerStyles.heading}>Register</h1>
         <form  className={registerStyles.form} method="POST" onSubmit={onSubmit}>
             <input onChange={onChange} aria-label="Email" value={formValues.email} name="email" placeholder="Email" />
-            {<span className="error">{errors.email}</span>}
+            {<span className={registerStyles.error}>{errors.email}</span>}
             <input onChange={onChange}  aria-label="Username" value={formValues.username} name="username" placeholder="Username"/>
-            {<span className="error"> {errors.username}</span>}
+            {<span className={registerStyles.error}> {errors.username}</span>}
             <input onChange={onChange} type="password" aria-label="Password" value={formValues.password} name="password" placeholder="Password" />
-            {<span className="error">{errors.password}</span>}
+            {<span className={registerStyles.error}>{errors.password}</span>}
             <input onChange={onChange}type="password"  aria-label="Reenter Password" value={formValues.password2} name="password2" placeholder="Reenter Password" />
-            {<span className="error">{errors.password2}</span>}
+            {<span className={registerStyles.error}>{errors.password2}</span>}
             <div><button className={registerStyles.registerButton} type="submit">Register</button><Link href="/register" ><a className={registerStyles.loginButton}>Login</a></Link></div>
         </form>
       </div>

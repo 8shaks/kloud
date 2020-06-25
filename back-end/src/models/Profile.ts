@@ -53,6 +53,7 @@ const ProfileSchema = new Schema({
   friendRequestsSent:[{userId: String, username: String, date: {type: Date,default: Date.now} }],
   collabRequestsRecieved:[{userId: String, username: String, title:String, description: String, date:Date}],
   collabRequestsSent:[{userId: String, username: String, title:String, description: String,  date:Date}],
+  conversations:[{date: {type: Date, default: Date.now}, conversationId:String, username:String}],
   // collabs: [{
   //   userId:{
   //     type:String,
