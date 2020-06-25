@@ -28,7 +28,7 @@ interface Props{
 
 let socket:SocketIOClient.Socket;
 if(host.length === 0){
-  socket = io("");
+  socket = io("/socket.io");
 }else{
   socket= io("http://localhost:5000");
 }
