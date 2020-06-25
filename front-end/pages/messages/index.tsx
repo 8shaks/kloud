@@ -26,7 +26,13 @@ interface Props{
   getCurrentProfile:() => void,
 }
 
-const socket = io(host);
+let socket:SocketIOClient.Socket;
+if(host.length === 0){
+  socket= io("/api");
+}else{
+  socket= io(host);
+}
+
 const Messages = (props:Props) => {
     const [profile, setProfile] = useState(props.profile.profile);
     const [friendListStatus, changeFriendListStatus] = useState(false);

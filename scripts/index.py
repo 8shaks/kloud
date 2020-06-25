@@ -7,7 +7,23 @@ ssh_client.connect(hostname = "192.241.139.120", username="shakiran")
 
 
 
-  
+
+cmd = "npm install --prefix  kloud/front-end"
+
+stdin, stdout, stderr = ssh_client.exec_command(cmd)
+stdout = stdout.readlines()
+print('Installing front end Dependencies \n\n')
+for x in stdout:
+    print(x)
+
+cmd = "npm install --prefix  kloud/back-end"
+
+stdin, stdout, stderr = ssh_client.exec_command(cmd)
+stdout = stdout.readlines()
+print('Installing back end Dependencies \n\n')
+for x in stdout:
+    print(x)
+
 cmd = "npm run --prefix kloud/front-end build"
 
 stdin, stdout, stderr = ssh_client.exec_command(cmd)
