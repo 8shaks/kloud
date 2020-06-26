@@ -36,14 +36,14 @@ export default (props: Props) => {
                         let test:string| File = "error";
                         let fileName = "error";
                         console.log(file)
-                        if(file.file.AcceptRanges){
+                        if(file.file){
                             console.log("bruv")
                             fileName = file.fileName;
                             let temp = new Uint8Array(file.file.Body.data)
                             test = window.URL.createObjectURL(new Blob([temp], { type: 'application/mp3' }));
                         }else{
                             fileName = file.name;
-                            test = window.URL.createObjectURL(new Blob([file.file], {type: "audio/mpeg"}));
+                            test = window.URL.createObjectURL(new Blob([file], {type: "audio/mpeg"}));
                         }
                         return <a href={test} download={file.name}><b> FILE: {fileName}<br/><br/></b></a>
                     })}
