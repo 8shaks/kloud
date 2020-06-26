@@ -88,5 +88,13 @@ export interface IMessage extends mongoose.Document{
   date?,
   sender:string,
   content:string,
-  conversationId:string
+  conversationId:string,
+  files:{file:string, fileName:string}[]
+}
+export interface SocketMessage extends mongoose.Document{
+  date?,
+  sender:string,
+  content:string,
+  conversationId:string,
+  files:File[] | string[]
 }

@@ -1,4 +1,5 @@
 "use strict";
+// const { keys } = require("../../config/keys")
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,48 +36,59 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var jwt = require('jsonwebtoken');
-var keys = require('../config/keys');
-var User_1 = __importDefault(require("../models/User"));
-function default_1(req, res, next) {
-    var _this = this;
-    // Verify token
-    try {
-        var token = req.header('x-auth-token');
-        // Check if not token
-        if (!token) {
-            return res.status(401).json({ msg: 'You need a token!' });
-        }
-        jwt.verify(token, keys.secretOrKey, function (error, decoded) { return __awaiter(_this, void 0, void 0, function () {
-            var user;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!error) return [3 /*break*/, 1];
-                        console.log(error);
-                        res.status(401).json({ msg: 'Invalid Token!' });
-                        return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, User_1.default.findOne({ _id: decoded.user.id })];
-                    case 2:
-                        user = _a.sent();
-                        if (!user)
-                            return [2 /*return*/, res.status(401).json({ msg: 'Invalid User!' })];
-                        req.user = decoded.user;
-                        next();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
-                }
+exports.getFile = exports.uploadFile = void 0;
+var fs = require('fs');
+var AWS = require('aws-sdk');
+var s3 = new AWS.S3({
+    accessKeyId: "AKIAJH52AAB5XEIEZQXQ",
+    secretAccessKey: "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"
+});
+var kms = new AWS.KMS({ apiVersion: '2014-11-01' });
+exports.uploadFile = function (files, conversationdId, messageId) {
+    return new Promise(function (resolve, reject) {
+        var fileData = [];
+        files.forEach(function (file, i) {
+            var params = {
+                Bucket: 'kloud-storage',
+                Key: "conversations/" + conversationdId + "/" + messageId + "/" + file.name.trim().replace(" ", "_"),
+                Body: JSON.stringify(file, null, 2)
+            };
+            s3.upload(params, function (s3Err, data) {
+                if (s3Err)
+                    throw s3Err;
+                fileData.push(data);
             });
-        }); });
-    }
-    catch (err) {
-        console.error('something wrong with auth middleware');
-        res.status(500).json({ msg: 'Server Error' });
-    }
+            if (i === files.length - 1)
+                resolve(fileData);
+        });
+    });
+};
+function encode(data) {
+    var str = data.reduce(function (a, b) { return a + String.fromCharCode(b); }, '');
+    return Buffer.from(str, 'base64').toString().replace(/.{76}(?=.)/g, '$&\n');
 }
-exports.default = default_1;
-;
+exports.getFile = function (fileLoc) {
+    // console.log(fileLoc)
+    return new Promise(function (resolve, reject) {
+        var getParams = {
+            Bucket: 'kloud-storage',
+            Key: fileLoc.file // path to the object you're looking for
+        };
+        s3.getObject(getParams, function (err, data) {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    // Handle any error and exit
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                    // data.url = await "data:audio/mp4;base64," + encode(data.Body);
+                    // resolve(data.Body.toString('utf-8'));
+                    resolve(data);
+                    return [2 /*return*/];
+                });
+            });
+        });
+    });
+};

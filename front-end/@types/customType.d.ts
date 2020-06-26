@@ -97,5 +97,6 @@ export interface MessageType{
   sender:string,
   content:string,
   conversationId:string,
-  _id: string
+  _id: string,
+  files:File[]
 }

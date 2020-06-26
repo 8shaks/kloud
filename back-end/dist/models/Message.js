@@ -10,6 +10,7 @@ var MessageSchema = new Schema({
     sender: String,
     content: String,
     conversationId: String,
+    files: [{ file: String, fileName: String }],
     date: {
         type: Date,
         default: Date.now

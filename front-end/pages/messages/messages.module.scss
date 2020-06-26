@@ -56,9 +56,16 @@
         bottom: 0;
         margin:0;
         width: calc(100% - 20px);
-        input{
+        .messageInput{
             @extend .input;
-            width: 87%;
+            width: 60%;
+            margin:0;
+            border: 1px solid $grey;
+            border-right: none;
+        }
+        .fileInput{
+            @extend .input;
+            width: 25%;
             margin:0;
             border: 1px solid $grey;
             border-right: none;

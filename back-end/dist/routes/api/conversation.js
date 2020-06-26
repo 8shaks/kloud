@@ -45,6 +45,14 @@ var auth_1 = __importDefault(require("../../middleware/auth"));
 var Conversation_1 = __importDefault(require("../../models/Conversation"));
 var Profile_1 = __importDefault(require("../../models/Profile"));
 var Message_1 = __importDefault(require("../../models/Message"));
+var fileFuncs_1 = require("../../utils/fileFuncs");
+// const { keys } = require("../../config/keys");
+// const fs = require('fs');
+// const AWS = require('aws-sdk');
+// const s3 = new AWS.S3({
+//   accessKeyId: keys.accessKeyId,
+//   secretAccessKey: keys.secretAccessKey
+// });
 // @route    GET api/my convos
 // @desc     Get all a users conversations
 // @access   Private
@@ -103,8 +111,18 @@ router.get('/myconvos', auth_1.default, function (req, res) { return __awaiter(v
 // @route    GET api/messages/:id
 // @desc     Get all a conversation's messages
 // @access   Private
+var testFunc = function (msg, element, i) {
+    return new Promise(function (resolve, reject) {
+        console.log(element);
+        fileFuncs_1.getFile(element).then(function (el) {
+            msg.files[i] = { file: el, fileName: msg.files[i].fileName };
+            // console.log(el)
+            return resolve(true);
+        });
+    });
+};
 router.get('/messages/:id', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var messages, err_2;
+    var messages, j, i, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -112,19 +130,57 @@ router.get('/messages/:id', auth_1.default, function (req, res) { return __await
                     return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 10, , 11]);
                 return [4 /*yield*/, Message_1.default.find({ conversationId: req.params.id }).sort({ date: 1 })];
             case 2:
                 messages = _a.sent();
-                if (messages.length === 0)
-                    return [2 /*return*/, res.status(400).json({ errors: { conversation: 'Cannot find your Conversation' } })];
-                return [2 /*return*/, res.json({ messages: messages })];
+                // HAVE TO PUT THIS BLOCK INTO A PROMISE
+                // if(messages.length === 0) return res.status(400).json({errors: { conversation: 'Cannot find your Conversation' }});
+                console.log(messages);
+                j = 0;
+                _a.label = 3;
             case 3:
+                if (!(j < messages.length)) return [3 /*break*/, 9];
+                i = 0;
+                _a.label = 4;
+            case 4:
+                if (!(i < messages[j].files.length)) return [3 /*break*/, 7];
+                // console.log("yo")
+                return [4 /*yield*/, testFunc(messages[j], messages[j].files[i], i)
+                    // if( j === messages.length-1){
+                    //   return res.json({messages})
+                    // }
+                ];
+            case 5:
+                // console.log("yo")
+                _a.sent();
+                // if( j === messages.length-1){
+                //   return res.json({messages})
+                // }
+                if (j === messages.length - 1) {
+                    console.log("yo");
+                    return [2 /*return*/, res.json({ messages: messages })];
+                }
+                _a.label = 6;
+            case 6:
+                i++;
+                return [3 /*break*/, 4];
+            case 7:
+                if (j === messages.length - 1) {
+                    console.log("yo");
+                    return [2 /*return*/, res.json({ messages: messages })];
+                }
+                _a.label = 8;
+            case 8:
+                j++;
+                return [3 /*break*/, 3];
+            case 9: return [3 /*break*/, 11];
+            case 10:
                 err_2 = _a.sent();
                 console.error(err_2.message);
                 res.status(500).send('Server Error');
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 11];
+            case 11: return [2 /*return*/];
         }
     });
 }); });

@@ -26,21 +26,13 @@ interface Props{
   getCurrentProfile:() => void,
 }
 
-let socket:SocketIOClient.Socket;
-if(host.length === 0){
-  socket = io("");
-}else{
-  socket= io("http://localhost:5000");
-}
+const socket = io(host);
 const Messages = (props:Props) => {
     const [profile, setProfile] = useState(props.profile.profile);
     const [friendListStatus, changeFriendListStatus] = useState(false);
     const [conversations, setConversations] = useState<ConversationType[]>([]);
-    const [currentConvo, setCurrentConvo] = useState<{userToChat:string, message:string, messages:MessageType[]}>({userToChat:"", message:"", messages:[]});
+    const [currentConvo, setCurrentConvo] = useState<{userToChat:string, message:string, messages:MessageType[], files:FileList | null}>({userToChat:"", message:"", messages:[], files:null});
 
-    // useEffect(() => {
-    //   axios.get()
-    // }, [])
     useEffect(() => {
       if(!props.loading){
         if (!props.auth.isAuthenticated ) Router.push('/');
@@ -72,34 +64,33 @@ const Messages = (props:Props) => {
       })
     }, [currentConvo])
 
-
-
-
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
       setCurrentConvo({...currentConvo, message:e.target.value});
     }
     const sendMessage = (e: React.MouseEvent<HTMLButtonElement>)  => {
       e.preventDefault();
-      if(currentConvo.message){
+      if(currentConvo.message || currentConvo.files){
         setCurrentConvo({...currentConvo, message:""});
-        socket.emit("chat", {profile:profile, userToChat:currentConvo.userToChat, message: currentConvo.message}, (messageNew:MessageType) => setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, messageNew], message:""}));
+        socket.emit("chat", {profile:profile, userToChat:currentConvo.userToChat, message: currentConvo.message, files: currentConvo.files});
       }
     }
     const toggleFriendList = () => {
       changeFriendListStatus(!friendListStatus);
     }
+    const onChangeFile =  (e: React.ChangeEvent<HTMLInputElement>) => setCurrentConvo({...currentConvo, files:e.target.files});
+
     const chatStart = ( e:any) => {
       if (e.currentTarget.textContent){
         let temp_array = conversations;
         temp_array.unshift({participants:[profile.username, e.currentTarget.textContent]})
         setConversations(temp_array);
         toggleFriendList();
-        setCurrentConvo({message:"", userToChat: e.currentTarget.textContent, messages:[]})
+        setCurrentConvo({message:"", userToChat: e.currentTarget.textContent, messages:[], files:null})
       }
     }
     const chatFriend = ( username:string, convoId?:string ) => {
         axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
-          setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages});
+          setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, files:null});
         })
     }
     let messagesContent = <div className={messagesStyles.page}>Loading...</div>
@@ -113,6 +104,7 @@ const Messages = (props:Props) => {
           })}
         </div>
       )
+
       messagesContent = (
       <div className={messagesStyles.page}> 
         <h1 className={messagesStyles.heading}>Collabs</h1>
@@ -128,7 +120,9 @@ const Messages = (props:Props) => {
             <MessagesScreen messages={currentConvo.messages} user={profile.username}/>
             <div className={messagesStyles.input_group}> 
               <form >
-              <input onChange={onChange} aria-label="Message" value={currentConvo.message} name="Message" placeholder="Send a message"/><button onClick={sendMessage}>Send</button>
+              <input className={messagesStyles.messageInput} onChange={onChange} aria-label="Message" value={currentConvo.message} name="Message" placeholder="Send a message"/>
+              <input className={messagesStyles.fileInput} type="file"  onChange={onChangeFile}  name="Files" />
+              <button onClick={sendMessage}>Send</button>
               </form>
             </div>
           </div>

@@ -16,7 +16,7 @@ export default function(req: Request, res: Response, next: NextFunction) {
   // Verify token
   try {
     const token = req.header('x-auth-token')
-    console.log(token)
+
     // Check if not token
     if (!token) {
       return res.status(401).json({ msg: 'You need a token!' });

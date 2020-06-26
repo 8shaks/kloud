@@ -14,10 +14,12 @@ import collabs from "./routes/api/collabs";
 import conversation from "./routes/api/conversation";
 import cors from "cors";
 
-import Conversation from "./models/Conversation"
-import Profile from "./models/Profile"
-import Message from "./models/Message"
-import { IProfile } from "./@types/custom"
+import Conversation from "./models/Conversation";
+import Profile from "./models/Profile";
+import Message from "./models/Message";
+import { IProfile, SocketMessage } from "./@types/custom";
+
+import { uploadFile } from "./utils/fileFuncs";
 
 const app: Express = express();
 
@@ -82,35 +84,76 @@ io.on('connection', (socket) => {
   socket.on("disconnect", ()=> {
     console.log("user had left");
   })
-  socket.on("chat", async (data:{profile:IProfile, userToChat:string, message:string}, callback) => {
-    // const user = getUser(socket)
+  socket.on("chat", async (data:{profile:IProfile, userToChat:string, message:string, files:FileList}, callback) => {
     if(data.profile.conversations.filter(u => u.username === data.userToChat).length > 0){
       let conversation = data.profile.conversations.filter((c)=> {return c.username === data.userToChat })[0];
       let conservationObj = await Conversation.findOne({_id:conversation.conversationId});
-      if(conservationObj !== null){
-        const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conservationObj._id});
-        await newMessage.save();
-        // callback(newMessage)
-        io.to(conservationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat} );
+      try{
+        if(conservationObj !== null){
+          
+          const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conservationObj._id});
+          let files:File[] = []
+          if(data.files){
+            files = Array.from(data.files)
+            files.forEach(file => {
+              newMessage.files.push({file:`conversations/${conservationObj!._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
+            });
+            await uploadFile(files,  conservationObj._id, newMessage._id)
+          }
+          await newMessage.save();
+          let fileObj = data.files ? Array.from(data.files) : []; 
+          console.log(newMessage)
+          io.to(conservationObj._id).emit("message", {message:{content:newMessage.content, sender:newMessage.sender, files:fileObj}, username: data.profile.username, userToChat: data.userToChat, } );
+        }
+      }catch(err){
+        console.error(err)
       }
     }else{
       const userProfile = await Profile.findOne({user:data.profile.user});
       const userProfile2 = await Profile.findOne({username:data.userToChat});
       if(userProfile && userProfile2){
         const conversation = new Conversation({participants:[data.profile.username,data.userToChat]})
+
         await conversation.save();
+
         userProfile.conversations.push({conversationId:conversation._id, username:userProfile2.username});
         userProfile2.conversations.push({conversationId:conversation._id, username:userProfile.username});
+
         await userProfile.save();
         await userProfile2.save();
+
         socket.join(conversation._id);
+
         const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversation._id});
+        let files:File[] = []
+        if(data.files){
+          console.log("BRUV")
+          const files = Array.from(data.files)
+          files.forEach(file => {
+            newMessage.files.push({file:`conversations/${conversation._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
+          });
+          await uploadFile(files,  conversation._id, newMessage._id).then((fileData) => {
+            fileData.forEach((file:any) => {
+              newMessage.files.push(file.location);
+            });
+          })
+        }
         newMessage.save();
-        // callback(newMessage)
-        io.to(conversation._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat} );
+        let fileObj = data.files ? Array.from(data.files) : []; 
+        io.to(conversation._id).emit("message", {message:{content:newMessage.content, sender:newMessage.sender, files:fileObj}, username: data.profile.username, userToChat: data.userToChat, } );
       }
    
     }
 
   })
 })
+
+// const params = {
+//   Bucket: 'kloud-storage', // pass your bucket name
+//   Key: `conversations/${conservationObj._id}`, // file will be saved as testBucket/contacts.csv
+//   Body: JSON.stringify(data, null, 2)
+// };
+// s3.upload(params, function(s3Err, data) {
+//     if (s3Err) throw s3Err
+//     console.log(`File uploaded successfully at ${data.Location}`)
+// });
