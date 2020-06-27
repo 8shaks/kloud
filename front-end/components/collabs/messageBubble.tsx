@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import messageComp from "./messageComps.module.scss";
 import Link from 'next/link';
 import { MessageType } from "../../@types/customType";
+import axios from "axios";
+import host from '../../vars';
 
 interface Props {
     message: MessageType,
@@ -10,42 +12,25 @@ interface Props {
 export default (props: Props) => {
     let messageContent, fileContent;
     const { message, user } = props
-    if (message.files){
-        fileContent = (
-            <Fragment>
-                {message.files.map((file) =>{
-                    return <span className={messageComp.messageBubble}><b> FILE: {file.name}</b></span>
-                })}
-            </Fragment>
-        )
+    
+    const onClickLink = (e:any ,fileLoc:string) => {
+        e.preventDefault();
+        console.log("bruv")
+        console.log(message)
+        axios.post(`${host}/api/conversations/file`,{fileLoc, conversationId:message.conversationId}).then((res) =>{
+            console.log(res.data);
+            window.open(res.data, "_blank")
+        })  
     }
     if(message.sender === user){
-        if (message.files){
-            fileContent = (
-                <Fragment>
-                    {message.files.map((file) =>{
-                        return <span className={messageComp.messageBubble + " " + messageComp.sender}><b> FILE: {file.name}</b></span>
-                    })}
-                </Fragment>
-            )
-        }
+     
         messageContent = ( 
         <div className={messageComp.messageWrapper}>
             <span className={messageComp.messageBubble + " " + messageComp.sender}>
+                
                     {message.files.map((file:any) =>{
-                        let test:string| File = "error";
-                        let fileName = "error";
-                        console.log(file)
-                        if(file.file){
-                            console.log("bruv")
-                            fileName = file.fileName;
-                            let temp = new Uint8Array(file.file.Body.data)
-                            test = window.URL.createObjectURL(new Blob([temp], { type: 'application/mp3' }));
-                        }else{
-                            fileName = file.name;
-                            test = window.URL.createObjectURL(new Blob([file], {type: "audio/mpeg"}));
-                        }
-                        return <a href={test} download={file.name}><b> FILE: {fileName}<br/><br/></b></a>
+                        const fileLink = <a href={""} onClick={(e) => {onClickLink(e,file.file)}} download={file.name}><b> FILE: {file.fileName}<br/><br/></b></a>
+                        return fileLink
                     })}
                 {message.content}
             </span>
@@ -75,3 +60,4 @@ export default (props: Props) => {
     }
     return messageContent;
 }
+

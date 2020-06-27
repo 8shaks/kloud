@@ -10,7 +10,7 @@ const Home = () => {
       <div className={indexStyles.page}>
         <div className={indexStyles.heading}>
           <h1>Made for producers</h1>
-          <span>More text here talking about what the program will do and more more</span>
+          <span>The ultimate collaboration tool</span>
           <button >Get Kloud for free</button>
           
         </div>

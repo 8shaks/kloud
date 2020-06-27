@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { ProfileType, PostType } from "../../@types/customType";
 import axios from "axios";
 import PostCard from "../../components/posts/postCard"
-import CollabReqModal from "../../components/collabs/collabReqModal";
+import CollabReqModal from "../../components/collabs2/collabReqModal";
 import host from "../../vars";
 
 interface Props{
@@ -39,7 +39,7 @@ interface collabError{
 const Profile = (props:Props) => {
     const router = useRouter()
     const { id } = router.query
-    const [friendStatus, setStatus] = useState({ friend:false, friendRequestReceived:false, friendRequestSent:false, collabRequestSent: false, collabInProgress: false });
+    const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false });
     const [userPosts, setUserPosts] = useState<PostType[]>([])
     const [errors, setErrors] = useState<friendError>({ friends:null, server: null});
     const [collabModal, setCollabModal] = useState(false);
@@ -62,15 +62,9 @@ const Profile = (props:Props) => {
             setUserPosts(res.data)
           })
         }
-        if(props.profile.profile.friends.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...friendStatus, friend:true, friendRequestReceived:false, friendRequestSent:false });
-        }else if(props.profile.profile.friendRequestsSent.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...friendStatus, friend:false, friendRequestReceived:true, friendRequestSent:false });
-        }else if(props.profile.profile.friendRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...friendStatus, friend:false, friendRequestReceived:false, friendRequestSent:true });
-        }
+ 
         if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...friendStatus, collabRequestSent:true});
+          setStatus({...collabStatus, collabRequestSent:true});
         }
         // if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
         //   setStatus({...friendStatus, collabInProgress:true});
@@ -85,12 +79,12 @@ const Profile = (props:Props) => {
     const toggleModal = () => {
       setCollabModal(!collabModal);
     }
-    const onUnfriend = () =>{
-      props.unfriendUser(props.profile.profile.username);
-    }
-    const sendFriendReq = () =>{
-      props.sendFriendReq(props.profile.profile.username);
-    }
+    // const onUnfriend = () =>{
+    //   props.unfriendUser(props.profile.profile.username);
+    // }
+    // const sendFriendReq = () =>{
+    //   props.sendFriendReq(props.profile.profile.username);
+    // }
 
     const checkCollabReqInfo = () => {
       let errorsNew:collabError = {description:null, title: null};
@@ -109,64 +103,33 @@ const Profile = (props:Props) => {
     const cancelCollabRequest = () =>{
       props.sendCollabReq(props.profile.profile.username, "sd", "sd");
     }
-    const onAcceptRequest = () =>{
-      props.changeFriendReqStatus({username:props.profile.profile.username, accept:true});
-    }
-    const onDenyRequest = () =>{
-      props.changeFriendReqStatus({username:props.profile.profile.username, accept:false});
-    }
+    // const onAcceptRequest = () =>{
+    //   props.changeFriendReqStatus({username:props.profile.profile.username, accept:true});
+    // }
+    // const onDenyRequest = () =>{
+    //   props.changeFriendReqStatus({username:props.profile.profile.username, accept:false});
+    // }
     const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
       setCollabReqInfo({...collabReqInfo, [e.target.name]: e.target.value})
     }
  
     let profileContent = <div className={profileStyles.page}>Loading...</div>
     let userPostsContent;
-    let friendSection = (
-      <div className={profileStyles.friendSection}>
-        <Link href="/login" ><a className={profileStyles.addFriendButton}>Chat!</a></Link>
-      </div>
-    )
+    // let friendSection = (
+    //   <div className={profileStyles.friendSection}>
+    //     <Link href="/login" ><a className={profileStyles.addFriendButton}>Chat!</a></Link>
+    //   </div>
+    // )
+    let collabSection;
     if (props.auth.isAuthenticated && props.profile.profile !== null){
       if(props.auth.user.user.id !== props.profile.profile.user){
-        friendSection = (
+        collabSection = (
           <div className={profileStyles.friendSection}>
-            <button onClick={sendFriendReq} className={profileStyles.addFriendButton}>Add Friend</button>
+            {!collabStatus.collabRequestSent ? <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button> : <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>}
             {<span className={profileStyles.error}>{errors.friends}</span>}
             {<span className={profileStyles.error}>{errors.server}</span>}
           </div>
         )
-        if(friendStatus.friend){
-          friendSection = (
-            <div className={profileStyles.friendSection}>
-              {!friendStatus.collabRequestSent ? <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button> : <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>}
-              <button onClick={onUnfriend} className={profileStyles.removeFriendButton}>Remove Friend</button>
-              {<span className={profileStyles.error}>{errors.friends}</span>}
-              {<span className={profileStyles.error}>{errors.server}</span>}
-            </div>
-          )
-        }
-        if(friendStatus.friendRequestSent){
-          friendSection = (
-            <div className={profileStyles.friendSection}>
-              <button onClick={sendFriendReq} className={profileStyles.removeFriendButton}>Cancel Friend Request</button>
-              {<span className={profileStyles.error}>{errors.friends}</span>}
-              {<span className={profileStyles.error}>{errors.server}</span>}
-            </div>
-          )
-        }
-        if(friendStatus.friendRequestReceived){
-          friendSection = (
-            <div className={profileStyles.friendSection}>
-              <button onClick={onAcceptRequest} className={profileStyles.addFriendButton}>Accept Friend Request</button>
-              {<span className={profileStyles.error}>{errors.friends}</span>}
-              <button onClick={onDenyRequest} className={profileStyles.removeFriendButton}>Deny Friend Request</button>
-              {<span className={profileStyles.error}>{errors.friends}</span>}
-              {<span className={profileStyles.error}>{errors.server}</span>}
-            </div>
-          )
-        }
-      }else if(props.auth.user.user.id === props.profile.profile.user){
-        friendSection = <div/>
       }
     }
   
@@ -203,7 +166,7 @@ const Profile = (props:Props) => {
           <div className={profileStyles.content}>
             {socialLinks}
             <p>{profile.bio}</p>
-            {friendSection}
+            {collabSection}
           </div>
           {userPostsContent}
           {collabModal ? <CollabReqModal toggleModal={toggleModal} username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}

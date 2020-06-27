@@ -53,7 +53,7 @@ mongoose
 app.use("/api/auth", auth);
 app.use("/api/users", users);
 app.use("/api/profile", profiles);
-app.use("/api/friends", friends);
+// app.use("/api/friends", friends);
 app.use("/api/collabs", collabs);
 app.use("/api/posts", posts);
 app.use("/api/conversations", conversation);
@@ -92,18 +92,9 @@ io.on('connection', (socket) => {
         if(conservationObj !== null){
           
           const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conservationObj._id});
-          let files:File[] = []
-          if(data.files){
-            files = Array.from(data.files)
-            files.forEach(file => {
-              newMessage.files.push({file:`conversations/${conservationObj!._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
-            });
-            await uploadFile(files,  conservationObj._id, newMessage._id)
-          }
           await newMessage.save();
-          let fileObj = data.files ? Array.from(data.files) : []; 
-          console.log(newMessage)
-          io.to(conservationObj._id).emit("message", {message:{content:newMessage.content, sender:newMessage.sender, files:fileObj}, username: data.profile.username, userToChat: data.userToChat, } );
+
+          io.to(conservationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat } );
         }
       }catch(err){
         console.error(err)
@@ -125,22 +116,20 @@ io.on('connection', (socket) => {
         socket.join(conversation._id);
 
         const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversation._id});
-        let files:File[] = []
-        if(data.files){
-          console.log("BRUV")
-          const files = Array.from(data.files)
-          files.forEach(file => {
-            newMessage.files.push({file:`conversations/${conversation._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
-          });
-          await uploadFile(files,  conversation._id, newMessage._id).then((fileData) => {
-            fileData.forEach((file:any) => {
-              newMessage.files.push(file.location);
-            });
-          })
-        }
+        // if(data.files){
+        //   const files = Array.from(data.files)
+        //   files.forEach(file => {
+        //     newMessage.files.push({file:`conversations/${conversation._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
+        //   });
+        //   await uploadFile(data.files,  conversation._id, newMessage._id).then((fileData) => {
+        //     fileData.forEach((file:any) => {
+        //       newMessage.files.push(file.location);
+        //     });
+        //   })
+        // }
         newMessage.save();
-        let fileObj = data.files ? Array.from(data.files) : []; 
-        io.to(conversation._id).emit("message", {message:{content:newMessage.content, sender:newMessage.sender, files:fileObj}, username: data.profile.username, userToChat: data.userToChat, } );
+        // let fileObj = data.files ? Array.from(data.files) : []; 
+        io.to(conversation._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat, } );
       }
    
     }

@@ -3,7 +3,7 @@ import messageComp from "./messageComps.module.scss";
 import Link from 'next/link';
 import MessageBubble from "./messageBubble";
 import { MessageType } from "../../@types/customType";
-import messages from '../../pages/messages';
+import messages from '../../pages/collabs';
 
 interface Props {
     // title:string,

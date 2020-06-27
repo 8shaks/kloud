@@ -25,7 +25,7 @@ const Navbar = (props:Props) => {
             <ul className={navbarStyles.linksList}>
                 <li className={navbarStyles.logo + " " + navbarClass} ><Link href="/"><a><img className={navbarStyles.logo} src="/images/logo.png"/>Kloud</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/explore"><a>Explore</a></Link></li>
-                <li className={navbarStyles.item + " " + navbarClass}><Link href="/messages"><a>Messages</a></Link></li>
+                <li className={navbarStyles.item + " " + navbarClass}><Link href="/my-collabs"><a>Collabs</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass} ><Link href="/create-post"><a>Make a post</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/profiles/me"><a>Profile</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><a onClick={props.logoutUser}>Sign Out</a></li>

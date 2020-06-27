@@ -13,7 +13,8 @@ import { ProfileType, ConversationType, social, PostType , MessageType} from "..
 import axios from "axios";
 import io from "socket.io-client";
 import host from "../../vars"
-import MessagesScreen from '../../components/messages/messagesScreen';
+import MessagesScreen from "../../components/collabs/messagesScreen"
+// import MessagesScreen from '../../components/collabs/messagesScreen';
 
 
 interface Props{
@@ -71,6 +72,15 @@ const Messages = (props:Props) => {
       e.preventDefault();
       if(currentConvo.message || currentConvo.files){
         setCurrentConvo({...currentConvo, message:""});
+        console.log( currentConvo.files![0])
+        let test_array = []
+        if(currentConvo.files){
+          for(let i = 0; i < currentConvo.files.length; i++){
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(currentConvo.files[i]);
+          }
+        }
+        console.log(currentConvo)
         socket.emit("chat", {profile:profile, userToChat:currentConvo.userToChat, message: currentConvo.message, files: currentConvo.files});
       }
     }

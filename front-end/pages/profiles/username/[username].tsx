@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { ProfileType, PostType } from "../../../@types/customType";
 import axios from "axios";
 import PostCard from "../../../components/posts/postCard"
-import CollabReqModal from "../../../components/collabs/collabReqModal";
+import CollabReqModal from "../../../components/collabs2/collabReqModal";
 import host from "../../../vars"
 
 interface Props{

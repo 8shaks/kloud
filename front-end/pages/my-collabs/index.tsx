@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 import { getCurrentProfile, changeCollabRecStatus } from '../../redux/actions/profileActions'
 import React, { useState, useEffect, FormEvent, Fragment } from 'react';
 import Router from 'next/router';
-import CollabCard from "../../components/collabs/collabCard";
-import CollabRecCard from "../../components/collabs/collabRecCard";
+import CollabCard from "../../components/collabs2/collabCard";
+import CollabRecCard from "../../components/collabs2/collabRecCard";
 import { CollabType, ProfileType } from "../../@types/customType"
 import axios from "axios";
 import host from "../../vars"
@@ -48,18 +48,15 @@ const Profile = (props:Props) => {
     if(props.profile.profile !== null){
       const { profile } = props.profile;
       if(profile.collabs.length > 0){
-        console.log(myCollabs)
         collabs=(
             <Fragment>
               <h2 id="collabs">Collabs</h2>
               {
                 myCollabs.map((myCollab)=>{
                   if (myCollab.user1.userId === props.auth.user.user.id){
-                    console.log("hey")
                     return <CollabCard date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
                   }
                   else{
-                    console.log("hey")
                     return <CollabCard date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
                   }
                 })
@@ -67,11 +64,12 @@ const Profile = (props:Props) => {
             </Fragment>
 
         )
-      }else{
-        collabs = (
-            <span className={collabStyles.heading}>Head to your <Link href="/profiles/me#friends"><a>friends list</a></Link> and start a collab!</span>
-        )
       }
+      // else{
+      //   collabs = (
+      //       <span className={collabStyles.heading}>Head to your <Link href="/profiles/me#friends"><a>friends list</a></Link> and start a collab!</span>
+      //   )
+      // }
       if(profile.collabRequestsRecieved.length > 0){
         collabRecs = (
         <Fragment>
@@ -91,6 +89,7 @@ const Profile = (props:Props) => {
         <div className={collabStyles.page}> 
           <h1 className={collabStyles.heading}>Welcome {profile.username}</h1>
           <div className={collabStyles.collabs}>
+            <h3 ><Link href="/collabs">Head to the collab screen</Link></h3>
             <div className={collabStyles.collabRequestsRecieved}>
               <h2>Collab Requests Received</h2>
               {collabRecs}

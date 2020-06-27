@@ -50,7 +50,6 @@ router.post('/', async (req, res) => {
         social:{}
       });
       await profile.save();
-      console.log(profile)
       return res.json({success:'Succesfully created User', user});
     } catch (err) {
       console.error(err.message);

@@ -76,6 +76,12 @@ export interface ICollab extends mongoose.Document {
   },
   title: string,
   description: string,
+  conversation:string,
+  files:{
+    fileName:string,
+    fileKey:string,
+    date?:string
+  }[],
   date?:Date
 }
 
@@ -89,12 +95,10 @@ export interface IMessage extends mongoose.Document{
   sender:string,
   content:string,
   conversationId:string,
-  files:{file:string, fileName:string}[]
 }
 export interface SocketMessage extends mongoose.Document{
   date?,
   sender:string,
   content:string,
   conversationId:string,
-  files:File[] | string[]
 }

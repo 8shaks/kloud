@@ -32,6 +32,15 @@ const CollabSchema = new Schema({
     type: String,
     required:true
   },
+  conversation:{
+    type:String,
+    required:true
+  },
+  files:[{
+    fileName:{type: String, required: true},
+    fileKey:{type: String, required: true},
+    data:{type: Date, default:Date.now}
+  }],
   date: {
     type: Date,
     default: Date.now

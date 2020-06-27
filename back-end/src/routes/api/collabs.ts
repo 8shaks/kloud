@@ -5,6 +5,7 @@ import validateCollabRequest from "../../validation/friendRequest"
 import Collab from "../../models/Collab";
 import Profile from "../../models/Profile";
 import { IProfile, ICollab } from "../../@types/custom"
+import Conversation from '../../models/Conversation';
 
 
 // @route    GET api/collabs
@@ -114,19 +115,22 @@ router.post('/status', auth, async (req, res) => {
       return reqRecieve.userId !== user.id;
     })
     if(Boolean(req.body.accept) === true){
-        const newCollab = new Collab({
-          user1:{
-            user:collabToAccept.user,
-            username:collabToAccept.username
-          },
-          user2:{
-            user:userProfile.user,
-            username:userProfile.username
-          },
-          title: collabReq.title,
-          description: collabReq.description
-        });
-        newCollab.save();
+      const conversation = new Conversation({participants:[userProfile.username,collabToAccept.username]})
+      
+      const newCollab = new Collab({
+        user1:{
+          user:collabToAccept.user,
+          username:collabToAccept.username
+        },
+        user2:{
+          user:userProfile.user,
+          username:userProfile.username
+        },
+        title: collabReq.title,
+        description: collabReq.description,
+        conversation: conversation._id
+      });
+      newCollab.save();
       userProfile.collabs.push(newCollab._id);
       collabToAccept.collabs.push(newCollab._id);
       await collabToAccept.save();

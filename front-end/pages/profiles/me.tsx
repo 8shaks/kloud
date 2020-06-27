@@ -112,39 +112,39 @@ const Profile = (props:Props) => {
         )
       }
       // Friend Recs Cards
-      if(profile.friendRequestsRecieved.length > 0){
-        console.log(profile)
-        friendRecs = (
-        <Fragment>
-          {profile.friendRequestsRecieved.map((friendRec)=>{
-             return <FriendReqCard changeFriendReqStatus={props.changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
-          })}
-        </Fragment>
-        )
-      }else{
-        friendRecs = (
-          <Fragment>
-            <span>None Yet :(</span>
-          </Fragment>
-          )
-      }
-      // Friends Cards
-      if(profile.friends.length > 0){
-        console.log(profile.friends)
-        friends = (
-        <Fragment>
-          {profile.friends.map((friendRec)=>{
-             return <FriendCard unfriendUser={props.unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
-          })}
-        </Fragment>
-        )
-      }else{
-        friends = (
-          <Fragment>
-            <span>None Yet :(</span>
-          </Fragment>
-          )
-      }
+      // if(profile.friendRequestsRecieved.length > 0){
+      //   console.log(profile)
+      //   friendRecs = (
+      //   <Fragment>
+      //     {profile.friendRequestsRecieved.map((friendRec)=>{
+      //        return <FriendReqCard changeFriendReqStatus={props.changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
+      //     })}
+      //   </Fragment>
+      //   )
+      // }else{
+      //   friendRecs = (
+      //     <Fragment>
+      //       <span>None Yet :(</span>
+      //     </Fragment>
+      //     )
+      // }
+      // // Friends Cards
+      // if(profile.friends.length > 0){
+      //   console.log(profile.friends)
+      //   friends = (
+      //   <Fragment>
+      //     {profile.friends.map((friendRec)=>{
+      //        return <FriendCard unfriendUser={props.unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
+      //     })}
+      //   </Fragment>
+      //   )
+      // }else{
+      //   friends = (
+      //     <Fragment>
+      //       <span>None Yet :(</span>
+      //     </Fragment>
+      //     )
+      // }
       profileContent = (
       <div className={profileStyles.page}> 
         <h1 className={profileStyles.heading}>Welcome {profile.username}</h1>
@@ -154,8 +154,10 @@ const Profile = (props:Props) => {
           {<span className="error">{errors.bio}</span>}
           <SocialLinksForm onChange={onChangeSocial} errors={errors.social ? errors.social : {}} social={social} />
           <button>Save Profile</button>
+          <h3><Link href="/my-collabs">Manage your collabs</Link></h3>
         </form>
-        <div className={profileStyles.friends}>
+        
+        {/* <div className={profileStyles.friends}>
           <div className={profileStyles.friendRequestsRecieved}>
             <h2>Friend Requests Received</h2>
             {friendRecs}
@@ -165,7 +167,7 @@ const Profile = (props:Props) => {
             {friends}
           </div>
           <Link href="/collabs/my-collabs"><a>Check your collabs</a></Link>
-        </div>
+        </div> */}
         {myPostsContent}
       </div>
       );
