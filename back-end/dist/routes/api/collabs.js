@@ -45,6 +45,9 @@ var auth_1 = __importDefault(require("../../middleware/auth"));
 var friendRequest_1 = __importDefault(require("../../validation/friendRequest"));
 var Collab_1 = __importDefault(require("../../models/Collab"));
 var Profile_1 = __importDefault(require("../../models/Profile"));
+var fileFuncs_1 = require("../../utils/fileFuncs");
+var Conversation_1 = __importDefault(require("../../models/Conversation"));
+var multer_1 = __importDefault(require("multer"));
 // @route    GET api/collabs
 // @desc     Get all a users collabs
 // @access   Private
@@ -99,11 +102,193 @@ router.get('/mycollabs', auth_1.default, function (req, res) { return __awaiter(
         }
     });
 }); });
+// @route    GET api/my convos
+// @desc     Get all a users conversations
+// @access   Private
+function getMyConvos(collabs) {
+    var _this = this;
+    return new Promise(function (resolve, reject) {
+        var myConversations = [];
+        if (collabs.length === 0)
+            resolve(myConversations);
+        collabs.forEach(function (collabObj) { return __awaiter(_this, void 0, void 0, function () {
+            var conversation;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Conversation_1.default.findById(collabObj.conversation)];
+                    case 1:
+                        conversation = _a.sent();
+                        if (conversation)
+                            myConversations.push(conversation);
+                        if (myConversations.length === collabs.length) {
+                            resolve(myConversations.sort(function (a, b) { return new Date(b.date).getTime() - new Date(a.date).getTime(); }));
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+}
+router.get('/collabconvos', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var profile, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.user)
+                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Profile_1.default.findOne({ user: req.user.id })];
+            case 2:
+                profile = _a.sent();
+                if (!profile)
+                    return [2 /*return*/, res.status(400).json({ errors: { profile: 'Cannot find your profile' } })];
+                getMyCollabs(profile).then(function (myCollabs) {
+                    return getMyConvos(myCollabs).then(function (myConversations) {
+                        return res.json({ colabs: myCollabs, convos: myConversations });
+                    });
+                });
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _a.sent();
+                console.error(err_2.message);
+                res.status(500).send('Server Error');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+// @route    GET api/collabs/:collab_id
+// @desc     Getcollab by Id
+// @access   Private
+router.get('/getcollab/:collab_id', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var collab, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.user)
+                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Valid user required' } })];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Collab_1.default.findById(req.params.collab_id)];
+            case 2:
+                collab = _a.sent();
+                if (!collab)
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'Collab not found' } })];
+                if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id)
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'Cou are not n this collab' } })];
+                return [2 /*return*/, res.json(collab)];
+            case 3:
+                err_3 = _a.sent();
+                console.error(err_3.message);
+                return [2 /*return*/, res.status(500).json({ msg: 'Server error' })];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 100 * 100000 },
+//   fileFilter: function(req, file, cb) {
+//     console.log(file)
+//     checkFileType(file, cb);
+//   }
+// });
+var upload = multer_1.default();
+// @route    POST api/messages/file/:id
+// @desc     Get download link for file
+// @access   Private
+router.post('/upload_file/:collab_id', auth_1.default, upload.single("file"), function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var collab, err_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.user)
+                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
+                if (typeof req.params.collab_id !== 'string')
+                    return [2 /*return*/, res.status(400).json({ errors: { collabs: 'Invalid request' } })];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                console.log(req.file);
+                return [4 /*yield*/, Collab_1.default.findById(req.params.collab_id)];
+            case 2:
+                collab = _a.sent();
+                if (!collab)
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'Collab not found' } })];
+                if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id)
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'You are not in this collab' } })];
+                return [4 /*yield*/, fileFuncs_1.uploadFile(req.file, req.params.collab_id)];
+            case 3:
+                _a.sent();
+                collab.files.push({ fileName: req.file.originalname, fileKey: req.params.collab_id + "/" + req.file.originalname });
+                collab.save();
+                return [2 /*return*/, res.json({ sucess: true, msg: "File sucesfully uploaded" })
+                    // getFile(req.body.fileLoc).then((el)=>{
+                    //   res.setHeader('content-type', 'application/octet-stream')
+                    //   res.setHeader('content-disposition', "test.mp3")
+                    //   return res.send(el)
+                    //  }).catch((err) => {
+                    //     console.log(err)
+                    //     return res.status(500).json({errors: { server: "There was a server error"}})
+                    //  })
+                ];
+            case 4:
+                err_4 = _a.sent();
+                console.error(err_4.message);
+                res.status(500).send('Server Error');
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+// @route    POST api/messages/file/:id
+// @desc     Get download link for file
+// @access   Private
+router.post('/getfile', auth_1.default, upload.single("file"), function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var collab, err_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.user)
+                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
+                if (typeof req.body.collab_id !== 'string' || typeof req.body.fileName !== 'string')
+                    return [2 /*return*/, res.status(400).json({ errors: { collabs: 'Invalid request' } })];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Collab_1.default.findById(req.body.collab_id)];
+            case 2:
+                collab = _a.sent();
+                if (!collab)
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'Collab not found' } })];
+                if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id)
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'You are not in this collab' } })];
+                fileFuncs_1.getFile(req.body.collab_id + "/" + req.body.fileName).then(function (el) {
+                    res.setHeader('content-type', 'application/octet-stream');
+                    res.setHeader('content-disposition', "test.mp3");
+                    return res.send(el);
+                }).catch(function (err) {
+                    console.log(err);
+                    return res.status(500).json({ errors: { server: "There was a server error" } });
+                });
+                return [3 /*break*/, 4];
+            case 3:
+                err_5 = _a.sent();
+                console.error(err_5);
+                res.status(500).send('Server Error');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
 // @route    POST api/friends/send_req
 // @desc     Send a friend Request to a user
 // @access   Private
 router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, errors, isValid, user_1, userProfile, profileToCollab_1, err_2;
+    var _a, errors, isValid, user_1, userProfile, profileToCollab_1, err_6;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -145,16 +330,18 @@ router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(
             case 6:
                 profileToCollab_1.collabRequestsRecieved.push({ userId: user_1.id, username: user_1.username, title: req.body.title, description: req.body.title, date: Date.now() });
                 userProfile.collabRequestsSent.push({ userId: profileToCollab_1.user, username: profileToCollab_1.username, title: req.body.title, description: req.body.title, date: Date.now() });
+                // console.log(userProfile)
                 return [4 /*yield*/, profileToCollab_1.save()];
             case 7:
+                // console.log(userProfile)
                 _b.sent();
                 return [4 /*yield*/, userProfile.save()];
             case 8:
                 _b.sent();
                 return [2 /*return*/, res.json({ success: true, msg: "Your collab request to " + profileToCollab_1.username + " has been sent" })];
             case 9:
-                err_2 = _b.sent();
-                console.error(err_2.message);
+                err_6 = _b.sent();
+                console.error(err_6.message);
                 res.status(500).json({ errors: { server: 'Server error' } });
                 return [3 /*break*/, 10];
             case 10: return [2 /*return*/];
@@ -165,7 +352,7 @@ router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(
 // @desc     Change status of collab request(accept or decline)
 // @access   Private
 router.post('/status', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, errors, isValid, user_2, userProfile, collabToAccept_1, collabReq_1, newCollab, err_3;
+    var _a, errors, isValid, user_2, userProfile, collabToAccept_1, collabReq_1, conversation, newCollab, err_7;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -175,7 +362,7 @@ router.post('/status', auth_1.default, function (req, res) { return __awaiter(vo
                 }
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 9, , 10]);
+                _b.trys.push([1, 11, , 12]);
                 user_2 = req.user;
                 return [4 /*yield*/, Profile_1.default.findOne({ user: user_2.id })];
             case 2:
@@ -188,6 +375,7 @@ router.post('/status', auth_1.default, function (req, res) { return __awaiter(vo
                 collabToAccept_1 = _b.sent();
                 if (!collabToAccept_1)
                     return [2 /*return*/, res.status(400).json({ errors: { collabs: 'We could not find the profile you wanted to accept' } })];
+                // console.log(req.body)
                 if (collabToAccept_1.username === user_2.username)
                     return [2 /*return*/, res.status(400).json({ errors: { collabs: 'You cannot collab with yourself' } })];
                 if (userProfile.collabRequestsRecieved.filter(function (u) { return u.username === collabToAccept_1.username; }).length === 0 || collabToAccept_1.collabRequestsSent.filter(function (u) { return u.username === user_2.username; }).length === 0)
@@ -201,42 +389,50 @@ router.post('/status', auth_1.default, function (req, res) { return __awaiter(vo
                 collabToAccept_1.collabRequestsSent = collabToAccept_1.collabRequestsSent.filter(function (reqRecieve) {
                     return reqRecieve.userId !== user_2.id;
                 });
-                if (!(Boolean(req.body.accept) === true)) return [3 /*break*/, 6];
-                newCollab = new Collab_1.default({
-                    user1: {
-                        user: collabToAccept_1.user,
-                        username: collabToAccept_1.username
-                    },
-                    user2: {
-                        user: userProfile.user,
-                        username: userProfile.username
-                    },
-                    title: collabReq_1.title,
-                    description: collabReq_1.description
-                });
+                if (!(Boolean(req.body.accept) === true)) return [3 /*break*/, 8];
+                return [4 /*yield*/, new Conversation_1.default({ participants: [userProfile.username, collabToAccept_1.username] })];
+            case 4:
+                conversation = _b.sent();
+                return [4 /*yield*/, new Collab_1.default({
+                        user1: {
+                            user: collabToAccept_1.user,
+                            username: collabToAccept_1.username
+                        },
+                        user2: {
+                            user: userProfile.user,
+                            username: userProfile.username
+                        },
+                        title: collabReq_1.title,
+                        description: collabReq_1.description,
+                        conversation: conversation._id
+                    })];
+            case 5:
+                newCollab = _b.sent();
+                conversation.collabId = newCollab._id;
                 newCollab.save();
                 userProfile.collabs.push(newCollab._id);
                 collabToAccept_1.collabs.push(newCollab._id);
+                conversation.save();
                 return [4 /*yield*/, collabToAccept_1.save()];
-            case 4:
+            case 6:
                 _b.sent();
                 return [4 /*yield*/, userProfile.save()];
-            case 5:
-                _b.sent();
-                return [2 /*return*/, res.json({ success: true, msg: "You sucessfully accepted " + req.body.username + "'s collab request" })];
-            case 6: return [4 /*yield*/, collabToAccept_1.save()];
             case 7:
                 _b.sent();
+                return [2 /*return*/, res.json({ success: true, msg: "You sucessfully accepted " + req.body.username + "'s collab request" })];
+            case 8: return [4 /*yield*/, collabToAccept_1.save()];
+            case 9:
+                _b.sent();
                 return [4 /*yield*/, userProfile.save()];
-            case 8:
+            case 10:
                 _b.sent();
                 return [2 /*return*/, res.json({ success: true, msg: "You sucessfully denied " + req.body.username + "'s collab request" })];
-            case 9:
-                err_3 = _b.sent();
-                console.error(err_3.message);
+            case 11:
+                err_7 = _b.sent();
+                console.error(err_7.message);
                 res.status(500).json({ errors: { server: 'Server error' } });
-                return [3 /*break*/, 10];
-            case 10: return [2 /*return*/];
+                return [3 /*break*/, 12];
+            case 12: return [2 /*return*/];
         }
     });
 }); });

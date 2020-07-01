@@ -84,55 +84,52 @@ io.on('connection', (socket) => {
   socket.on("disconnect", ()=> {
     console.log("user had left");
   })
-  socket.on("chat", async (data:{profile:IProfile, userToChat:string, message:string, files:FileList}, callback) => {
-    if(data.profile.conversations.filter(u => u.username === data.userToChat).length > 0){
-      let conversation = data.profile.conversations.filter((c)=> {return c.username === data.userToChat })[0];
-      let conservationObj = await Conversation.findOne({_id:conversation.conversationId});
+  socket.on("chat", async (data:{profile:IProfile, userToChat:string, message:string, conversationId:string}, callback) => {
+    // if(data.profile.conversations.filter(u => u.username === data.userToChat).length > 0){
+      let conservationObj = await Conversation.findOne({_id:data.conversationId});
       try{
         if(conservationObj !== null){
-          
           const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conservationObj._id});
           await newMessage.save();
-
           io.to(conservationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat } );
         }
       }catch(err){
         console.error(err)
       }
-    }else{
-      const userProfile = await Profile.findOne({user:data.profile.user});
-      const userProfile2 = await Profile.findOne({username:data.userToChat});
-      if(userProfile && userProfile2){
-        const conversation = new Conversation({participants:[data.profile.username,data.userToChat]})
+    // }else{
+    //   const userProfile = await Profile.findOne({user:data.profile.user});
+    //   const userProfile2 = await Profile.findOne({username:data.userToChat});
+    //   if(userProfile && userProfile2){
+    //     const conversation = new Conversation({participants:[data.profile.username,data.userToChat]})
 
-        await conversation.save();
+    //     await conversation.save();
 
-        userProfile.conversations.push({conversationId:conversation._id, username:userProfile2.username});
-        userProfile2.conversations.push({conversationId:conversation._id, username:userProfile.username});
+    //     userProfile.conversations.push({conversationId:conversation._id, username:userProfile2.username});
+    //     userProfile2.conversations.push({conversationId:conversation._id, username:userProfile.username});
 
-        await userProfile.save();
-        await userProfile2.save();
+    //     await userProfile.save();
+    //     await userProfile2.save();
 
-        socket.join(conversation._id);
+    //     socket.join(conversation._id);
 
-        const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversation._id});
-        // if(data.files){
-        //   const files = Array.from(data.files)
-        //   files.forEach(file => {
-        //     newMessage.files.push({file:`conversations/${conversation._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
-        //   });
-        //   await uploadFile(data.files,  conversation._id, newMessage._id).then((fileData) => {
-        //     fileData.forEach((file:any) => {
-        //       newMessage.files.push(file.location);
-        //     });
-        //   })
-        // }
-        newMessage.save();
-        // let fileObj = data.files ? Array.from(data.files) : []; 
-        io.to(conversation._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat, } );
-      }
+    //     const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversation._id});
+    //     // if(data.files){
+    //     //   const files = Array.from(data.files)
+    //     //   files.forEach(file => {
+    //     //     newMessage.files.push({file:`conversations/${conversation._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
+    //     //   });
+    //     //   await uploadFile(data.files,  conversation._id, newMessage._id).then((fileData) => {
+    //     //     fileData.forEach((file:any) => {
+    //     //       newMessage.files.push(file.location);
+    //     //     });
+    //     //   })
+    //     // }
+    //     newMessage.save();
+    //     // let fileObj = data.files ? Array.from(data.files) : []; 
+    //     io.to(conversation._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat, } );
+    //   }
    
-    }
+    // }
 
   })
 })

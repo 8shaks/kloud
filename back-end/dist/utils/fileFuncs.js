@@ -37,30 +37,100 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFile = exports.uploadFile = void 0;
-var fs = require('fs');
-var AWS = require('aws-sdk');
-var s3 = new AWS.S3({
-    accessKeyId: "AKIAJH52AAB5XEIEZQXQ",
-    secretAccessKey: "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"
+exports.getFile = exports.uploadFile = exports.checkFileType = exports.storage = void 0;
+var aws = require("aws-sdk");
+var multer = require("multer");
+var multerS3 = require("multer-s3");
+var keys = require("../config/keys");
+var path = require("path");
+var s3 = new aws.S3({
+    signatureVersion: 'v4',
+    accessKeyId: keys.accessKeyId,
+    secretAccessKey: keys.secretAccessKey,
+    region: 'us-east-2'
 });
-var kms = new AWS.KMS({ apiVersion: '2014-11-01' });
-exports.uploadFile = function (files, conversationdId, messageId) {
+// var kms = new AWS.KMS({apiVersion: '2014-11-01'});
+//IMAGE UPLOAD
+// aws.config.update({
+//   // Your SECRET ACCESS KEY from AWS should go here,
+//   // Never share it!
+//   // Setup Env Variable, e.g: process.env.SECRET_ACCESS_KEY
+//   secretAccessKey: "Kud+HU5kEzRFvXj5LKrur9E1ANUuo/ThHa+K5H9I",
+//   // Not working key, Your ACCESS KEY ID from AWS should go here,
+//   // Never share it!
+//   // Setup Env Variable, e.g: process.env.ACCESS_KEY_ID
+//   accessKeyId: "AKIAJH52AAB5XEIEZQXQ",
+//   region: "us-east-2" // region of your bucket
+// });
+exports.storage = multerS3({
+    s3: s3,
+    bucket: "kloud-storage",
+    acl: "public-read",
+    metadata: function (req, file, cb) {
+        cb(null, { fieldName: file.originalname });
+    },
+    key: function (req, file, cb) {
+        // console.log(req)
+        cb(null, req.params.collab_id + "/" + file.originalname);
+    }
+});
+// Check File Type
+function checkFileType(file, cb) {
+    // Allowed ext
+    var filetypes = /mp3|mpeg/;
+    // Check ext
+    var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // Check mime
+    var mimetype = filetypes.test(file.mimetype);
+    if (mimetype && extname) {
+        return cb(null, true);
+    }
+    else {
+        cb("Error: Audio Only!");
+    }
+}
+exports.checkFileType = checkFileType;
+// {
+//   "Version": "2012-10-17",
+//   "Statement": [
+//       {
+//           "Sid": "VisualEditor0",
+//           "Effect": "Allow",
+//           "Action": [
+//               "s3:PutObject",
+//               "s3:PutObjectAcl"
+//           ],
+//           "Resource": "arn:aws:s3:::kloud-storage/*",
+//           "Principal": "*"
+//       }
+//   ]
+// }
+exports.uploadFile = function (file, collabId) {
+    console.log("bob");
     return new Promise(function (resolve, reject) {
-        var fileData = [];
-        files.forEach(function (file, i) {
-            var params = {
-                Bucket: 'kloud-storage',
-                Key: "conversations/" + conversationdId + "/" + messageId + "/" + file.name.trim().replace(" ", "_"),
-                Body: JSON.stringify(file, null, 2)
-            };
-            s3.upload(params, function (s3Err, data) {
-                if (s3Err)
-                    throw s3Err;
-                fileData.push(data);
-            });
-            if (i === files.length - 1)
-                resolve(fileData);
+        // let fileData:any = []
+        // for( let i = 0; i< files.length; i++){
+        //     // console.log(files[i])
+        //     const j = Buffer.from(files[i])
+        var params = {
+            Bucket: 'kloud-storage',
+            Key: collabId + "/" + file.originalname,
+            Body: file.buffer
+        };
+        //     s3.putObject(params, function(s3Err:any, data:any) {
+        //         if (s3Err) throw s3Err;
+        //        fileData.push(data);
+        //     });
+        //     if (i === files.length-1) resolve(fileData)
+        // }
+        // files.forEach((file, i) => {
+        // const j = Buffer.from(files[i])
+        // }) 
+        s3.putObject(params, function (s3Err, data) {
+            if (s3Err)
+                throw s3Err;
+            resolve(data);
+            //  fileData.push(data);
         });
     });
 };
@@ -69,26 +139,21 @@ function encode(data) {
     return Buffer.from(str, 'base64').toString().replace(/.{76}(?=.)/g, '$&\n');
 }
 exports.getFile = function (fileLoc) {
-    // console.log(fileLoc)
-    return new Promise(function (resolve, reject) {
-        var getParams = {
-            Bucket: 'kloud-storage',
-            Key: fileLoc.file // path to the object you're looking for
-        };
-        s3.getObject(getParams, function (err, data) {
-            return __awaiter(this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
-                    // Handle any error and exit
-                    if (err) {
-                        console.log(err);
-                        reject(err);
-                    }
-                    // data.url = await "data:audio/mp4;base64," + encode(data.Body);
-                    // resolve(data.Body.toString('utf-8'));
-                    resolve(data);
-                    return [2 /*return*/];
-                });
-            });
+    return new Promise(function (resolve, reject) { return __awaiter(void 0, void 0, void 0, function () {
+        var getParams, url;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    getParams = {
+                        Bucket: 'kloud-storage',
+                        Key: fileLoc,
+                        Expires: 60 * 5
+                    };
+                    return [4 /*yield*/, s3.getSignedUrl('getObject', getParams)];
+                case 1:
+                    url = _a.sent();
+                    return [2 /*return*/, resolve(url)];
+            }
         });
-    });
+    }); });
 };

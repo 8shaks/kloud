@@ -26,10 +26,12 @@ export const getCurrentProfile = () => async (dispatch:Dispatch) => {
     });
     // dispatch({type: LOADING_DONE});
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -69,10 +71,12 @@ export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
       payload: res.data
     });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
   dispatch({type:LOADING_DONE})
 };
@@ -86,10 +90,12 @@ export const getProfileByUsername = (username:string) => async (dispatch:Dispatc
       payload: res.data
     });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
   dispatch({type:LOADING_DONE})
 };
@@ -105,11 +111,12 @@ export const createProfile = (formData:ProfileType) => async (dispatch:Dispatch)
       payload: res.data
     });
   } catch (err) {
-
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -124,10 +131,12 @@ export const sendFriendReq = (username:string) => async (dispatch:Dispatch) => {
     //   payload: res.data
     // });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -142,10 +151,12 @@ export const changeFriendReqStatus = (friendReq:{username:string, accept:boolean
     //   payload: res.data
     // });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -159,10 +170,12 @@ export const unfriendUser = (username:string) => async (dispatch:Dispatch) => {
     //   payload: res.data
     // });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -177,10 +190,12 @@ export const changeCollabRecStatus = (collabReq:{username:string, accept:boolean
     //   payload: res.data
     // });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 //send collab req
@@ -193,9 +208,11 @@ export const sendCollabReq = (username:string, title:string, description:string)
     //   payload: res.data
     // });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };

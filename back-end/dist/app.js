@@ -50,14 +50,11 @@ var user_1 = __importDefault(require("./routes/api/user"));
 var post_1 = __importDefault(require("./routes/api/post"));
 var auth_1 = __importDefault(require("./routes/api/auth"));
 var profile_1 = __importDefault(require("./routes/api/profile"));
-var friends_1 = __importDefault(require("./routes/api/friends"));
 var collabs_1 = __importDefault(require("./routes/api/collabs"));
 var conversation_1 = __importDefault(require("./routes/api/conversation"));
 var cors_1 = __importDefault(require("cors"));
 var Conversation_1 = __importDefault(require("./models/Conversation"));
-var Profile_1 = __importDefault(require("./models/Profile"));
 var Message_1 = __importDefault(require("./models/Message"));
-var fileFuncs_1 = require("./utils/fileFuncs");
 var app = express_1.default();
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());
@@ -78,7 +75,7 @@ mongoose_1.default
 app.use("/api/auth", auth_1.default);
 app.use("/api/users", user_1.default);
 app.use("/api/profile", profile_1.default);
-app.use("/api/friends", friends_1.default);
+// app.use("/api/friends", friends);
 app.use("/api/collabs", collabs_1.default);
 app.use("/api/posts", post_1.default);
 app.use("/api/conversations", conversation_1.default);
@@ -101,85 +98,28 @@ io.on('connection', function (socket) {
         console.log("user had left");
     });
     socket.on("chat", function (data, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var conversation_2, conservationObj_1, newMessage_1, files, fileObj, err_1, userProfile, userProfile2, conversation_3, newMessage_2, files, files_1, fileObj;
+        var conservationObj, newMessage, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    if (!(data.profile.conversations.filter(function (u) { return u.username === data.userToChat; }).length > 0)) return [3 /*break*/, 9];
-                    conversation_2 = data.profile.conversations.filter(function (c) { return c.username === data.userToChat; })[0];
-                    return [4 /*yield*/, Conversation_1.default.findOne({ _id: conversation_2.conversationId })];
+                case 0: return [4 /*yield*/, Conversation_1.default.findOne({ _id: data.conversationId })];
                 case 1:
-                    conservationObj_1 = _a.sent();
+                    conservationObj = _a.sent();
                     _a.label = 2;
                 case 2:
-                    _a.trys.push([2, 7, , 8]);
-                    if (!(conservationObj_1 !== null)) return [3 /*break*/, 6];
-                    newMessage_1 = new Message_1.default({ sender: data.profile.username, content: data.message, conversationId: conservationObj_1._id });
-                    files = [];
-                    if (!data.files) return [3 /*break*/, 4];
-                    files = Array.from(data.files);
-                    files.forEach(function (file) {
-                        newMessage_1.files.push({ file: "conversations/" + conservationObj_1._id + "/" + newMessage_1._id + "/" + file.name.trim().replace(" ", "_"), fileName: file.name.trim() });
-                    });
-                    return [4 /*yield*/, fileFuncs_1.uploadFile(files, conservationObj_1._id, newMessage_1._id)];
+                    _a.trys.push([2, 5, , 6]);
+                    if (!(conservationObj !== null)) return [3 /*break*/, 4];
+                    newMessage = new Message_1.default({ sender: data.profile.username, content: data.message, conversationId: conservationObj._id });
+                    return [4 /*yield*/, newMessage.save()];
                 case 3:
                     _a.sent();
+                    io.to(conservationObj._id).emit("message", { message: newMessage, username: data.profile.username, userToChat: data.userToChat });
                     _a.label = 4;
-                case 4: return [4 /*yield*/, newMessage_1.save()];
+                case 4: return [3 /*break*/, 6];
                 case 5:
-                    _a.sent();
-                    fileObj = data.files ? Array.from(data.files) : [];
-                    console.log(newMessage_1);
-                    io.to(conservationObj_1._id).emit("message", { message: { content: newMessage_1.content, sender: newMessage_1.sender, files: fileObj }, username: data.profile.username, userToChat: data.userToChat, });
-                    _a.label = 6;
-                case 6: return [3 /*break*/, 8];
-                case 7:
                     err_1 = _a.sent();
                     console.error(err_1);
-                    return [3 /*break*/, 8];
-                case 8: return [3 /*break*/, 17];
-                case 9: return [4 /*yield*/, Profile_1.default.findOne({ user: data.profile.user })];
-                case 10:
-                    userProfile = _a.sent();
-                    return [4 /*yield*/, Profile_1.default.findOne({ username: data.userToChat })];
-                case 11:
-                    userProfile2 = _a.sent();
-                    if (!(userProfile && userProfile2)) return [3 /*break*/, 17];
-                    conversation_3 = new Conversation_1.default({ participants: [data.profile.username, data.userToChat] });
-                    return [4 /*yield*/, conversation_3.save()];
-                case 12:
-                    _a.sent();
-                    userProfile.conversations.push({ conversationId: conversation_3._id, username: userProfile2.username });
-                    userProfile2.conversations.push({ conversationId: conversation_3._id, username: userProfile.username });
-                    return [4 /*yield*/, userProfile.save()];
-                case 13:
-                    _a.sent();
-                    return [4 /*yield*/, userProfile2.save()];
-                case 14:
-                    _a.sent();
-                    socket.join(conversation_3._id);
-                    newMessage_2 = new Message_1.default({ sender: data.profile.username, content: data.message, conversationId: conversation_3._id });
-                    files = [];
-                    if (!data.files) return [3 /*break*/, 16];
-                    console.log("BRUV");
-                    files_1 = Array.from(data.files);
-                    files_1.forEach(function (file) {
-                        newMessage_2.files.push({ file: "conversations/" + conversation_3._id + "/" + newMessage_2._id + "/" + file.name.trim().replace(" ", "_"), fileName: file.name.trim() });
-                    });
-                    return [4 /*yield*/, fileFuncs_1.uploadFile(files_1, conversation_3._id, newMessage_2._id).then(function (fileData) {
-                            fileData.forEach(function (file) {
-                                newMessage_2.files.push(file.location);
-                            });
-                        })];
-                case 15:
-                    _a.sent();
-                    _a.label = 16;
-                case 16:
-                    newMessage_2.save();
-                    fileObj = data.files ? Array.from(data.files) : [];
-                    io.to(conversation_3._id).emit("message", { message: { content: newMessage_2.content, sender: newMessage_2.sender, files: fileObj }, username: data.profile.username, userToChat: data.userToChat, });
-                    _a.label = 17;
-                case 17: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     }); });

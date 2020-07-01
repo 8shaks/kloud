@@ -88,7 +88,8 @@ export interface ICollab extends mongoose.Document {
 export interface IConversation extends mongoose.Document{
   date?,
   participants:string[],
-  _id:string
+  _id:string,
+  collabId?:string
 }
 export interface IMessage extends mongoose.Document{
   date?,

@@ -5,10 +5,14 @@ import { IConversation } from '../@types/custom';
 
 const ConversationSchema = new Schema({
   participants:[String],
+  collabId: {
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now
-  }
+  },
+ 
 });
 
 

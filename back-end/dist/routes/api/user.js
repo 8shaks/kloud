@@ -101,7 +101,6 @@ router.post('/', function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, profile.save()];
             case 7:
                 _d.sent();
-                console.log(profile);
                 return [2 /*return*/, res.json({ success: 'Succesfully created User', user: user })];
             case 8:
                 err_1 = _d.sent();

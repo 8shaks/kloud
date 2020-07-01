@@ -22,10 +22,12 @@ export const getPosts = () => async (dispatch:Dispatch) => {
       payload: res.data
     });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -70,10 +72,12 @@ export const deletePost = (id:string) => async (dispatch:Dispatch) => {
 
     Router.push("/explore")
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -92,10 +96,12 @@ export const addPost = (postData:PostType) => async (dispatch: Dispatch) => {
       });
       Router.push(`/posts/${res.data._id}`)
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 // Edit Post
@@ -108,10 +114,12 @@ export const editPost = (postData:PostType) => async (dispatch: Dispatch) => {
       });
       Router.push(`/posts/${res.data._id}`);
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 
@@ -125,10 +133,12 @@ export const getPost = (id:string) => async (dispatch:Dispatch) => {
       payload: res.data
     });
   } catch (err) {
-    dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    });
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data.errors
+      })
+    }else alert("There was a server error, please try again later")
   }
 };
 

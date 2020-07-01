@@ -28,14 +28,13 @@ export const registerUser = (userData:userRegister) => (dispatch:Dispatch) => {
       Router.push('/')
     })
     .catch(err =>{
-        console.log(err)
+      if(err.response){
         dispatch({
-            type: GET_ERRORS,
-            payload: err.response.data.errors
-          })
-    }
-      
-    );
+          type: GET_ERRORS,
+          payload: err.response.data.errors
+        })
+      }else alert("There was a server error, please try again later")
+    });
 };
 
 // //Login
@@ -55,12 +54,17 @@ export const loginUser = (userData:userLogin) => (dispatch: Dispatch) => {
         dispatch(setCurrentUser(decoded));
         Router.push("/")
     })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data.errors
-      })
-    );
+    .catch(err =>{
+      if(err.response){
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data.errors
+        })
+      }else{
+        alert("There was a server error, please try again later")
+      }
+      
+    });
 };
 
 //set current user

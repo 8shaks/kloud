@@ -76,8 +76,8 @@ function getMyPosts(profile:IProfile):Promise<any>{
   });
 }
 
-router.get('/user/:id', auth, async (req, res) => {
-  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+router.get('/user/:id', async (req, res) => {
+  // if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
   try {
     const profile = await Profile.findOne({user:req.params.id});
     if(!profile) return res.status(400).json({errors: { profile: 'Cannot find your profile' }});

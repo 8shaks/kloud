@@ -5,17 +5,17 @@ import Link from 'next/link';
 interface Props {
     title:string,
     description:string,
-    date?:Date,
+    date?:number,
     _id:string,
-    user: {userId: string, username: string},
-    collaborator:{userId: string, username: string}
+    user: {user: string, username: string},
+    collaborator:{user: string, username: string}
 }
 export default (props: Props) => {
     return (
         <div className={collabComps.collabCard}>
             <div className={collabComps.flexCardHeader}>
-                <Link href={`/collabs/${props._id}`}><h3>{props.title}</h3></Link>
-                <Link href={`/profiles/${props.collaborator.username}`}><a className={collabComps.profileLink}>Collab with {props.collaborator.userId}</a></Link> 
+               <h3>{props.title}</h3>
+                <Link href={`/profiles/${props.collaborator.username}`}><a className={collabComps.profileLink}>Collab with {props.user.username}</a></Link> 
             </div>
             <span>{props.date}</span>
             <p className={collabComps.description}>{props.description}</p>

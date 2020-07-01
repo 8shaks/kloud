@@ -28,31 +28,23 @@ export default (props: Props) => {
         <div className={messageComp.messageWrapper}>
             <span className={messageComp.messageBubble + " " + messageComp.sender}>
                 
-                    {message.files.map((file:any) =>{
+                    {/* {message.files.map((file:any) =>{
                         const fileLink = <a href={""} onClick={(e) => {onClickLink(e,file.file)}} download={file.name}><b> FILE: {file.fileName}<br/><br/></b></a>
                         return fileLink
-                    })}
+                    })} */}
                 {message.content}
             </span>
         </div>
         )
     }else{
-        if (message.files){
-            fileContent = (
-                <Fragment>
-                    {message.files.map((file) =>{
-                        return <span className={messageComp.messageBubble + " " + messageComp.receiver}><b> FILE: {file.name}</b></span>
-                    })}
-                </Fragment>
-            )
-        }
+
         messageContent = ( 
             <div className={messageComp.messageWrapper}>
                 <span className={messageComp.messageBubble + " " + messageComp.receiver}>
-                    {message.files.map((file) =>{
+                    {/* {message.files.map((file) =>{
                         let test = window.URL.createObjectURL(new Blob([file], {type: "audio/mpeg"}))
                         return <a href={test} download><b> FILE: {file.name}<br/><br/></b></a>
-                    })}
+                    })} */}
                     {message.content}
                 </span>
             </div>

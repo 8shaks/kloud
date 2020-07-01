@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 import { getCurrentProfile, changeCollabRecStatus } from '../../redux/actions/profileActions'
 import React, { useState, useEffect, FormEvent, Fragment } from 'react';
 import Router from 'next/router';
-import CollabCard from "../../components/collabs2/collabCard";
-import CollabRecCard from "../../components/collabs2/collabRecCard";
+import CollabCard from "../../components/my-collabs/collabCard";
+import CollabRecCard from "../../components/my-collabs/collabRecCard";
 import { CollabType, ProfileType } from "../../@types/customType"
 import axios from "axios";
 import host from "../../vars"
@@ -36,10 +36,11 @@ const Profile = (props:Props) => {
         if(props.profile.profile.collabs.length > 0){
           axios.get(`${host}/api/collabs/mycollabs`).then((res)=>{
             setMyCollabs(res.data)
+          }).catch((err)=>{
+            console.log(err)
           })
         }
       }
-
     }, [props.profile.profile])
 
     let collabContent = <div className={collabStyles.page}>Loading...</div>
@@ -53,7 +54,7 @@ const Profile = (props:Props) => {
               <h2 id="collabs">Collabs</h2>
               {
                 myCollabs.map((myCollab)=>{
-                  if (myCollab.user1.userId === props.auth.user.user.id){
+                  if (myCollab.user1.user === props.auth.user.user.id){
                     return <CollabCard date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
                   }
                   else{

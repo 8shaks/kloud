@@ -1,11 +1,13 @@
 import express from 'express';
 const router = express.Router();
 import auth from '../../middleware/auth';
-import validateCollabRequest from "../../validation/friendRequest"
+import validateCollabRequest from "../../validation/friendRequest";
 import Collab from "../../models/Collab";
 import Profile from "../../models/Profile";
-import { IProfile, ICollab } from "../../@types/custom"
+import { IProfile, ICollab, IConversation } from "../../@types/custom";
+import { storage, checkFileType, uploadFile, getFile } from "../../utils/fileFuncs";
 import Conversation from '../../models/Conversation';
+import multer from "multer";
 
 
 // @route    GET api/collabs
@@ -40,6 +42,136 @@ router.get('/mycollabs', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @route    GET api/my convos
+// @desc     Get all a users conversations
+// @access   Private
+function getMyConvos(collabs:ICollab[]):Promise<any>{
+  return new Promise<IConversation[]>((resolve, reject) => {
+    let myConversations:IConversation[] = [];
+    if (collabs.length === 0)  resolve(myConversations) 
+    collabs.forEach(async (collabObj) => {
+      let conversation = await Conversation.findById(collabObj.conversation);
+
+      if (conversation) myConversations.push(conversation);
+
+      if (myConversations.length === collabs.length){
+        resolve(myConversations.sort((a, b) => { return new Date(b.date).getTime() - new Date(a.date).getTime()}));
+      }
+    });
+  });
+}
+
+router.get('/collabconvos', auth, async (req, res) => {
+  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+  // return res.json({conversations:[]})
+  try {
+    const profile = await Profile.findOne({user:req.user.id});
+    if(!profile) return res.status(400).json({errors: { profile: 'Cannot find your profile' }});
+    getMyCollabs(profile).then((myCollabs)=>{
+      return getMyConvos(myCollabs).then((myConversations)=>{
+        return res.json({colabs:myCollabs, convos:myConversations})
+      })
+    })
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+})
+
+// @route    GET api/collabs/:collab_id
+// @desc     Getcollab by Id
+// @access   Private
+router.get('/getcollab/:collab_id', auth, async (req, res) => {
+    if (!req.user) return res.status(400).json({ errors: {user: 'Valid user required'} });
+    try {
+      const collab = await Collab.findById(req.params.collab_id);
+      
+      if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
+      if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'Cou are not n this collab'} });
+
+      return res.json(collab);
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).json({ msg: 'Server error' });
+    }
+  }
+);
+
+
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 100 * 100000 },
+//   fileFilter: function(req, file, cb) {
+//     console.log(file)
+//     checkFileType(file, cb);
+//   }
+// });
+const upload = multer();
+// @route    POST api/messages/file/:id
+// @desc     Get download link for file
+// @access   Private
+router.post('/upload_file/:collab_id', auth, upload.single("file"),  async  (req, res) => {
+  
+  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+
+  if( typeof req.params.collab_id !== 'string' ) return res.status(400).json({errors: { collabs: 'Invalid request' }});
+  try {
+    console.log(req.file)
+    const collab = await Collab.findById(req.params.collab_id);
+    if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
+    if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'You are not in this collab'} });
+
+    await uploadFile(req.file, req.params.collab_id);
+
+    collab.files.push({fileName:req.file.originalname, fileKey:`${req.params.collab_id}/${req.file.originalname}` })
+    collab.save();
+    return res.json({sucess:true, msg:"File sucesfully uploaded"})
+    
+    
+    // getFile(req.body.fileLoc).then((el)=>{
+    //   res.setHeader('content-type', 'application/octet-stream')
+    //   res.setHeader('content-disposition', "test.mp3")
+    //   return res.send(el)
+    //  }).catch((err) => {
+    //     console.log(err)
+    //     return res.status(500).json({errors: { server: "There was a server error"}})
+    //  })
+
+   
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route    POST api/messages/file/:id
+// @desc     Get download link for file
+// @access   Private
+router.post('/getfile', auth, upload.single("file"),  async  (req, res) => {
+  
+  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+
+  if( typeof req.body.collab_id !== 'string' || typeof req.body.fileName !== 'string') return res.status(400).json({errors: { collabs: 'Invalid request' }});
+  try {
+    const collab = await Collab.findById(req.body.collab_id);
+    if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
+    if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'You are not in this collab'} });
+   getFile(`${req.body.collab_id}/${req.body.fileName}`).then((el)=>{
+      res.setHeader('content-type', 'application/octet-stream')
+      res.setHeader('content-disposition', "test.mp3")
+      return res.send(el)
+     }).catch((err) => {
+        console.log(err)
+        return res.status(500).json({errors: { server: "There was a server error"}})
+     })
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route    POST api/friends/send_req
 // @desc     Send a friend Request to a user
 // @access   Private
@@ -75,6 +207,8 @@ router.post('/send_req', auth, async (req, res) => {
       }
         profileToCollab.collabRequestsRecieved.push({userId: user.id, username:user.username, title:req.body.title, description:req.body.title, date:Date.now()});
         userProfile.collabRequestsSent.push({userId: profileToCollab.user, username:profileToCollab.username, title:req.body.title, description:req.body.title, date:Date.now()});
+        
+        // console.log(userProfile)
         await profileToCollab.save();
         await userProfile.save();
         return res.json({ success: true, msg: "Your collab request to " + profileToCollab.username + " has been sent" });
@@ -101,8 +235,8 @@ router.post('/status', auth, async (req, res) => {
     // find user they want to accept
     const collabToAccept = await Profile.findOne({username:req.body.username});
     if(!collabToAccept)  return res.status(400).json({errors: { collabs: 'We could not find the profile you wanted to accept' }});
+    // console.log(req.body)
     if(collabToAccept.username === user.username) return res.status(400).json({errors: { collabs: 'You cannot collab with yourself' }});
-
     if(userProfile.collabRequestsRecieved.filter(u => u.username === collabToAccept.username).length === 0 || collabToAccept.collabRequestsSent.filter(u => u.username === user.username).length === 0 ) return res.status(400).json({errors: { collabRequestsRecieved: "You haven't recieved a collab request from this user"}});
     
     let collabReq: {userId: String, username: String, title:String, description: String }=  {userId:"", username: "", title: "", description:""};
@@ -114,10 +248,11 @@ router.post('/status', auth, async (req, res) => {
     collabToAccept.collabRequestsSent = collabToAccept.collabRequestsSent.filter((reqRecieve)=>{
       return reqRecieve.userId !== user.id;
     })
+
     if(Boolean(req.body.accept) === true){
-      const conversation = new Conversation({participants:[userProfile.username,collabToAccept.username]})
+      const conversation = await new Conversation({participants:[userProfile.username,collabToAccept.username]})
       
-      const newCollab = new Collab({
+      const newCollab = await new Collab({
         user1:{
           user:collabToAccept.user,
           username:collabToAccept.username
@@ -130,9 +265,12 @@ router.post('/status', auth, async (req, res) => {
         description: collabReq.description,
         conversation: conversation._id
       });
+      conversation.collabId = newCollab._id;
       newCollab.save();
       userProfile.collabs.push(newCollab._id);
       collabToAccept.collabs.push(newCollab._id);
+      conversation.save();
+
       await collabToAccept.save();
       await userProfile .save();
       return res.json({ success: true, msg: `You sucessfully accepted ${req.body.username}'s collab request` });

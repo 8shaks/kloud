@@ -5,7 +5,7 @@ import Link from 'next/link';
 interface Props {
     title:string,
     description:string,
-    date?:Date,
+    date?:number,
     collaborator:{userId: string, username: string}
     changeCollabRecStatus:(collabReq:{username:string, accept:boolean}) => void
 }

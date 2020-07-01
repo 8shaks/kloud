@@ -42,10 +42,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var router = express_1.default.Router();
 var auth_1 = __importDefault(require("../../middleware/auth"));
-var Conversation_1 = __importDefault(require("../../models/Conversation"));
-var Profile_1 = __importDefault(require("../../models/Profile"));
 var Message_1 = __importDefault(require("../../models/Message"));
-var fileFuncs_1 = require("../../utils/fileFuncs");
+var multer = require("multer");
 // const { keys } = require("../../config/keys");
 // const fs = require('fs');
 // const AWS = require('aws-sdk');
@@ -56,32 +54,45 @@ var fileFuncs_1 = require("../../utils/fileFuncs");
 // @route    GET api/my convos
 // @desc     Get all a users conversations
 // @access   Private
-function getMyConvos(profile) {
-    var _this = this;
-    return new Promise(function (resolve, reject) {
-        var myConversations = [];
-        if (profile.conversations.length === 0)
-            resolve(myConversations);
-        profile.conversations.forEach(function (conversationUserObj) { return __awaiter(_this, void 0, void 0, function () {
-            var conversation;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Conversation_1.default.findById(conversationUserObj.conversationId)];
-                    case 1:
-                        conversation = _a.sent();
-                        if (conversation)
-                            myConversations.push(conversation);
-                        if (myConversations.length === profile.conversations.length) {
-                            resolve(myConversations.sort(function (a, b) { return new Date(b.date).getTime() - new Date(a.date).getTime(); }));
-                        }
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-    });
-}
-router.get('/myconvos', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var profile, err_1;
+// function getMyConvos(profile:IProfile):Promise<any>{
+//   return new Promise<IConversation[]>((resolve, reject) => {
+//     let myConversations:IConversation[] = [];
+//     if (profile.conversations.length === 0)  resolve(myConversations) 
+//     profile!.conversations.forEach(async (conversationUserObj) => {
+//       let conversation = await Conversation.findById(conversationUserObj.conversationId);
+//       if (conversation) myConversations.push(conversation);
+//       if (myConversations.length === profile!.conversations.length){
+//         resolve(myConversations.sort((a, b) => { return new Date(b.date).getTime() - new Date(a.date).getTime()}));
+//       }
+//     });
+//   });
+// }
+// router.get('/myconvos', auth, async (req, res) => {
+//   if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+//   try {
+//     const profile = await Profile.findOne({user:req.user.id});
+//     if(!profile) return res.status(400).json({errors: { profile: 'Cannot find your profile' }});
+//     getMyConvos(profile).then((myConversations)=>{
+//       return res.json(myConversations)
+//     })
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
+// // @route    GET api/messages/:id
+// // @desc     Get all a conversation's messages
+// // @access   Private
+// // const testFunc = (msg:IMessage, element:any, i:any) => {
+// //   return new Promise<any>((resolve, reject) => {
+// //     getFile(element).then((el)=>{
+// //       msg.files[i] = {file: el, fileName:msg.files[i].fileName};
+// //       return resolve(true)
+// //      })
+// //   });
+// // }
+router.get('/messages/:id', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var messages, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -90,15 +101,10 @@ router.get('/myconvos', auth_1.default, function (req, res) { return __awaiter(v
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, Profile_1.default.findOne({ user: req.user.id })];
+                return [4 /*yield*/, Message_1.default.find({ conversationId: req.params.id }).sort({ date: 1 })];
             case 2:
-                profile = _a.sent();
-                if (!profile)
-                    return [2 /*return*/, res.status(400).json({ errors: { profile: 'Cannot find your profile' } })];
-                getMyConvos(profile).then(function (myConversations) {
-                    return res.json(myConversations);
-                });
-                return [3 /*break*/, 4];
+                messages = _a.sent();
+                return [2 /*return*/, res.json({ messages: messages })];
             case 3:
                 err_1 = _a.sent();
                 console.error(err_1.message);
@@ -108,80 +114,42 @@ router.get('/myconvos', auth_1.default, function (req, res) { return __awaiter(v
         }
     });
 }); });
-// @route    GET api/messages/:id
-// @desc     Get all a conversation's messages
+// // MAKE A FILE UPLOAD ENDPOINT
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 1000000 },
+//   fileFilter: function(req:any, file:any, cb:() => void) {
+//     checkFileType(file, cb);
+//   }
+// });
+// router.post(
+//   "/upload", upload.single("image"), (req, res) => {
+//     let file = {};
+//     return res.json({success})
+//     console.log("success")
+//   }
+// );
+// @route    POST api/messages/file/:id
+// @desc     Get download link for file
 // @access   Private
-var testFunc = function (msg, element, i) {
-    return new Promise(function (resolve, reject) {
-        console.log(element);
-        fileFuncs_1.getFile(element).then(function (el) {
-            msg.files[i] = { file: el, fileName: msg.files[i].fileName };
-            // console.log(el)
-            return resolve(true);
-        });
-    });
-};
-router.get('/messages/:id', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var messages, j, i, err_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!req.user)
-                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 10, , 11]);
-                return [4 /*yield*/, Message_1.default.find({ conversationId: req.params.id }).sort({ date: 1 })];
-            case 2:
-                messages = _a.sent();
-                // HAVE TO PUT THIS BLOCK INTO A PROMISE
-                // if(messages.length === 0) return res.status(400).json({errors: { conversation: 'Cannot find your Conversation' }});
-                console.log(messages);
-                j = 0;
-                _a.label = 3;
-            case 3:
-                if (!(j < messages.length)) return [3 /*break*/, 9];
-                i = 0;
-                _a.label = 4;
-            case 4:
-                if (!(i < messages[j].files.length)) return [3 /*break*/, 7];
-                // console.log("yo")
-                return [4 /*yield*/, testFunc(messages[j], messages[j].files[i], i)
-                    // if( j === messages.length-1){
-                    //   return res.json({messages})
-                    // }
-                ];
-            case 5:
-                // console.log("yo")
-                _a.sent();
-                // if( j === messages.length-1){
-                //   return res.json({messages})
-                // }
-                if (j === messages.length - 1) {
-                    console.log("yo");
-                    return [2 /*return*/, res.json({ messages: messages })];
-                }
-                _a.label = 6;
-            case 6:
-                i++;
-                return [3 /*break*/, 4];
-            case 7:
-                if (j === messages.length - 1) {
-                    console.log("yo");
-                    return [2 /*return*/, res.json({ messages: messages })];
-                }
-                _a.label = 8;
-            case 8:
-                j++;
-                return [3 /*break*/, 3];
-            case 9: return [3 /*break*/, 11];
-            case 10:
-                err_2 = _a.sent();
-                console.error(err_2.message);
-                res.status(500).send('Server Error');
-                return [3 /*break*/, 11];
-            case 11: return [2 /*return*/];
-        }
-    });
-}); });
+// router.post('/file', auth, async  (req, res) => {
+//   if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+//   if( typeof req.body.conversationId !== 'string' || typeof req.body.fileLoc !== "string" ) return res.status(400).json({errors: { conversation: 'Invalid request' }});
+//   try {
+//     const profile = await Profile.findOne({user:req.user.id});
+//     if (!profile) return res.status(400).json({errors: { profile: 'Could not find your profile' }});
+//     if(profile.conversations.filter(c => c.conversationId === req.body.conversationId).length === 0 ) return res.status(400).json({errors: { conversation: "No matching conversation"}});
+//     getFile(req.body.fileLoc).then((el)=>{
+//       res.setHeader('content-type', 'application/octet-stream')
+//       res.setHeader('content-disposition', "test.mp3")
+//       return res.send(el)
+//      }).catch((err) => {
+//         console.log(err)
+//         return res.status(500).json({errors: { server: "There was a server error"}})
+//      })
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
 exports.default = router;

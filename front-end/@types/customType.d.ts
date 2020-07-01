@@ -1,60 +1,66 @@
 export interface ProfileType {
-    user: string,
+  user: string,
+  username:string,
+  bio?: string,
+  social: {
+    youtube?:string,
+    twitter?:string,
+    instagram?:string,
+    facebook?:string,
+    soundcloud?:string
+  },
+  credits?: string[],
+  collabs:string[],
+  posts:string[],
+  friends:{
+    userId:string,
     username:string,
-    bio?: string,
-    social: {
-      youtube?:string,
-      twitter?:string,
-      instagram?:string,
-      facebook?:string,
-      soundcloud?:string
-    },
-    credits?: string[],
-    posts:string[],
-    collabs:string[],
-    friends:{
-      userId:string,
-      username:string,
-      date?:Date
-    }[],
-    friendRequestsRecieved:{
-      userId:string,
-      username:string
-    } [],
-    friendRequestsSent:{
-      userId:string,
-      username:string
-    }[],
-    collabRequestsRecieved:{
-      userId:string,
-      username:string,
-      title: string,
-      description: string,
-      date:Date
-    } [],
-    collabRequestsSent:{
-      userId:string,
-      username:string,
-      title: string,
-      description: string,
-      date:Date
-    }[],
-    conversations:{date?:string, conversationId:string, username:string}[],
-    date:Date
+    date?:Date
+  }[],
+  friendRequestsRecieved:{
+    userId:string,
+    username:string
+  } [],
+  friendRequestsSent:{
+    userId:string,
+    username:string
+  }[],
+  collabRequestsRecieved:{
+    userId:string,
+    username:string,
+    title: string,
+    description: string,
+    date:number
+  } [],
+  collabRequestsSent:{
+    userId:string,
+    username:string,
+    title: string,
+    description: string,
+    date:number
+  }[],
+  conversations:{date?:string, conversationId:string, username:string}[],
+  date:Date
 }
 export interface CollabType{
-  _id:string,
   user1:{
-    userId:string,
+    user:string,
     username:string
   },
   user2:{
-    userId:string,
+    user:string,
     username:string
   },
-  title:string,
-  description:string,
-  date?:Date
+  title: string,
+  description: string,
+  conversation:string,
+  files:{
+    fileName:string,
+    fileKey:string,
+    date?:number
+  }[],
+  _id:string,
+  date?:number
 }
   
 export interface profileError{
@@ -90,13 +96,12 @@ export interface PostType {
 export interface ConversationType {
   date?,
   participants:string[]
-  _id?:string
+  _id:string,
+  collabId?:string
 }
 export interface MessageType{
   date?,
   sender:string,
   content:string,
   conversationId:string,
-  _id: string,
-  files:File[]
 }

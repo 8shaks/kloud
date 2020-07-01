@@ -6,7 +6,7 @@ import Conversation from "../../models/Conversation";
 import Profile from "../../models/Profile";
 import Message from "../../models/Message";
 import { IProfile, IConversation, IMessage } from "../../@types/custom";
-import { getFile, storage, checkFileType } from '../../utils/fileFuncs';
+import { getFile, uploadFile } from '../../utils/fileFuncs';
 const multer = require("multer");
 // const { keys } = require("../../config/keys");
 
@@ -61,20 +61,20 @@ const multer = require("multer");
 // //   });
 // // }
 
-// router.get('/messages/:id', auth, async  (req, res) => {
-//   if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+router.get('/messages/:id', auth, async  (req, res) => {
+  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
  
-//   try {
+  try {
   
-//     let messages = await Message.find({conversationId: req.params.id}).sort({ date: 1 });
+    let messages = await Message.find({conversationId: req.params.id}).sort({ date: 1 });
 
-//     return res.json({messages})
+    return res.json({messages})
 
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server Error');
-//   }
-// });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 // // MAKE A FILE UPLOAD ENDPOINT
 

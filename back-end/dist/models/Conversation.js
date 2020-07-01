@@ -8,10 +8,13 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var Schema = mongoose_1.default.Schema;
 var ConversationSchema = new Schema({
     participants: [String],
+    collabId: {
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now
-    }
+    },
 });
 var Conversation = mongoose_1.default.model("conversations", ConversationSchema);
 exports.default = Conversation;
