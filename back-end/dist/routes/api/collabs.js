@@ -212,7 +212,6 @@ router.post('/upload_file/:collab_id', auth_1.default, upload.single("file"), fu
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
-                console.log(req.file);
                 return [4 /*yield*/, Collab_1.default.findById(req.params.collab_id)];
             case 2:
                 collab = _a.sent();

@@ -106,7 +106,7 @@ exports.checkFileType = checkFileType;
 //   ]
 // }
 exports.uploadFile = function (file, collabId) {
-    console.log("bob");
+    console.log(keys);
     return new Promise(function (resolve, reject) {
         // let fileData:any = []
         // for( let i = 0; i< files.length; i++){

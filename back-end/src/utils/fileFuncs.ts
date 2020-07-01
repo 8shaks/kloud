@@ -78,7 +78,7 @@ export function checkFileType(file:any, cb:any) {
 //   ]
 // }
 export const uploadFile = (file:any, collabId:string) => {
-    console.log("bob")
+    console.log(keys)
     return new Promise<any>((resolve, reject) => {
         // let fileData:any = []
         // for( let i = 0; i< files.length; i++){

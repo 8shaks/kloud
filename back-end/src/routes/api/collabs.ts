@@ -117,7 +117,6 @@ router.post('/upload_file/:collab_id', auth, upload.single("file"),  async  (req
 
   if( typeof req.params.collab_id !== 'string' ) return res.status(400).json({errors: { collabs: 'Invalid request' }});
   try {
-    console.log(req.file)
     const collab = await Collab.findById(req.params.collab_id);
     if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
     if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'You are not in this collab'} });
