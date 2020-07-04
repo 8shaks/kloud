@@ -6,17 +6,17 @@ ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh_client.connect(hostname = "192.241.139.120", username="shakiran")
 import os;
 
-commit_msg = input("What's your commit message?: ") 
-print(f"git commit -m {commit_msg}")
-# Build Typescript
-os.system("npm run --prefix back-end build")
-# Git stuff
-os.system("git add .")
-os.system(f"git commit -m {commit_msg}")
-os.system(f"git push origin master")
-os.system(f"git push prod_server master")
+# commit_msg = input("What's your commit message?: ") 
+# print(f"git commit -m {commit_msg}")
+# # Build Typescript
+# os.system("npm run --prefix back-end build")
+# # Git stuff
+# os.system("git add .")
+# os.system(f"git commit -m {commit_msg}")
+# os.system(f"git push origin master")
+# os.system(f"git push prod_server master")
 
-print("Git Success")
+# print("Git Success")
 
 cmd = "npm install --prefix  kloud/front-end"
 
@@ -39,6 +39,14 @@ cmd = "npm run --prefix kloud/front-end build"
 stdin, stdout, stderr = ssh_client.exec_command(cmd)
 stdout = stdout.readlines()
 print('RUNNING FRONT END BUILD \n\n')
+for x in stdout:
+    print(x)
+
+cmd = "npm run --prefix kloud/back-end build"
+
+stdin, stdout, stderr = ssh_client.exec_command(cmd)
+stdout = stdout.readlines()
+print('RUNNING BACK END BUILD \n\n')
 for x in stdout:
     print(x)
 

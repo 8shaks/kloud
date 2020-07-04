@@ -4,7 +4,7 @@ import Layout from '../../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
 import { getPost, deletePost } from '../../../redux/actions/postActions';
-import { sendCollabReq } from '../../../redux/actions/profileActions';
+import { sendCollabReq, getProfileById } from '../../../redux/actions/profileActions';
 import React, { useState, useEffect, FormEvent } from 'react';
 import Router from 'next/router';
 import { useRouter } from 'next/router'
@@ -20,6 +20,7 @@ interface Props{
   getPost:any,
   deletePost: any,
   sendCollabReq: (username:string, title: string, description:string) => void,
+  getProfileById:(id:string) => void,
   profile: {profile: ProfileType}
 }
 interface collabError{
@@ -37,7 +38,14 @@ const Post = (props:Props) => {
   const [collabReqInfo, setCollabReqInfo] = useState({title:"", description:""})
   const [collabReqErrors, setCollabReqErrors] = useState<collabError>({ title:null, description:null, server:null});
 
+  // useEffect(() => {
+  //   if(!props.loading){
+  //     if(typeof id === "string"){
+  //       props.getProfileById(id);
 
+  //     }
+  //   }
+  // }, [props.loading])
   useEffect(() => {
     if(props.profile.profile !==null){
   
@@ -50,7 +58,7 @@ const Post = (props:Props) => {
 
     }
 
-  }, [props.profile.profile])
+  }, [props.profile])
 
   useEffect(() => {
     if(!props.loading){
@@ -64,6 +72,7 @@ const Post = (props:Props) => {
       if(props.posts.post.user ===  props.auth.user.user.id){
         setPostStatus(true);
       }
+      props.getProfileById(props.posts.post.user);
     }
   }, [props.posts.post])
 
@@ -106,11 +115,11 @@ const Post = (props:Props) => {
 
 if(!collabStatus.collabRequestSent){
       collabButton = (
-        <button className={postStyles.addFriendButton} onClick={toggleModal}>Start Collab</button>
+        <button className={postStyles.startCollab} onClick={toggleModal}>Start Collab</button>
       )
     }else if(collabStatus.collabRequestSent){
       collabButton = (
-        <button className={postStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+        <button className={postStyles.endCollab} onClick={cancelCollabRequest}>Cancel Collab Request</button>
       )
     }else if(collabStatus.collabInProgress) {
       collabButton = (
@@ -129,12 +138,13 @@ if(!collabStatus.collabRequestSent){
   }
   
     if(props.posts.post !== null){
+      console.log(props)
       const { post } = props.posts
       postContent = (
         <div className={postStyles.page}> 
           <h1 className={postStyles.heading}>{post.title}</h1>
-          {collabButton}
           <div className={postStyles.content}>
+            {collabButton}
             <p>{post.description}</p>
             {editPost}
             {authError ? <span className={postStyles.error}>You do not own this post!</span> : null}
@@ -155,10 +165,10 @@ const mapStateToProps = (state:Props) => ({
   posts: state.posts,
   errors: state.errors,
   loading: state.loading,
-  profie: state.profile
+  profile: state.profile
 });
 
 export default connect(
   mapStateToProps,
-  { getPost, deletePost, sendCollabReq}
+  { getPost, deletePost, sendCollabReq, getProfileById}
 )(Post);

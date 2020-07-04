@@ -50,3 +50,17 @@
     }
    width: 40%;
 }
+
+.startCollab{
+    @extend .default_button;
+    padding: 10px;
+    margin: 0 auto;
+}
+.endCollab{
+    @extend .button;
+    background-color: red;
+    border-radius: 10px;
+    color: white;
+    padding: 10px;
+
+}
