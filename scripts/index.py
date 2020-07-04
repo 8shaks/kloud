@@ -4,9 +4,19 @@ address = "shakiran@192.241.139.120"
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh_client.connect(hostname = "192.241.139.120", username="shakiran")
+import os;
 
+commit_msg = input("What's your commit message?: ") 
+print(f"git commit -m {commit_msg}")
+# Build Typescript
+os.system("npm run --prefix back-end build")
+# Git stuff
+os.system("git add .")
+os.system(f"git commit -m {commit_msg}")
+os.system(f"git push origin master")
+os.system(f"git push prod_server master")
 
-
+print("Git Success")
 
 cmd = "npm install --prefix  kloud/front-end"
 

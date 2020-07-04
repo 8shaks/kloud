@@ -10,7 +10,7 @@ export interface ProfileType {
     soundcloud?:string
   },
   credits?: string[],
-  collabs:string[],
+  collabs:{collabId:string, username:string}[],
   posts:string[],
   friends:{
     userId:string,

@@ -36,7 +36,7 @@ var ProfileSchema = new Schema({
         }
     },
     posts: [String],
-    collabs: [String],
+    collabs: [{ collabId: { required: true, type: String }, username: { required: true, type: String } }],
     credits: [String],
     friends: [{
             userId: {

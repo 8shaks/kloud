@@ -90,7 +90,7 @@ const Profile = (props:Props) => {
         <div className={collabStyles.page}> 
           <h1 className={collabStyles.heading}>Welcome {profile.username}</h1>
           <div className={collabStyles.collabs}>
-            <h3 ><Link href="/collabs">Head to the collab screen</Link></h3>
+            <h3><Link href="/collabs">Head to the collab screen</Link></h3>
             <div className={collabStyles.collabRequestsRecieved}>
               <h2>Collab Requests Received</h2>
               {collabRecs}

@@ -44,7 +44,7 @@ const Login = (props:Props) => {
         }
     }
     useEffect(() => {
-        if (props.auth.isAuthenticated) Router.push('/');
+        if (props.auth.isAuthenticated) Router.push('/explore');
     }, [props.auth.isAuthenticated])
     useEffect(() => {
         return setErrors(props.errors);

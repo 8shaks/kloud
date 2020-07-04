@@ -65,7 +65,6 @@ const Messages = (props:Props) => {
 
     useEffect(() => {
       socket.on("message", ({message}: {message:MessageType}) => {
-        console.log("yo")
         setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, message]})
       })
     }, [currentConvo])
@@ -80,20 +79,15 @@ const Messages = (props:Props) => {
         setCurrentConvo({...currentConvo, message:""});
       }
     }
+
+    const screenShare = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      window.open('https://meeting.is/ss/app/home#_', 'CrankWheel Control Panel', 'menubar=no,location=no,resizable=yes,status=no,left=0,top=0,outerWidth=' + (screen.width / 5) + ',outerHeight=' + screen.height)
+    }
     const toggleFriendList = () => {
       changeFriendListStatus(!friendListStatus);
     }
-    const onChangeFile =  (e: React.ChangeEvent<HTMLInputElement>) => setCurrentConvo({...currentConvo});
 
-    // const chatStart = ( e:any) => {
-    //   if (e.currentTarget.textContent){
-    //     let temp_array = conversations;
-    //     temp_array.unshift({participants:[profile.username, e.currentTarget.textContent]})
-    //     setConversations(temp_array);
-    //     toggleFriendList();
-    //     setCurrentConvo({message:"", userToChat: e.currentTarget.textContent, messages:[], conversationId:"", collabId:undefined})
-    //   }
-    // }
     const chatFriend = ( username:string, convoId:string, collabId?:string, ) => {
         axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
           setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
@@ -103,14 +97,6 @@ const Messages = (props:Props) => {
     let friendsList;
     
     if(profile !== null){
-      // friendsList = (
-      //   <div className={messagesStyles.friendsList}>
-      //     <span onClick={toggleFriendList} className={messagesStyles.close} >&times;</span>
-      //     {profile.friends.map((friend)=>{
-      //       return <div className={messagesStyles.friendCard}><span onClick={chatStart}>{friend.username}</span></div>
-      //     })}
-      //   </div>
-      // )
 
       messagesContent = (
       <div className={messagesStyles.page}> 
@@ -131,6 +117,7 @@ const Messages = (props:Props) => {
               <form >
               <input className={messagesStyles.messageInput} onChange={onChange} aria-label="Message" value={currentConvo.message} name="Message" placeholder="Send a message"/>
               <button onClick={sendMessage}>Send</button>
+              <button onClick={screenShare}>Share</button>
               </form>
             </div>
           </div>

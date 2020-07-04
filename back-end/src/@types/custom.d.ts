@@ -12,7 +12,7 @@ export interface IProfile extends mongoose.Document {
     soundcloud?:string
   },
   credits?: string[],
-  collabs:string[],
+  collabs:{collabId:string, username:string}[],
   posts:string[],
   friends:{
     userId:string,

@@ -4,10 +4,13 @@ import Layout from '../../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
 import { getPost, deletePost } from '../../../redux/actions/postActions';
-import React, { useState, useEffect } from 'react';
+import { sendCollabReq } from '../../../redux/actions/profileActions';
+import React, { useState, useEffect, FormEvent } from 'react';
 import Router from 'next/router';
 import { useRouter } from 'next/router'
-import { PostType } from "../../../@types/customType"
+import { PostType, ProfileType } from "../../../@types/customType"
+import axios from "axios";
+import CollabReqModal from "../../../components/my-collabs/collabReqModal";
 
 interface Props{
   auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}},
@@ -15,15 +18,40 @@ interface Props{
   posts:{posts:PostType[], post:PostType},
   loading:boolean,
   getPost:any,
-  deletePost: any
+  deletePost: any,
+  sendCollabReq: (username:string, title: string, description:string) => void,
+  profile: {profile: ProfileType}
 }
-
+interface collabError{
+  title:null|string,
+  description:null|string,
+  server? : null|string
+}
 const Post = (props:Props) => {
   const router = useRouter()
   const { id } = router.query
   const [myPost, setPostStatus] = useState(false);
   const [authError, setAuthError] = useState(false);
+  const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false });
+  const [collabModal, setCollabModal] = useState(false);
+  const [collabReqInfo, setCollabReqInfo] = useState({title:"", description:""})
+  const [collabReqErrors, setCollabReqErrors] = useState<collabError>({ title:null, description:null, server:null});
+
+
+  useEffect(() => {
+    if(props.profile.profile !==null){
   
+      if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
+        setStatus({...collabStatus, collabRequestSent:true});
+      }
+      if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
+        setStatus({...collabStatus, collabInProgress:true});
+      }
+
+    }
+
+  }, [props.profile.profile])
+
   useEffect(() => {
     if(!props.loading){
      if(typeof id === "string"){
@@ -46,8 +74,50 @@ const Post = (props:Props) => {
       setAuthError(true);
     }
   }
+
+  const toggleModal = () => {
+    setCollabModal(!collabModal);
+  }
+
+  const checkCollabReqInfo = () => {
+    let errorsNew:collabError = {description:null, title: null};
+    collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description below 300 characters" : null;
+    collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title below 300 characters" : null;
+    setCollabReqErrors(errorsNew);
+    if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true;
+    else return false
+  }
+  const sendCollabReq = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(checkCollabReqInfo()){
+    props.sendCollabReq(props.profile.profile.username,collabReqInfo.title, collabReqInfo.description);
+    }
+  }
+  const cancelCollabRequest = () =>{
+    props.sendCollabReq(props.profile.profile.username, "sd", "sd");
+  }
+
+  
+  const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+    setCollabReqInfo({...collabReqInfo, [e.target.name]: e.target.value})
+  }
   let postContent = <div className={postStyles.page}>Loading...</div>
-  let editPost;
+  let editPost, collabButton;
+
+if(!collabStatus.collabRequestSent){
+      collabButton = (
+        <button className={postStyles.addFriendButton} onClick={toggleModal}>Start Collab</button>
+      )
+    }else if(collabStatus.collabRequestSent){
+      collabButton = (
+        <button className={postStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+      )
+    }else if(collabStatus.collabInProgress) {
+      collabButton = (
+        <Link href="/collabs"><a>View Collab</a></Link>
+      )
+    }
+
   if (props.auth.isAuthenticated){
     if(myPost){
       editPost = (
@@ -63,10 +133,12 @@ const Post = (props:Props) => {
       postContent = (
         <div className={postStyles.page}> 
           <h1 className={postStyles.heading}>{post.title}</h1>
+          {collabButton}
           <div className={postStyles.content}>
             <p>{post.description}</p>
             {editPost}
             {authError ? <span className={postStyles.error}>You do not own this post!</span> : null}
+            {collabModal ? <CollabReqModal toggleModal={toggleModal} username={props.profile.profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
           </div>
         </div>);
     }
@@ -82,10 +154,11 @@ const mapStateToProps = (state:Props) => ({
   auth: state.auth,
   posts: state.posts,
   errors: state.errors,
-  loading: state.loading
+  loading: state.loading,
+  profie: state.profile
 });
 
 export default connect(
   mapStateToProps,
-  { getPost, deletePost}
+  { getPost, deletePost, sendCollabReq}
 )(Post);

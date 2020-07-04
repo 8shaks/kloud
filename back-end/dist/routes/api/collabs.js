@@ -57,11 +57,11 @@ function getMyCollabs(profile) {
         var myCollabs = [];
         if (profile.collabs.length === 0)
             resolve(myCollabs);
-        profile.collabs.forEach(function (collabId) { return __awaiter(_this, void 0, void 0, function () {
+        profile.collabs.forEach(function (collabObj) { return __awaiter(_this, void 0, void 0, function () {
             var collab;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Collab_1.default.findById(collabId)];
+                    case 0: return [4 /*yield*/, Collab_1.default.findById(collabObj.collabId)];
                     case 1:
                         collab = _a.sent();
                         if (collab)
@@ -75,7 +75,7 @@ function getMyCollabs(profile) {
     });
 }
 router.get('/mycollabs', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var profile, err_1;
+    var profile_1, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -86,10 +86,10 @@ router.get('/mycollabs', auth_1.default, function (req, res) { return __awaiter(
                 _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, Profile_1.default.findOne({ user: req.user.id })];
             case 2:
-                profile = _a.sent();
-                if (!profile)
+                profile_1 = _a.sent();
+                if (!profile_1)
                     return [2 /*return*/, res.status(400).json({ errors: { profile: 'Cannot find your profile' } })];
-                getMyCollabs(profile).then(function (myCollabs) {
+                getMyCollabs(profile_1).then(function (myCollabs) {
                     return res.json(myCollabs);
                 });
                 return [3 /*break*/, 4];
@@ -130,7 +130,7 @@ function getMyConvos(collabs) {
     });
 }
 router.get('/collabconvos', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var profile, err_2;
+    var profile_2, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -141,10 +141,10 @@ router.get('/collabconvos', auth_1.default, function (req, res) { return __await
                 _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, Profile_1.default.findOne({ user: req.user.id })];
             case 2:
-                profile = _a.sent();
-                if (!profile)
+                profile_2 = _a.sent();
+                if (!profile_2)
                     return [2 /*return*/, res.status(400).json({ errors: { profile: 'Cannot find your profile' } })];
-                getMyCollabs(profile).then(function (myCollabs) {
+                getMyCollabs(profile_2).then(function (myCollabs) {
                     return getMyConvos(myCollabs).then(function (myConversations) {
                         return res.json({ colabs: myCollabs, convos: myConversations });
                     });
@@ -188,14 +188,6 @@ router.get('/getcollab/:collab_id', auth_1.default, function (req, res) { return
         }
     });
 }); });
-// const upload = multer({
-//   storage: storage,
-//   limits: { fileSize: 100 * 100000 },
-//   fileFilter: function(req, file, cb) {
-//     console.log(file)
-//     checkFileType(file, cb);
-//   }
-// });
 var upload = multer_1.default();
 // @route    POST api/messages/file/:id
 // @desc     Get download link for file
@@ -287,7 +279,7 @@ router.post('/getfile', auth_1.default, upload.single("file"), function (req, re
 // @desc     Send a friend Request to a user
 // @access   Private
 router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, errors, isValid, user_1, userProfile, profileToCollab_1, err_6;
+    var _a, errors, isValid, user_1, userProfile_1, profileToCollab_1, err_6;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -301,8 +293,8 @@ router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(
                 user_1 = req.user;
                 return [4 /*yield*/, Profile_1.default.findOne({ user: user_1.id })];
             case 2:
-                userProfile = _b.sent();
-                if (!userProfile) {
+                userProfile_1 = _b.sent();
+                if (!userProfile_1) {
                     return [2 /*return*/, res.status(400).json({ errors: { collabs: "You do not have a Profile" } })];
                 }
                 return [4 /*yield*/, Profile_1.default.findOne({ username: req.body.username })];
@@ -312,8 +304,10 @@ router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(
                     return [2 /*return*/, res.status(400).json({ errors: { collabs: 'We could not find the user you wanted to collab with' } })];
                 if (profileToCollab_1.username === user_1.username)
                     return [2 /*return*/, res.status(400).json({ errors: { collabs: 'You cannot collab with yourself' } })];
-                if (!(profileToCollab_1.collabRequestsRecieved.filter(function (u) { return u.username === user_1.username; }).length > 0 || userProfile.collabRequestsSent.filter(function (u) { return u.username === profileToCollab_1.username; }).length > 0)) return [3 /*break*/, 6];
-                userProfile.collabRequestsSent = userProfile.collabRequestsSent.filter(function (reqSent) {
+                if (profileToCollab_1.collabs.filter(function (u) { return u.username === userProfile_1.username; }).length > 0)
+                    return [2 /*return*/, res.status(400).json({ errors: { collabs: 'You already have a collab with this guy' } })];
+                if (!(profileToCollab_1.collabRequestsRecieved.filter(function (u) { return u.username === user_1.username; }).length > 0 || userProfile_1.collabRequestsSent.filter(function (u) { return u.username === profileToCollab_1.username; }).length > 0)) return [3 /*break*/, 6];
+                userProfile_1.collabRequestsSent = userProfile_1.collabRequestsSent.filter(function (reqSent) {
                     return reqSent.userId !== profileToCollab_1.user;
                 });
                 profileToCollab_1.collabRequestsRecieved = profileToCollab_1.collabRequestsRecieved.filter(function (reqRecieve) {
@@ -322,19 +316,19 @@ router.post('/send_req', auth_1.default, function (req, res) { return __awaiter(
                 return [4 /*yield*/, profileToCollab_1.save()];
             case 4:
                 _b.sent();
-                return [4 /*yield*/, userProfile.save()];
+                return [4 /*yield*/, userProfile_1.save()];
             case 5:
                 _b.sent();
                 return [2 /*return*/, res.json({ success: true, msg: "Cancelled your collab request with " + profileToCollab_1.username })];
             case 6:
                 profileToCollab_1.collabRequestsRecieved.push({ userId: user_1.id, username: user_1.username, title: req.body.title, description: req.body.title, date: Date.now() });
-                userProfile.collabRequestsSent.push({ userId: profileToCollab_1.user, username: profileToCollab_1.username, title: req.body.title, description: req.body.title, date: Date.now() });
+                userProfile_1.collabRequestsSent.push({ userId: profileToCollab_1.user, username: profileToCollab_1.username, title: req.body.title, description: req.body.title, date: Date.now() });
                 // console.log(userProfile)
                 return [4 /*yield*/, profileToCollab_1.save()];
             case 7:
                 // console.log(userProfile)
                 _b.sent();
-                return [4 /*yield*/, userProfile.save()];
+                return [4 /*yield*/, userProfile_1.save()];
             case 8:
                 _b.sent();
                 return [2 /*return*/, res.json({ success: true, msg: "Your collab request to " + profileToCollab_1.username + " has been sent" })];
@@ -409,8 +403,8 @@ router.post('/status', auth_1.default, function (req, res) { return __awaiter(vo
                 newCollab = _b.sent();
                 conversation.collabId = newCollab._id;
                 newCollab.save();
-                userProfile.collabs.push(newCollab._id);
-                collabToAccept_1.collabs.push(newCollab._id);
+                userProfile.collabs.push({ collabId: newCollab._id, username: collabToAccept_1.username });
+                collabToAccept_1.collabs.push({ collabId: newCollab._id, username: userProfile.username });
                 conversation.save();
                 return [4 /*yield*/, collabToAccept_1.save()];
             case 6:

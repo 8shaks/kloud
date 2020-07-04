@@ -55,7 +55,6 @@ const Profile = (props:Props) => {
       }
     }, [props.loading])
     useEffect(() => {
-
       if(props.profile.profile !==null){
         if(props.profile.profile.posts.length > 0){
           axios.get(`${host}/api/posts/user/${props.profile.profile.user}`).then((res)=>{
@@ -65,6 +64,9 @@ const Profile = (props:Props) => {
  
         if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
           setStatus({...collabStatus, collabRequestSent:true});
+        }
+        if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
+          setStatus({...collabStatus, collabInProgress:true});
         }
         // if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
         //   setStatus({...friendStatus, collabInProgress:true});
@@ -88,10 +90,10 @@ const Profile = (props:Props) => {
 
     const checkCollabReqInfo = () => {
       let errorsNew:collabError = {description:null, title: null};
-      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a bio below 300 characters" : null;
-      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a bio below 300 characters" : null;
+      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description below 300 characters" : null;
+      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title below 300 characters" : null;
       setCollabReqErrors(errorsNew);
-      if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true
+      if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true;
       else return false
     }
     const sendCollabReq = (e: FormEvent<HTMLFormElement>) => {
@@ -103,12 +105,7 @@ const Profile = (props:Props) => {
     const cancelCollabRequest = () =>{
       props.sendCollabReq(props.profile.profile.username, "sd", "sd");
     }
-    // const onAcceptRequest = () =>{
-    //   props.changeFriendReqStatus({username:props.profile.profile.username, accept:true});
-    // }
-    // const onDenyRequest = () =>{
-    //   props.changeFriendReqStatus({username:props.profile.profile.username, accept:false});
-    // }
+
     const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
       setCollabReqInfo({...collabReqInfo, [e.target.name]: e.target.value})
     }
@@ -120,12 +117,24 @@ const Profile = (props:Props) => {
     //     <Link href="/login" ><a className={profileStyles.addFriendButton}>Chat!</a></Link>
     //   </div>
     // )
-    let collabSection;
+    let collabSection, collabButton;
+    if(!collabStatus.collabRequestSent){
+      collabButton = (
+        <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button>
+      )
+    }else if(collabStatus.collabRequestSent){
+      collabButton = (
+        <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+      )
+    }else if(collabStatus.collabInProgress) {
+      collabButton = (
+        <Link href="/collabs"><a>View Collab</a></Link>
+      )
+    }
     if (props.auth.isAuthenticated && props.profile.profile !== null){
       if(props.auth.user.user.id !== props.profile.profile.user){
         collabSection = (
           <div className={profileStyles.friendSection}>
-            {!collabStatus.collabRequestSent ? <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button> : <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>}
             {<span className={profileStyles.error}>{errors.friends}</span>}
             {<span className={profileStyles.error}>{errors.server}</span>}
           </div>
@@ -163,6 +172,7 @@ const Profile = (props:Props) => {
       profileContent = (
         <div className={profileStyles.page}> 
           <h1 className={profileStyles.heading}>{profile.username}</h1>
+          {collabButton}
           <div className={profileStyles.content}>
             {socialLinks}
             <p>{profile.bio}</p>
