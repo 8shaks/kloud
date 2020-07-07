@@ -2,6 +2,7 @@ import Head from 'next/head';
 import indexStyles from"./styles/index.module.scss";
 import Layout from '../components/layout/layout'
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const Home = () => {
 
@@ -11,8 +12,7 @@ const Home = () => {
         <div className={indexStyles.heading}>
           <h1>Made for producers</h1>
           <span>The ultimate collaboration tool</span>
-          <button >Get Kloud for free</button>
-          
+          <Link href="/register"><a>Register Today</a></Link>
         </div>
       </div>
     </Layout>

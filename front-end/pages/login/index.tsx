@@ -58,7 +58,7 @@ const Login = (props:Props) => {
             {<span className={loginStyles.error}>{errors.username}</span>}
             <input onChange={onChange} type="password" aria-label="Password" value={formValues.password} name="password" placeholder="Password" />
             {<span className={loginStyles.error}>{errors.password}</span>}
-            <div><button className={loginStyles.loginButton} type="submit">Login</button><Link href="/register" ><a className={loginStyles.registerButton}>Register</a></Link></div>
+            <div><button className={loginStyles.loginButton} type="submit">Login</button></div>
             {<span className={loginStyles.error}>{errors.auth}</span>}
         </form>
       </div>

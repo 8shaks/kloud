@@ -15,7 +15,6 @@ $default-bg : #f3f4f5;
         zoom: 0;
     }
     &:hover{
-        border: 1px solid black;
         outline: none;
         transform: none;
     }
@@ -33,6 +32,9 @@ $default-bg : #f3f4f5;
         margin:10px auto;
         padding: 5px 5px;
         font-size: 16px;
+        &:hover{
+            outline: none;
+        }
 }
 .error{
     color: red;

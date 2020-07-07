@@ -138,7 +138,6 @@ if(!collabStatus.collabRequestSent){
   }
   
     if(props.posts.post !== null){
-      console.log(props)
       const { post } = props.posts
       postContent = (
         <div className={postStyles.page}> 

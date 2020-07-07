@@ -44,7 +44,7 @@ export default (props: Props) => {
 
     const getFile = (fileName: string) => {
         axios.post(`${host}/api/collabs/getfile`,{fileName, collab_id: props.collabId }).then((res) =>{
-                    console.log(res.data);
+                    // console.log(res.data);
                     window.open(res.data)
         })  
     }
@@ -89,7 +89,7 @@ export default (props: Props) => {
     //         </div>
     //         )
     // }
-    console.log(collab)
+    // console.log(collab)
     let viewFiles = (
         <div className={messageComp.viewFiles}>
             <span onClick={toggleViewFiles} className={messageComp.close} >&times;</span>

@@ -86,60 +86,26 @@ io.on('connection', (socket) => {
   })
   socket.on("chat", async (data:{profile:IProfile, userToChat:string, message:string, conversationId:string}, callback) => {
     // if(data.profile.conversations.filter(u => u.username === data.userToChat).length > 0){
-      let conservationObj = await Conversation.findOne({_id:data.conversationId});
+      let conversationObj = await Conversation.findOne({_id:data.conversationId});
       try{
-        if(conservationObj !== null){
-          const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conservationObj._id});
+        if(conversationObj !== null){
+          const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversationObj._id, read:false});
           await newMessage.save();
-          io.to(conservationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat } );
+          conversationObj.lastActive = Date.now();
+          conversationObj.save();
+          io.to(conversationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat } );
         }
       }catch(err){
         console.error(err)
       }
-    // }else{
-    //   const userProfile = await Profile.findOne({user:data.profile.user});
-    //   const userProfile2 = await Profile.findOne({username:data.userToChat});
-    //   if(userProfile && userProfile2){
-    //     const conversation = new Conversation({participants:[data.profile.username,data.userToChat]})
-
-    //     await conversation.save();
-
-    //     userProfile.conversations.push({conversationId:conversation._id, username:userProfile2.username});
-    //     userProfile2.conversations.push({conversationId:conversation._id, username:userProfile.username});
-
-    //     await userProfile.save();
-    //     await userProfile2.save();
-
-    //     socket.join(conversation._id);
-
-    //     const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversation._id});
-    //     // if(data.files){
-    //     //   const files = Array.from(data.files)
-    //     //   files.forEach(file => {
-    //     //     newMessage.files.push({file:`conversations/${conversation._id}/${newMessage._id}/${file.name.trim().replace(" ", "_")}`,fileName:file.name.trim()});
-    //     //   });
-    //     //   await uploadFile(data.files,  conversation._id, newMessage._id).then((fileData) => {
-    //     //     fileData.forEach((file:any) => {
-    //     //       newMessage.files.push(file.location);
-    //     //     });
-    //     //   })
-    //     // }
-    //     newMessage.save();
-    //     // let fileObj = data.files ? Array.from(data.files) : []; 
-    //     io.to(conversation._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat, } );
-    //   }
-   
-    // }
+// Screen sharing
+    socket.on("screenCaptureOffer", message => {
+      //console.log(message);
+      io.emit("screenCaptureOffer", message);
+    });
+    socket.on("screenCaptureAnswer", message => {
+      io.emit("screenCaptureAnswer", message);
+    });
 
   })
 })
-
-// const params = {
-//   Bucket: 'kloud-storage', // pass your bucket name
-//   Key: `conversations/${conservationObj._id}`, // file will be saved as testBucket/contacts.csv
-//   Body: JSON.stringify(data, null, 2)
-// };
-// s3.upload(params, function(s3Err, data) {
-//     if (s3Err) throw s3Err
-//     console.log(`File uploaded successfully at ${data.Location}`)
-// });

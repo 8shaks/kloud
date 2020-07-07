@@ -61,7 +61,7 @@ const createPost = (props:Props) => {
             <input onChange={onChange} aria-label="Title" value={postValues.title} name="title" placeholder="Looking for Travis Scott type beat"/>
             {<span className="error">{errors.title}</span>}
             <label>Description</label>
-            <textarea onChange={onChange} aria-label="Description" value={postValues.description} name="description" placeholder="Looking for a travis scott type producer I can collab with" />
+            <textarea onChange={onChange} aria-label="Description" value={postValues.description} name="description" placeholder="looking for a producer who can do this this and this" />
             {<span className="error">{errors.description}</span>}
             <button>Create Post</button>
         </form>

@@ -55,10 +55,10 @@ const Profile = (props:Props) => {
               {
                 myCollabs.map((myCollab)=>{
                   if (myCollab.user1.user === props.auth.user.user.id){
-                    return <CollabCard date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                    return <CollabCard key={myCollab._id} date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
                   }
                   else{
-                    return <CollabCard date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                    return <CollabCard key={myCollab._id} date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
                   }
                 })
               }
@@ -88,9 +88,12 @@ const Profile = (props:Props) => {
       }
       collabContent = (
         <div className={collabStyles.page}> 
-          <h1 className={collabStyles.heading}>Welcome {profile.username}</h1>
+        <div className={collabStyles.heading}>
+          <h1 >Welcome {profile.username}</h1>
+          <h3>Here you can manage your collabs. Checkout what collabs you have currently going on, who has sent you a request, and any pending requests you have sent.</h3>
+        </div>
           <div className={collabStyles.collabs}>
-            <h3><Link href="/collabs">Head to the collab screen</Link></h3>
+            <h2 className={collabStyles.myCollabsLink}><Link href="/collabs"><a>View Collab Chat and Files</a></Link></h2>
             <div className={collabStyles.collabRequestsRecieved}>
               <h2>Collab Requests Received</h2>
               {collabRecs}

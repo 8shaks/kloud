@@ -9,14 +9,19 @@
 }
 .heading{
     display: block;
-    font-size: 40px;
+    font-size: 30px;
     width: 100%;
     text-align: center;
     margin-bottom: 20px;
+    h3{
+        width: 50%;
+        font-size: 18px;
+        margin: 0 auto;
+    }
 }
 
 .collabs{
-    margin: 2em auto;
+    margin: 1em auto;
     width: 80%;
     display: block;
     padding: 1em;
@@ -30,7 +35,13 @@
 .myCollabs{
     width: 80%;
 }
-
+.myCollabsLink {
+    text-align: center;
+    padding-bottom: 1.5em;
+    a{
+        color: $blue !important;
+    }
+}
 // Indiviudal page
 .content{
     margin: 0 auto;

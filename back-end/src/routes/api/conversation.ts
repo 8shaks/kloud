@@ -76,6 +76,36 @@ router.get('/messages/:id', auth, async  (req, res) => {
   }
 });
 
+router.get('/lastMessage/:conversationId', auth, async  (req, res) => {
+  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+ 
+  try {
+  
+    let message = await Message.find({conversationId: req.params.conversationId}).limit(1).sort({ date: 1 });
+
+    return res.json({message})
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+router.post("/changeMessageStatus", auth, async (req, res) => {
+  if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
+  try {
+    console.log("Yo")
+    let message = await Message.findById(req.body.message._id);
+    if(!message) return res.status(404).json({errors: { message: 'Message not found' }});
+    message.read = true;
+    await message.save();
+    return res.json({message})
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // // MAKE A FILE UPLOAD ENDPOINT
 
 // const upload = multer({

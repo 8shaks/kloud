@@ -4,9 +4,10 @@ import auth from '../../middleware/auth';
 import validateCollabRequest from "../../validation/friendRequest";
 import Collab from "../../models/Collab";
 import Profile from "../../models/Profile";
-import { IProfile, ICollab, IConversation } from "../../@types/custom";
+import { IProfile, ICollab, IConversation, ConversationType } from "../../@types/custom";
 import { storage, checkFileType, uploadFile, getFile } from "../../utils/fileFuncs";
 import Conversation from '../../models/Conversation';
+import Message from '../../models/Message';
 import multer from "multer";
 import { profile } from 'console';
 
@@ -48,16 +49,25 @@ router.get('/mycollabs', auth, async (req, res) => {
 // @desc     Get all a users conversations
 // @access   Private
 function getMyConvos(collabs:ICollab[]):Promise<any>{
-  return new Promise<IConversation[]>((resolve, reject) => {
-    let myConversations:IConversation[] = [];
+  return new Promise<ConversationType[]>((resolve, reject) => {
+    let myConversations:ConversationType[] = [];
     if (collabs.length === 0)  resolve(myConversations) 
     collabs.forEach(async (collabObj) => {
       let conversation = await Conversation.findById(collabObj.conversation);
 
-      if (conversation) myConversations.push(conversation);
+      if (conversation) {
+        let lastMessage = await Message.find({conversationId: conversation._id}).limit(1).sort({ date: -1 });
+        let conversationObj:ConversationType;
+        if(lastMessage) {
+          conversationObj = {...conversation._doc, lastMessage:lastMessage[0]}
+          myConversations.push(conversationObj);
+        }else{
+          myConversations.push(conversation);
+        }
+      }
 
       if (myConversations.length === collabs.length){
-        resolve(myConversations.sort((a, b) => { return new Date(b.date).getTime() - new Date(a.date).getTime()}));
+        resolve(myConversations.sort((a, b) => { return new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime()}));
       }
     });
   });

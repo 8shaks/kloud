@@ -60,7 +60,7 @@ export interface CollabType{
     date?:number
   }[],
   _id:string,
-  date?:number
+  date:number
 }
   
 export interface profileError{
@@ -97,11 +97,14 @@ export interface ConversationType {
   date?,
   participants:string[]
   _id:string,
-  collabId?:string
+  collabId?:string,
+  lastMessage:MessageType,
+  lastActive:number
 }
 export interface MessageType{
   date?,
   sender:string,
   content:string,
   conversationId:string,
+  read:boolean
 }

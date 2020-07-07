@@ -38,7 +38,6 @@ router.post('/', async (req, res) => {
           .status(400)
           .json({ errors:  {auth:'Recheck your info and try again'  }});
       }
-
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {

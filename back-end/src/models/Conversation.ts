@@ -12,7 +12,9 @@ const ConversationSchema = new Schema({
     type: Date,
     default: Date.now
   },
- 
+  lastActive: {
+    type: Date,
+  }
 });
 
 

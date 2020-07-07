@@ -3,15 +3,19 @@ import messagesStyles from"./messages.module.scss";
 import Layout from '../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getCurrentProfile} from '../../redux/actions/profileActions'
+import { getCurrentProfile, createProfile, unfriendUser, changeFriendReqStatus } from '../../redux/actions/profileActions'
 import React, { useState, useEffect, FormEvent, Fragment } from 'react';
-import Router from 'next/router';
-import { ProfileType, ConversationType , MessageType} from "../../@types/customType"
+import Router, { useRouter } from 'next/router';
+import FriendReqCard from "../../components/profile/friendReqCard";
+import FriendCard from "../../components/profile/friendCard";
+import SocialLinksForm from "../../components/profile/socialLinksForm";
+import { ProfileType, ConversationType, CollabType, PostType , MessageType} from "../../@types/customType"
 import axios from "axios";
 import io from "socket.io-client";
 import host from "../../vars"
 import MessagesScreen from "../../components/collabs/messagesScreen"
 import FileInputBox from '../../components/collabs/fileInputBox';
+import collabCard from '../../components/my-collabs/collabCard';
 // import MessagesScreen from '../../components/collabs/messagesScreen';
 
 
@@ -20,17 +24,22 @@ interface Props{
   errors: any,
   profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean},
   loading:boolean,
+  // profile:{profile: any, profiles:[any], isLoading:boolean },
+//  loginUser:  ({username, password}: loginError) => void,
   getCurrentProfile:() => void,
 }
 
 const socket = io(host);
 const Messages = (props:Props) => {
+    const [convoOnLoad, setConvoOnLoad] = useState(false);
     const [profile, setProfile] = useState(props.profile.profile);
     const [friendListStatus, changeFriendListStatus] = useState(false);
     const [conversations, setConversations] = useState<ConversationType[]>([]);
     const [currentConvo, setCurrentConvo] = useState<{userToChat:string, message:string, messages:MessageType[], conversationId:string, collabId:string | undefined}>({userToChat:"", message:"", messages:[], conversationId:"", collabId:undefined});
-    // const [lastMessageRead, setReadStatus] = useState(false)
-    // const [collabs, setCollabs] = useState<CollabType[]>([]);
+
+    const router = useRouter();
+    const { id } = router.query;
+
     useEffect(() => {
       if(!props.loading){
         if (!props.auth.isAuthenticated ) Router.push('/');
@@ -58,31 +67,36 @@ const Messages = (props:Props) => {
     }, [props.profile.profile])
 
 
-// console.log(currentConvo)
     useEffect(() => {
-
-
-    }, [currentConvo])
+      if(conversations.length > 0 && typeof id === 'string' && !convoOnLoad){
+          const index = conversations.findIndex(x => x.collabId == id);
+          if(index !== -1){
+            let newConvo = conversations[index]
+            let new_array = conversations.filter((convo)=>{
+              return convo._id !== newConvo._id;
+            })
+            new_array.unshift(newConvo);
+            setConversations(new_array);
+            let userToChat = newConvo.participants[0] === props.auth.user.username ? newConvo.participants[1] : newConvo.participants[0];
+            chatFriend(userToChat, newConvo._id, newConvo.lastMessage, id);
+            setConvoOnLoad(true);
+          }
+      }
+    }, [conversations])
 
     socket.on("message", ({message}: {message:MessageType}) => {
-      // console.log(message)
       if(message.conversationId === currentConvo.conversationId){
         let newMessage = message;
         newMessage.read = true;
-        if(message.sender === props.auth.user.username){
-          axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
-            setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
-          );
-        }else{
+        axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
           setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
-        }
-        
+        );
       }else if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
-        let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
-        newConvo.lastMessage = message;
-         let new_array = conversations.filter((convo)=>{
-          return convo._id !== newConvo._id;
-        });
+          let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
+          newConvo.lastMessage = message;
+          let new_array = conversations.filter((convo)=>{
+            return convo._id !== newConvo._id;
+          });
         new_array.unshift(newConvo);
         setConversations(new_array);
       }

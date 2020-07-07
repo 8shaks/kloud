@@ -86,16 +86,28 @@ export interface ICollab extends mongoose.Document {
 }
 
 export interface IConversation extends mongoose.Document{
+  _doc: ConversationType;
   date?,
   participants:string[],
   _id:string,
-  collabId?:string
+  collabId?:string,
+  lastMessage?:IMessage,
+  lastActive:number
+}
+export interface ConversationType {
+  date?,
+  participants:string[],
+  _id:string,
+  collabId?:string,
+  lastMessage?:IMessage,
+  lastActive:number
 }
 export interface IMessage extends mongoose.Document{
   date?,
   sender:string,
   content:string,
   conversationId:string,
+  read:boolean
 }
 export interface SocketMessage extends mongoose.Document{
   date?,

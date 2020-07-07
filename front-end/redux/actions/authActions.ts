@@ -52,7 +52,7 @@ export const loginUser = (userData:userLogin) => (dispatch: Dispatch) => {
         setAuthToken(token);
         const decoded:{exp: number} = jwt_decode(token);
         dispatch(setCurrentUser(decoded));
-        Router.push("/")
+        Router.push("/explore")
     })
     .catch(err =>{
       if(err.response){

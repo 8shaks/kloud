@@ -4,12 +4,25 @@ const Schema = mongoose.Schema;
 import { IMessage } from '../@types/custom';
 
 const MessageSchema = new Schema({
-    sender:String,
-    content:String,
-    conversationId:String,
+    sender:{
+        required:true,
+        type:String
+    },
+    content:{
+        required:true,
+        type:String
+    },
+    conversationId:{
+        required:true,
+        type:String
+    },
     date: {
         type: Date,
         default: Date.now
+    },
+    read:{
+        required:true,
+        type:Boolean
     }
 });
 
