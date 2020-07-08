@@ -48,7 +48,7 @@ router.post( '/edit', auth, async (req, res) => {
   try {
     let newPost = await Post.findOneAndUpdate(
       { _id: req.body.id },
-      { $set: {title:req.body.title, description:req.body.description} },
+      { $set: {title:req.body.title, description:req.body.description, genre: req.body.genre, username:req.user.username, user:req.user.id} },
       { new: true, upsert: true }
     );
 
