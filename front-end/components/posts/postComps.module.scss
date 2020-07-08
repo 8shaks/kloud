@@ -5,7 +5,7 @@
     padding: 1em;
     border-radius: 5px;
     margin: 2em auto;
-    width: 25%;
+    width: 27%;
     display: inline-block;
     margin: 1em;
 
@@ -27,19 +27,22 @@
     cursor: pointer;
     display: block;
     // text-align: center;
-    margin-top: 10px ;
+    margin-top: 20px ;
     &:hover{
         text-decoration: underline;
     }
 }
 .flexCardHeader{
+    text-align: center;
     margin:10px 0px 1.5em 0;
     h3{
         cursor: pointer;
-        color: $blue;
-        text-decoration: underline;
-        margin-bottom: 15px;
-        text-align: center;
+        // color: $blue;
+        // text-decoration: underline;
+        margin-bottom: 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 }
 .genre{
@@ -48,6 +51,10 @@
     border-radius: 10px;
     font-size: 16px;
     color: white;
-    margin: 0 auto;
+}
+.description{
     text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

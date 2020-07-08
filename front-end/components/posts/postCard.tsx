@@ -19,7 +19,7 @@ export default (props: Props) => {
                     <span className={postComp.genre}>{props.genre} </span>
                     <Link href={`/profiles/${props.user}`}><a className={postComp.profileLink}>{props.username}</a></Link> 
             </div>
-            <p>{props.description.substring(0,30)}...</p>
+            <p className={postComp.description}>{props.description.substring(0,30)}...</p>
         </div>
     )
 }

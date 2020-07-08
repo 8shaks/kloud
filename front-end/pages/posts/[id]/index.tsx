@@ -38,14 +38,6 @@ const Post = (props:Props) => {
   const [collabReqInfo, setCollabReqInfo] = useState({title:"", description:""})
   const [collabReqErrors, setCollabReqErrors] = useState<collabError>({ title:null, description:null, server:null});
 
-  // useEffect(() => {
-  //   if(!props.loading){
-  //     if(typeof id === "string"){
-  //       props.getProfileById(id);
-
-  //     }
-  //   }
-  // }, [props.loading])
   useEffect(() => {
     if(props.profile.profile !==null){
   
@@ -142,12 +134,15 @@ const Post = (props:Props) => {
       const { post } = props.posts
       postContent = (
         <div className={postStyles.page}> 
-          <h1 className={postStyles.heading}>{post.title}</h1>
+          <h1 className={postStyles.heading}>
+            {post.title} 
+            <Link href={`/profiles/username/${post.username}`}><a >{post.username}</a></Link>
+          </h1>
           <div className={postStyles.content}>
             <span className={postStyles.genre}>{post.genre}</span>
             <br/>
+            <p className={postStyles.description}>{post.description}</p>
             {collabButton}
-            <p>{post.description}</p>
             {editPost}
             {authError ? <span className={postStyles.error}>You do not own this post!</span> : null}
             {collabModal ? <CollabReqModal toggleModal={toggleModal} username={props.profile.profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}

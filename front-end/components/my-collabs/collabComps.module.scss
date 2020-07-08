@@ -27,18 +27,23 @@
     background-color: red;
 }
 .profileLink{
-    color: $blue;
-    &:hover{
-        text-decoration: underline;
-    }
+    // color: $blue;
+    // &:hover{
+    //     text-decoration: underline;
+    // }
 }
 .flexCardHeader{
     display: flex;
     justify-content: space-between;
     margin:10px 0px 2em 0;
-    color: $blue;
-    text-decoration: underline;
-    cursor: pointer;
+    // color: $blue;
+    a{
+        color: black;
+        cursor: pointer;
+    }
+    
+    // text-decoration: underline;
+    
 }
 .description{
     font-size: 17px;
@@ -84,5 +89,7 @@
     textarea{
         @extend .input;
     }
-
+}
+.readLogo{
+    margin-left: 10px;
 }

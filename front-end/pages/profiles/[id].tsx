@@ -103,40 +103,26 @@ const Profile = (props:Props) => {
     }
  
     let profileContent = <div className={profileStyles.page}>Loading...</div>
-    let userPostsContent;
-    // let friendSection = (
-    //   <div className={profileStyles.friendSection}>
-    //     <Link href="/login" ><a className={profileStyles.addFriendButton}>Chat!</a></Link>
-    //   </div>
-    // )
-    let collabSection, collabButton;
-    if(!collabStatus.collabRequestSent){
-      collabButton = (
-        <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button>
-      )
-    }else if(collabStatus.collabRequestSent){
-      collabButton = (
-        <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
-      )
-    }else if(collabStatus.collabInProgress) {
-      collabButton = (
-        <Link href="/collabs"><a>View Collab</a></Link>
-      )
-    }
-    if (props.auth.isAuthenticated && props.profile.profile !== null){
-      if(props.auth.user.user.id !== props.profile.profile.user){
-        collabSection = (
-          <div className={profileStyles.friendSection}>
-            {<span className={profileStyles.error}>{errors.friends}</span>}
-            {<span className={profileStyles.error}>{errors.server}</span>}
-          </div>
-        )
-      }
-    }
+    let userPostsContent, collabButton;
   
     if(props.profile.profile !== null){
       const { profile } = props.profile
       let socialLinks;
+
+      if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id){
+        collabButton = (
+          <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button>
+        )
+      }else if(collabStatus.collabRequestSent){
+        collabButton = (
+          <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+        )
+      }else if(collabStatus.collabInProgress) {
+        collabButton = (
+          <Link href="/collabs"><a>View Collab</a></Link>
+        )
+      }
+  
       if(profile.posts.length > 0){
         userPostsContent=(
           <div className={profileStyles.myPosts}>
@@ -164,11 +150,11 @@ const Profile = (props:Props) => {
       profileContent = (
         <div className={profileStyles.page}> 
           <h1 className={profileStyles.heading}>{profile.username}</h1>
-          {collabButton}
+         
           <div className={profileStyles.content}>
             {socialLinks}
             <p>{profile.bio}</p>
-            {collabSection}
+            {collabButton}
           </div>
           {userPostsContent}
           {collabModal ? <CollabReqModal toggleModal={toggleModal} username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}

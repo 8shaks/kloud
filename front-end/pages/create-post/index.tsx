@@ -44,8 +44,6 @@ const createPost = (props:Props) => {
     const onSubmit = (e: FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         if(checkValid()){
-          console.log("yo")
-          console.log(errors)
           props.addPost({title:postValues.title, description: postValues.description, genre:  postValues.genre });
         }
     }
@@ -70,7 +68,13 @@ const createPost = (props:Props) => {
                 <option value="" selected disabled hidden>Choose genre</option>
                 <option value="Trap">Trap</option>
                 <option value="R&B">R&B</option>
-                <option value="Electronic" >Electronic</option>
+                <option value="EDM" >EDM</option>
+                <option value="Drill" >Drill</option>
+                <option value="Synthwave" >Synthwave</option>
+                <option value="Classical" >Classical</option>
+                <option value="Pop" >Pop</option>
+                <option value="Future Bass" >Future Bass</option>
+                <option value="Orchestral" >Orchestral</option>
               </select>
               {<span className={postStyles.error}>{errors.genre}</span>}
               <label>Description</label>

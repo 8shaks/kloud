@@ -70,7 +70,15 @@
     padding: 10px;
 
 }
+.socialLinks{
+    display: flex;
+    justify-content: space-between;
+    width: 20%;
+    margin:0 auto;
+    align-items: flex-end;
+}
 .socialLogo{
+    vertical-align: bot;
     width: 50px;
     margin-right: 10px;
 }

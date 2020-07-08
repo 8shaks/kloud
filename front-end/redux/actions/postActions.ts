@@ -25,7 +25,7 @@ export const getPosts = () => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -75,7 +75,7 @@ export const deletePost = (id:string) => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -99,7 +99,7 @@ export const addPost = (postData:PostType) => async (dispatch: Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -117,7 +117,7 @@ export const editPost = (postData:PostType) => async (dispatch: Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -136,7 +136,7 @@ export const getPost = (id:string) => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
