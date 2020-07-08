@@ -30,11 +30,14 @@
     position:fixed;
     background-color: white;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     padding: 0 2em;
     width: 70%;
+    height: 60px;
+    // border-bottom: 2px black solid;
     button{
+        height: 40px;
         margin: 0 auto;
         @extend .default_button;
     }

@@ -66,14 +66,26 @@
             border-right: none;
         }
         button{
-            width: 10%;
+            width: 8%;
             // @extend .button
             padding: 5px 15px;
             font-size:16px;
+            margin-right: 20px;
         }
     }
 }
 
+.collabOnEnter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    width: 100%;
+    h3{
+        font-size: 24px;
+    }
+
+}
 
 
 .close {

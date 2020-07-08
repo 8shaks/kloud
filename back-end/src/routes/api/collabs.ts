@@ -21,8 +21,13 @@ function getMyCollabs(profile:IProfile):Promise<any>{
     if (profile.collabs.length === 0)  resolve(myCollabs) 
     profile!.collabs.forEach(async (collabObj) => {
       let collab = await Collab.findById(collabObj.collabId);
-      if (collab)
+      
+      if (collab){
+        let lastMessage = await Message.find({conversationId: collab.conversation}).limit(1).sort({ date: -1 });
+        if (!lastMessage[0].read && profile.username !== lastMessage[0].sender) collab.notification = true;
+        else collab.notification = false;
         myCollabs.push(collab);
+      }
       if (myCollabs.length === profile!.collabs.length)
         resolve(myCollabs);
     });

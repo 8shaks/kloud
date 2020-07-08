@@ -78,6 +78,7 @@ export interface ICollab extends mongoose.Document {
   title: string,
   description: string,
   conversation:string,
+  notification?:boolean
   files:{
     fileName:string,
     fileKey:string,

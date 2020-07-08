@@ -3,20 +3,20 @@ import messagesStyles from"./messages.module.scss";
 import Layout from '../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getCurrentProfile} from '../../redux/actions/profileActions'
+import { getCurrentProfile} from '../../redux/actions/profileActions';
 import React, { useState, useEffect, FormEvent, Fragment } from 'react';
 import Router from 'next/router';
-import { ProfileType, ConversationType , MessageType} from "../../@types/customType"
+import { ProfileType, ConversationType , MessageType} from "../../@types/customType";
 import axios from "axios";
 import io from "socket.io-client";
-import host from "../../vars"
-import MessagesScreen from "../../components/collabs/messagesScreen"
+import host from "../../vars";
+import MessagesScreen from "../../components/collabs/messagesScreen";
 import FileInputBox from '../../components/collabs/fileInputBox';
 // import MessagesScreen from '../../components/collabs/messagesScreen';
 
 
 interface Props{
-  auth: {isAuthenticated: boolean, user:{ id:string, username: string}},
+  auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}},
   errors: any,
   profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean},
   loading:boolean,
@@ -69,9 +69,10 @@ const Messages = (props:Props) => {
       if(message.conversationId === currentConvo.conversationId){
         let newMessage = message;
         newMessage.read = true;
-        if(message.sender === props.auth.user.username){
+        if(message.sender !== props.auth.user.user.username){
+          console.log(message)
           axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
-            setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
+             setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
           );
         }else{
           setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
@@ -86,7 +87,7 @@ const Messages = (props:Props) => {
         new_array.unshift(newConvo);
         setConversations(new_array);
       }
-    })
+    });
   
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
@@ -108,7 +109,7 @@ const Messages = (props:Props) => {
 
     const screenShare = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      // window.open('https://meeting.is/ss/app/home#_', 'CrankWheel Control Panel', 'menubar=no,location=no,resizable=yes,status=no,left=0,top=0,outerWidth=' + (screen.width / 5) + ',outerHeight=' + screen.height)
+      window.open("https://meet.google.com/new?hs=190&utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-bkws-all-all-trial-b-dr-1009156&utm_content=text-ad-none-any-DEV_c-CRE_435246731960-ADGP_Hybrid+%7C+AW+SEM+%7C+BKWS+%7E+BMM+%2F%2F+Google+Meet+%2F%2F+Google+Meet-KWID_43700053715469092-kwd-405456583893&utm_term=KW_%2Bmeet+%2Bgoogle-ST_%2Bmeet+%2Bgoogle");
     }
     const toggleFriendList = () => {
       changeFriendListStatus(!friendListStatus);
@@ -152,7 +153,6 @@ const Messages = (props:Props) => {
               const userChat = convo.participants[0] !== profile.username ? convo.participants[0] : convo.participants[1];
               let messageRead;
               if(!convo.lastMessage.read && convo.lastMessage.sender !== profile.username) messageRead = <svg className={messagesStyles.readLogo} height="10" width="10"><circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" /></svg>
-              // console.log(convo.lastMessage);
               return (
                 <li className={convo.participants.includes(currentConvo.userToChat) ? messagesStyles.personToChat + " " + messagesStyles.selectedConvo : messagesStyles.personToChat} key={convo._id} onClick={() => {chatFriend(userChat, convo._id, convo.lastMessage, convo.collabId)}}> 
                   {userChat}
@@ -163,7 +163,7 @@ const Messages = (props:Props) => {
             })}
             <button onClick={toggleFriendList} className={messagesStyles.newConversation}>New Convo</button>
           </ul>
-          {currentConvo.userToChat === "" ? <h3>Choose a collab to your left</h3> : 
+          {currentConvo.userToChat === "" ? <div className={messagesStyles.collabOnEnter}><h3>Choose a collab to your left</h3></div> : 
           <div className={messagesStyles.chat}>
             <FileInputBox collabId={currentConvo.collabId}/>
             <MessagesScreen messages={currentConvo.messages} user={profile.username}/>
@@ -189,7 +189,7 @@ const Messages = (props:Props) => {
 }
 
 
-const mapStateToProps = (state: { loading: boolean, profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean}, auth: {isAuthenticated: boolean, user:{ id:string, username: string}}; errors: any; }) => ({
+const mapStateToProps = (state: { loading: boolean, profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean}, auth: {isAuthenticated: boolean, user:{ user: {id:string, username: string}}}; errors: any; }) => ({
   auth: state.auth,
   profile: state.profile,
   errors: state.errors,

@@ -72,10 +72,7 @@ const server = app.listen(port, () => console.log(`Server running on port ${port
 
 const io = socketIo(server);
 
-interface user{
-  username:string,
-  userId:string
-}
+
 io.on('connection', (socket) => {
   console.log("we have a new connection!");
   socket.on("join", async (conversationId, callbck) => {
@@ -98,14 +95,6 @@ io.on('connection', (socket) => {
       }catch(err){
         console.error(err)
       }
-// Screen sharing
-    socket.on("screenCaptureOffer", message => {
-      //console.log(message);
-      io.emit("screenCaptureOffer", message);
-    });
-    socket.on("screenCaptureAnswer", message => {
-      io.emit("screenCaptureAnswer", message);
-    });
 
   })
 })

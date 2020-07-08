@@ -25,10 +25,12 @@
 .profileLink{
     color: $blue;
     cursor: pointer;
+    display: block;
+    // text-align: center;
+    margin-top: 10px ;
     &:hover{
         text-decoration: underline;
     }
-    margin-left: 5px;
 }
 .flexCardHeader{
     margin:10px 0px 1.5em 0;
@@ -37,6 +39,7 @@
         color: $blue;
         text-decoration: underline;
         margin-bottom: 15px;
+        text-align: center;
     }
 }
 .genre{
@@ -45,4 +48,6 @@
     border-radius: 10px;
     font-size: 16px;
     color: white;
+    margin: 0 auto;
+    text-align: center;
 }

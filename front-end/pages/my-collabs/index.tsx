@@ -3,11 +3,12 @@ import collabStyles from"./collab.module.scss";
 import Layout from '../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getCurrentProfile, changeCollabRecStatus } from '../../redux/actions/profileActions'
+import { getCurrentProfile, changeCollabRecStatus, sendCollabReq } from '../../redux/actions/profileActions'
 import React, { useState, useEffect, FormEvent, Fragment } from 'react';
 import Router from 'next/router';
 import CollabCard from "../../components/my-collabs/collabCard";
 import CollabRecCard from "../../components/my-collabs/collabRecCard";
+import CollabReqCard from "../../components/my-collabs/collabReqCard";
 import { CollabType, ProfileType } from "../../@types/customType"
 import axios from "axios";
 import host from "../../vars"
@@ -20,6 +21,7 @@ interface Props{
   // profile:{profile: any, profiles:[any], isLoading:boolean },
 //  loginUser:  ({username, password}: loginError) => void,
   getCurrentProfile:() => void,
+  sendCollabReq:(username:string, title:string, description:string) => void,
   changeCollabRecStatus : (collabReq:{username:string, accept:boolean}) => void
 }
 const Profile = (props:Props) => {
@@ -55,10 +57,10 @@ const Profile = (props:Props) => {
               {
                 myCollabs.map((myCollab)=>{
                   if (myCollab.user1.user === props.auth.user.user.id){
-                    return <CollabCard key={myCollab._id} date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                    return <CollabCard key={myCollab._id} date={myCollab.date} user={myCollab.user2} collaborator={myCollab.user1} _id={myCollab._id} title={myCollab.title} description={myCollab.description} notification={myCollab.notification}/>
                   }
                   else{
-                    return <CollabCard key={myCollab._id} date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description}/>
+                    return <CollabCard key={myCollab._id} date={myCollab.date} user={myCollab.user1} collaborator={myCollab.user2} _id={myCollab._id} title={myCollab.title} description={myCollab.description} notification={myCollab.notification}/>
                   }
                 })
               }
@@ -66,16 +68,26 @@ const Profile = (props:Props) => {
 
         )
       }
-      // else{
-      //   collabs = (
-      //       <span className={collabStyles.heading}>Head to your <Link href="/profiles/me#friends"><a>friends list</a></Link> and start a collab!</span>
-      //   )
-      // }
       if(profile.collabRequestsRecieved.length > 0){
         collabRecs = (
         <Fragment>
           {profile.collabRequestsRecieved.map((collabRec)=>{
               return <CollabRecCard changeCollabRecStatus={props.changeCollabRecStatus} date={collabRec.date} collaborator={{username:collabRec.username, userId:collabRec.userId}} title={collabRec.title} description={collabRec.description}/>
+          })}
+        </Fragment>
+        )
+      }else{
+        collabRecs = (
+          <Fragment>
+            <span>None Yet :(</span>
+          </Fragment>
+          )
+      }
+      if(profile.collabRequestsSent.length > 0){
+        collabRecs = (
+        <Fragment>
+          {profile.collabRequestsRecieved.map((collabRec)=>{
+              return <CollabReqCard cancelCollabReq={props.sendCollabReq} date={collabRec.date} collaborator={{username:collabRec.username, userId:collabRec.userId}} title={collabRec.title} description={collabRec.description}/>
           })}
         </Fragment>
         )
@@ -96,6 +108,10 @@ const Profile = (props:Props) => {
             <h2 className={collabStyles.myCollabsLink}><Link href="/collabs"><a>View Collab Chat and Files</a></Link></h2>
             <div className={collabStyles.collabRequestsRecieved}>
               <h2>Collab Requests Received</h2>
+              {collabRecs}
+            </div>
+            <div className={collabStyles.collabRequestsRecieved}>
+              <h2>Collab Requests Sent</h2>
               {collabRecs}
             </div>
             <div className={collabStyles.collabsList}>
@@ -125,5 +141,5 @@ const mapStateToProps = (state:Props) => ({
 
 export default connect(
   mapStateToProps,
-  { getCurrentProfile, changeCollabRecStatus }
+  { getCurrentProfile, changeCollabRecStatus, sendCollabReq }
 )(Profile);

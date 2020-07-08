@@ -20,7 +20,7 @@ import collabCard from '../../components/my-collabs/collabCard';
 
 
 interface Props{
-  auth: {isAuthenticated: boolean, user:{ id:string, username: string}},
+  auth: {isAuthenticated: boolean, user:{ user: {id:string, username: string}}},
   errors: any,
   profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean},
   loading:boolean,
@@ -77,7 +77,7 @@ const Messages = (props:Props) => {
             })
             new_array.unshift(newConvo);
             setConversations(new_array);
-            let userToChat = newConvo.participants[0] === props.auth.user.username ? newConvo.participants[1] : newConvo.participants[0];
+            let userToChat = newConvo.participants[0] === props.auth.user.user.username ? newConvo.participants[1] : newConvo.participants[0];
             chatFriend(userToChat, newConvo._id, newConvo.lastMessage, id);
             setConvoOnLoad(true);
           }
@@ -85,22 +85,28 @@ const Messages = (props:Props) => {
     }, [conversations])
 
     socket.on("message", ({message}: {message:MessageType}) => {
+      // console.log(message)
       if(message.conversationId === currentConvo.conversationId){
         let newMessage = message;
         newMessage.read = true;
-        axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
+        if(message.sender !== props.auth.user.user.username){
+          console.log(message)
+          axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
+             setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
+          );
+        }else{
           setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
-        );
+        }
       }else if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
-          let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
-          newConvo.lastMessage = message;
-          let new_array = conversations.filter((convo)=>{
-            return convo._id !== newConvo._id;
-          });
+        let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
+        newConvo.lastMessage = message;
+         let new_array = conversations.filter((convo)=>{
+          return convo._id !== newConvo._id;
+        });
         new_array.unshift(newConvo);
         setConversations(new_array);
       }
-    })
+    });
   
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
@@ -122,7 +128,7 @@ const Messages = (props:Props) => {
 
     const screenShare = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      // window.open('https://meeting.is/ss/app/home#_', 'CrankWheel Control Panel', 'menubar=no,location=no,resizable=yes,status=no,left=0,top=0,outerWidth=' + (screen.width / 5) + ',outerHeight=' + screen.height)
+      window.open("https://meet.google.com/new?hs=190&utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-bkws-all-all-trial-b-dr-1009156&utm_content=text-ad-none-any-DEV_c-CRE_435246731960-ADGP_Hybrid+%7C+AW+SEM+%7C+BKWS+%7E+BMM+%2F%2F+Google+Meet+%2F%2F+Google+Meet-KWID_43700053715469092-kwd-405456583893&utm_term=KW_%2Bmeet+%2Bgoogle-ST_%2Bmeet+%2Bgoogle");
     }
     const toggleFriendList = () => {
       changeFriendListStatus(!friendListStatus);
@@ -203,7 +209,7 @@ const Messages = (props:Props) => {
 }
 
 
-const mapStateToProps = (state: { loading: boolean, profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean}, auth: {isAuthenticated: boolean, user:{ id:string, username: string}}; errors: any; }) => ({
+const mapStateToProps = (state: { loading: boolean, profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean}, auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}}; errors: any; }) => ({
   auth: state.auth,
   profile: state.profile,
   errors: state.errors,

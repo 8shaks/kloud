@@ -145,6 +145,7 @@ const Post = (props:Props) => {
           <h1 className={postStyles.heading}>{post.title}</h1>
           <div className={postStyles.content}>
             <span className={postStyles.genre}>{post.genre}</span>
+            <br/>
             {collabButton}
             <p>{post.description}</p>
             {editPost}

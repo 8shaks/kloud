@@ -9,15 +9,16 @@ interface Props {
     date:number,
     _id:string,
     user: {user: string, username: string},
+    notification?: boolean,
     collaborator:{user: string, username: string}
 }
 export default (props: Props) => {
     let dateObj = moment( new Date(props.date)).format('YYYY-MM-DD')
-    
+    console.log(props.notification)
     return (
         <div className={collabComps.collabCard}>
             <div className={collabComps.flexCardHeader}>
-               <h3><Link href={`/collabs/${props._id}`}><a>{props.title}</a></Link></h3>
+                <h3><Link href={`/collabs/${props._id}`}><a>{props.title}{props.notification ? <svg className={collabComps.readLogo} height="10" width="10"><circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" /></svg> : null}</a></Link></h3>
                 <Link href={`/profiles/${props.collaborator.username}`}><a className={collabComps.profileLink}>Collab with {props.user.username}</a></Link> 
             </div>
             <span>{dateObj}</span>

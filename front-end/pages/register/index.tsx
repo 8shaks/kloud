@@ -19,8 +19,6 @@ interface registerError{
 interface Props{
   auth: {isAuthenticated: boolean, user:{ id:string, username: string}},
   errors: any,
-  // profile:{profile: any, profiles:[any], isLoading:boolean },
-//  loginUser:  ({username, password}: loginError) => void,
   registerUser:any
 }
 
@@ -70,7 +68,7 @@ const Register = (props:Props) => {
             {<span className={registerStyles.error}>{errors.password}</span>}
             <input onChange={onChange}type="password"  aria-label="Reenter Password" value={formValues.password2} name="password2" placeholder="Reenter Password" />
             {<span className={registerStyles.error}>{errors.password2}</span>}
-            <div><button className={registerStyles.registerButton} type="submit">Register</button><Link href="/register" ><a className={registerStyles.loginButton}>Login</a></Link></div>
+            <div><button className={registerStyles.registerButton} type="submit">Register</button></div>
         </form>
       </div>
     </Layout>

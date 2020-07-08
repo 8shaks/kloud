@@ -93,7 +93,6 @@ router.get('/lastMessage/:conversationId', auth, async  (req, res) => {
 router.post("/changeMessageStatus", auth, async (req, res) => {
   if( !req.user ) return res.status(400).json({errors: { user: 'Invalid User' }});
   try {
-    console.log("Yo")
     let message = await Message.findById(req.body.message._id);
     if(!message) return res.status(404).json({errors: { message: 'Message not found' }});
     message.read = true;

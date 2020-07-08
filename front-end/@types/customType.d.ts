@@ -54,6 +54,7 @@ export interface CollabType{
   title: string,
   description: string,
   conversation:string,
+  notification?: boolean,
   files:{
     fileName:string,
     fileKey:string,
