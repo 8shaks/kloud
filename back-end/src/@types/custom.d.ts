@@ -8,7 +8,7 @@ export interface IProfile extends mongoose.Document {
     youtube?:string,
     twitter?:string,
     instagram?:string,
-    facebook?:string,
+    beatstars?:string,
     soundcloud?:string
   },
   credits?: string[],
@@ -60,6 +60,7 @@ export interface IPost extends mongoose.Document {
   username:string,
   title:string,
   description:string,
+  genre:string,
   date:Date
   // leave the company field
 

@@ -29,7 +29,7 @@ export const getCurrentProfile = () => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -74,7 +74,7 @@ export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -93,7 +93,7 @@ export const getProfileByUsername = (username:string) => async (dispatch:Dispatc
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -114,7 +114,7 @@ export const createProfile = (formData:ProfileType) => async (dispatch:Dispatch)
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -134,7 +134,7 @@ export const sendFriendReq = (username:string) => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -154,7 +154,7 @@ export const changeFriendReqStatus = (friendReq:{username:string, accept:boolean
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -173,7 +173,7 @@ export const unfriendUser = (username:string) => async (dispatch:Dispatch) => {
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data.error
       })
     }else alert("There was a server error, please try again later")
   }
@@ -193,7 +193,7 @@ export const changeCollabRecStatus = (collabReq:{username:string, accept:boolean
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }
@@ -211,7 +211,7 @@ export const sendCollabReq = (username:string, title:string, description:string)
     if(err.response){
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data.errors
+        payload: err.response.data
       })
     }else alert("There was a server error, please try again later")
   }

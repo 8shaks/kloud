@@ -3,7 +3,7 @@ $blue : #4b72f3 ;
 $grey : #aaacae ;
 $text : #2c2d2e;
 $default-bg : #f3f4f5;
-
+$genre_grey: #8a8a8a;
 
 .button{
     border:none;
@@ -40,4 +40,5 @@ $default-bg : #f3f4f5;
     color: red;
     margin: 5px 0;
     font-size: 14px;
+    display: block;
 }

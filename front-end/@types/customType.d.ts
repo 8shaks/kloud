@@ -6,7 +6,7 @@ export interface ProfileType {
     youtube?:string,
     twitter?:string,
     instagram?:string,
-    facebook?:string,
+    beatstars?:string,
     soundcloud?:string
   },
   credits?: string[],
@@ -70,7 +70,7 @@ export interface profileError{
       twitter?:string| null, 
       instagram?:string| null, 
       soundcloud?:string| null, 
-      facebook?:string| null, 
+      beatstars?:string| null, 
     }|null,
     server:string|null
 }
@@ -79,7 +79,7 @@ export interface social{
     youtube?:string,
     twitter?:string,
     instagram?:string,
-    facebook?:string,
+    beatstars?:string,
     soundcloud?:string
 }
 
@@ -88,7 +88,8 @@ export interface PostType {
   username:string,
   title:string,
   description:string,
-  date:Date
+  date:Date,
+  genre:string,
   _id:string
 
 }

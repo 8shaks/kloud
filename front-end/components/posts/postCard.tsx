@@ -8,16 +8,18 @@ interface Props {
     date?:Date,
     _id:string,
     username:string,
+    genre:string,
     user: string
 }
 export default (props: Props) => {
     return (
         <div className={postComp.postCard}>
             <div className={postComp.flexCardHeader}>
-                <Link href={`/posts/${props._id}`}><h3>{props.title}</h3></Link>
-                <Link href={`/profiles/${props.user}`}><a className={postComp.profileLink}>{props.username}</a></Link> 
+                    <Link href={`/posts/${props._id}`}><h3>{props.title}</h3></Link>
+                    <span className={postComp.genre}>{props.genre} </span>
+                    <Link href={`/profiles/${props.user}`}><a className={postComp.profileLink}>{props.username}</a></Link> 
             </div>
-            <p>{props.description}</p>
+            <p>{props.description.substring(0,30)}...</p>
         </div>
     )
 }

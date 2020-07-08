@@ -112,7 +112,7 @@ const Profile = (props:Props) => {
     const onDenyRequest = () =>{
       props.changeFriendReqStatus({username:props.profile.profile.username, accept:false});
     }
-    const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+    const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> ) => {
       setCollabReqInfo({...collabReqInfo, [e.target.name]: e.target.value})
     }
  
@@ -176,7 +176,7 @@ const Profile = (props:Props) => {
           <h2>{profile.username} Posts</h2>
             {
               userPosts.map((userPost)=>{
-                return <PostCard user={userPost.user} username={userPost.username} _id={userPost._id} title={userPost.title} description={userPost.description}/>
+                return <PostCard genre={userPost.genre} user={userPost.user} username={userPost.username} _id={userPost._id} title={userPost.title} description={userPost.description}/>
               })
             }
           </div>
@@ -186,11 +186,11 @@ const Profile = (props:Props) => {
       if (profile.social){
         socialLinks=(
           <div className={profileStyles.socialLinks}>
-            {profile.social.youtube ? <a target="_blank" href={profile.social.youtube}><a>Youtube</a></a> : null}
-            {profile.social.soundcloud ? <a target="_blank" href={profile.social.soundcloud}><a>SoundCloud</a></a> : null}
-            {profile.social.twitter ? <a target="_blank" href={profile.social.twitter}><a>Twitter</a></a> : null}
-            {profile.social.instagram ? <a target="_blank" href={profile.social.instagram}><a>Instagram</a></a> : null}
-            {profile.social.facebook ? <a target="_blank" href={profile.social.facebook}><a>Facebook</a></a> : null}
+            {profile.social.youtube ? <a target="_blank" href={profile.social.youtube}><img className={profileStyles.socialLogo} alt="Youtube" src={"/images/youtube.png"}/></a> : null}
+            {profile.social.soundcloud ? <a target="_blank" href={profile.social.soundcloud}><img className={profileStyles.socialLogo} alt="Soundcloud" src={"/images/soundcloud.png"}/></a> : null}
+            {profile.social.twitter ? <a target="_blank" href={profile.social.twitter}><img className={profileStyles.socialLogo} alt="Twitter" src={"/images/twitter.png"}/></a> : null}
+            {profile.social.instagram ? <a target="_blank" href={profile.social.instagram}><img className={profileStyles.socialLogo} alt="Instagram" src={"/images/instagram.png"}/></a> : null}
+            {profile.social.beatstars ? <a target="_blank" href={profile.social.beatstars}><img className={profileStyles.socialLogo} alt="Beatstars" src={"/images/beatstars.png"}/></a> : null}
           </div>
         )
       }

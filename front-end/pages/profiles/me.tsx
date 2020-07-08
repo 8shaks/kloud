@@ -28,7 +28,7 @@ interface Props{
 }
 const Profile = (props:Props) => {
     const [profile, setProfile] = useState(props.profile.profile);
-    const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", facebook:""});
+    const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", beatstars:""});
     const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
     const [myPosts, setMyPosts] = useState<PostType[]>([]);
 
@@ -68,8 +68,8 @@ const Profile = (props:Props) => {
         if(social.soundcloud && social.soundcloud.length !== 0){
           !urlRegex.test(social.soundcloud) ? errorsNew.social!.soundcloud = "Please enter a valid soundcloud url" : null
         }
-        if(social.facebook && social.facebook.length !== 0){
-          !urlRegex.test(social.facebook) ? errorsNew.social!.facebook = "Please enter a valid facebook url" : null
+        if(social.beatstars && social.beatstars.length !== 0){
+          !urlRegex.test(social.beatstars) ? errorsNew.social!.beatstars = "Please enter a valid beatstars url" : null
         }
         if(social.instagram && social.instagram.length !== 0){
           !urlRegex.test(social.instagram) ? errorsNew.social!.instagram = "Please enter a valid instagram url" : null
@@ -105,46 +105,13 @@ const Profile = (props:Props) => {
           <h2>My Posts</h2>
             {
               myPosts.map((myPost)=>{
-                return <PostCard user={myPost.user} username={myPost.username} _id={myPost._id} title={myPost.title} description={myPost.description}/>
+                return <PostCard genre={myPost.genre} user={myPost.user} username={myPost.username} _id={myPost._id} title={myPost.title} description={myPost.description}/>
               })
             }
           </div>
         )
       }
-      // Friend Recs Cards
-      // if(profile.friendRequestsRecieved.length > 0){
-      //   console.log(profile)
-      //   friendRecs = (
-      //   <Fragment>
-      //     {profile.friendRequestsRecieved.map((friendRec)=>{
-      //        return <FriendReqCard changeFriendReqStatus={props.changeFriendReqStatus} userId={friendRec.userId} username={friendRec.username}/>
-      //     })}
-      //   </Fragment>
-      //   )
-      // }else{
-      //   friendRecs = (
-      //     <Fragment>
-      //       <span>None Yet :(</span>
-      //     </Fragment>
-      //     )
-      // }
-      // // Friends Cards
-      // if(profile.friends.length > 0){
-      //   console.log(profile.friends)
-      //   friends = (
-      //   <Fragment>
-      //     {profile.friends.map((friendRec)=>{
-      //        return <FriendCard unfriendUser={props.unfriendUser} userId={friendRec.userId} username={friendRec.username}/>
-      //     })}
-      //   </Fragment>
-      //   )
-      // }else{
-      //   friends = (
-      //     <Fragment>
-      //       <span>None Yet :(</span>
-      //     </Fragment>
-      //     )
-      // }
+    
       profileContent = (
       <div className={profileStyles.page}> 
         <h1 className={profileStyles.heading}>Welcome {profile.username}</h1>
@@ -154,20 +121,7 @@ const Profile = (props:Props) => {
           {<span className="error">{errors.bio}</span>}
           <SocialLinksForm onChange={onChangeSocial} errors={errors.social ? errors.social : {}} social={social} />
           <button>Save Profile</button>
-          <h3><Link href="/my-collabs">Manage your collabs</Link></h3>
         </form>
-        
-        {/* <div className={profileStyles.friends}>
-          <div className={profileStyles.friendRequestsRecieved}>
-            <h2>Friend Requests Received</h2>
-            {friendRecs}
-          </div>
-          <div className={profileStyles.friendsList}>
-            <h2 id="friends">Friends</h2>
-            {friends}
-          </div>
-          <Link href="/collabs/my-collabs"><a>Check your collabs</a></Link>
-        </div> */}
         {myPostsContent}
       </div>
       );

@@ -5,6 +5,9 @@
     padding: 1em;
     border-radius: 5px;
     margin: 2em auto;
+    width: 25%;
+    display: inline-block;
+    margin: 1em;
 
 }
 .acceptButton, .denyButton{
@@ -21,15 +24,25 @@
 }
 .profileLink{
     color: $blue;
+    cursor: pointer;
     &:hover{
         text-decoration: underline;
     }
+    margin-left: 5px;
 }
 .flexCardHeader{
-    display: flex;
-    justify-content: space-between;
-    margin:10px 0px 2em 0;
-    color: $blue;
-    text-decoration: underline;
-    cursor: pointer;
+    margin:10px 0px 1.5em 0;
+    h3{
+        cursor: pointer;
+        color: $blue;
+        text-decoration: underline;
+        margin-bottom: 15px;
+    }
+}
+.genre{
+    background-color: $genre_grey;
+    padding: 5px 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: white;
 }

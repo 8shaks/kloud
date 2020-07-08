@@ -5,7 +5,8 @@ const normalize = require('normalize-url');
 
 interface  postData {
   title?:string,
-  description?:string
+  description?:string,
+  genre?: string
 }
 
 const youtubeRegex =  new RegExp(/^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/);
@@ -17,6 +18,7 @@ export default function validateProfileInput(data: postData ) {
     
     isEmpty(data.description) ?  data.description === '' : data.description ;
     isEmpty(data.title) ?  data.title === '' : data.title ;
+    isEmpty(data.genre) ?  errors.genre = "Please include a genre" : null ;
 
     if(data.description){
       if(data.description?.length > 300 || data.description?.length < 20 ){

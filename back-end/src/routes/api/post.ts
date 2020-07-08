@@ -20,6 +20,7 @@ router.post( '/', auth, async (req, res) => {
         description: req.body.description,
         title: req.body.title,
         username:req.user.username,
+        genre:req.body.genre,
         user: req.user.id
       });
       const profile = await Profile.findOne({user:req.user.id});

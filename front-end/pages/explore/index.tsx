@@ -33,7 +33,7 @@ const Explore = (props:Props) => {
       content = (
         <div className={exploreStyles.contentWrapper}>
           {posts.map((post)=>{
-            return <PostCard user={post.user} username={post.username} _id={post._id} title={post.title} description={post.description}/>
+            return <PostCard user={post.user} username={post.username} _id={post._id} genre={post.genre} title={post.title} description={post.description}/>
           })}
         </div>
       )

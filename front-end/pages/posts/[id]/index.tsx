@@ -107,13 +107,16 @@ const Post = (props:Props) => {
   }
 
   
-  const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+  const onCollabReqChange = (e: React.ChangeEvent<HTMLInputElement>| React.ChangeEvent<HTMLTextAreaElement>) => {
     setCollabReqInfo({...collabReqInfo, [e.target.name]: e.target.value})
   }
   let postContent = <div className={postStyles.page}>Loading...</div>
   let editPost, collabButton;
 
-if(!collabStatus.collabRequestSent){
+
+  if (props.auth.isAuthenticated){
+    
+    if(!collabStatus.collabRequestSent && props.posts.post.user !== props.auth.user.user.id){
       collabButton = (
         <button className={postStyles.startCollab} onClick={toggleModal}>Start Collab</button>
       )
@@ -126,8 +129,6 @@ if(!collabStatus.collabRequestSent){
         <Link href="/collabs"><a>View Collab</a></Link>
       )
     }
-
-  if (props.auth.isAuthenticated){
     if(myPost){
       editPost = (
         <div className={postStyles.friendSection}>
@@ -143,6 +144,7 @@ if(!collabStatus.collabRequestSent){
         <div className={postStyles.page}> 
           <h1 className={postStyles.heading}>{post.title}</h1>
           <div className={postStyles.content}>
+            <span className={postStyles.genre}>{post.genre}</span>
             {collabButton}
             <p>{post.description}</p>
             {editPost}

@@ -4,7 +4,7 @@ import { social } from "../../@types/customType";
 interface Props {
     social:social,
     onChange:(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => void,
-    errors:{youtube?:string | null, instagram?:string | null, soundcloud?:string | null, twitter?:string | null, facebook?:string | null}
+    errors:{youtube?:string | null, instagram?:string | null, soundcloud?:string | null, twitter?:string | null, beatstars?:string | null}
 }
 
 export default function socialLinksForm(props:Props) {
@@ -25,9 +25,9 @@ export default function socialLinksForm(props:Props) {
             <label>Twitter</label>
             {<span className="error">{errors.twitter}</span>}
             <input onChange={onChange} aria-label="Twitter" value={social.twitter} name="twitter" placeholder="Twitter"/>
-            <label>Facebook</label>
-            {<span className="error">{errors.facebook}</span>}
-            <input onChange={onChange} aria-label="Facebook" value={social.facebook} name="facebook" placeholder="Facebook"/>
+            <label>Beatstars</label>
+            {<span className="error">{errors.beatstars}</span>}
+            <input onChange={onChange} aria-label="Beatstars" value={social.beatstars} name="beatstars" placeholder="Beatstars"/>
         </Fragment>
     )
 }
