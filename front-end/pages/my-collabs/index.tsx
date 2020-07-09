@@ -36,6 +36,7 @@ const Profile = (props:Props) => {
     useEffect(() => {
       if (props.profile.profile) {
         if(props.profile.profile.collabs.length > 0){
+          console.log("yo")
           axios.get(`${host}/api/collabs/mycollabs`).then((res)=>{
             setMyCollabs(res.data)
           }).catch((err)=>{
@@ -69,7 +70,6 @@ const Profile = (props:Props) => {
         )
       }
       if(profile.collabRequestsRecieved.length > 0){
-        console.log(profile)
         collabRecs = (
         <Fragment>
           {profile.collabRequestsRecieved.map((collabRec)=>{
