@@ -47,7 +47,7 @@ const Profile = (props:Props) => {
 
     let collabContent = <div className={collabStyles.page}>Loading...</div>
 
-    let  collabs, collabRecs;
+    let  collabs, collabRecs, collabReqs;
     if(props.profile.profile !== null){
       const { profile } = props.profile;
       if(profile.collabs.length > 0){
@@ -69,6 +69,7 @@ const Profile = (props:Props) => {
         )
       }
       if(profile.collabRequestsRecieved.length > 0){
+        console.log(profile)
         collabRecs = (
         <Fragment>
           {profile.collabRequestsRecieved.map((collabRec)=>{
@@ -84,7 +85,7 @@ const Profile = (props:Props) => {
           )
       }
       if(profile.collabRequestsSent.length > 0){
-        collabRecs = (
+        collabReqs = (
         <Fragment>
           {profile.collabRequestsRecieved.map((collabRec)=>{
               return <CollabReqCard cancelCollabReq={props.sendCollabReq} date={collabRec.date} collaborator={{username:collabRec.username, userId:collabRec.userId}} title={collabRec.title} description={collabRec.description}/>
@@ -92,7 +93,7 @@ const Profile = (props:Props) => {
         </Fragment>
         )
       }else{
-        collabRecs = (
+        collabReqs = (
           <Fragment>
             <span>None Yet :(</span>
           </Fragment>
@@ -112,7 +113,7 @@ const Profile = (props:Props) => {
             </div>
             <div className={collabStyles.collabRequestsRecieved}>
               <h2>Collab Requests Sent</h2>
-              {collabRecs}
+              {collabReqs}
             </div>
             <div className={collabStyles.collabsList}>
               {collabs}
