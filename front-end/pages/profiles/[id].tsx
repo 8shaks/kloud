@@ -111,7 +111,7 @@ const Profile = (props:Props) => {
 
       if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id){
         collabButton = (
-          <button className={profileStyles.addFriendButton} onClick={toggleModal}>Start Collab</button>
+          <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
         )
       }else if(collabStatus.collabRequestSent){
         collabButton = (

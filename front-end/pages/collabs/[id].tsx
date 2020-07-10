@@ -136,24 +136,31 @@ const Messages = (props:Props) => {
 
     const chatFriend = ( username:string, convoId:string, lastMessage:MessageType, collabId?:string) => {
       try{
-        if(!lastMessage.read){
-          axios.post(`${host}/api/conversations/changeMessageStatus`, {message:lastMessage}).then(() =>{
+        if(lastMessage){
+          if(!lastMessage.read){
+            axios.post(`${host}/api/conversations/changeMessageStatus`, {message:lastMessage}).then(() =>{
+              axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
+                let newConvo = conversations[conversations.findIndex(x => x._id == lastMessage.conversationId)]
+                newConvo.lastMessage.read = true;
+                let new_array = conversations.filter((convo)=>{
+                return convo._id !== newConvo._id;
+                });
+                 new_array.unshift(newConvo);
+                setConversations(new_array);
+                setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
+              })
+            })
+          }else{
             axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
-              let newConvo = conversations[conversations.findIndex(x => x._id == lastMessage.conversationId)]
-              newConvo.lastMessage.read = true;
-              let new_array = conversations.filter((convo)=>{
-              return convo._id !== newConvo._id;
-              });
-               new_array.unshift(newConvo);
-              setConversations(new_array);
               setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
             })
-          })
+          }
         }else{
           axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
             setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
           })
         }
+        
       }catch (err) {
         console.log(err)
       }
@@ -171,13 +178,13 @@ const Messages = (props:Props) => {
             {conversations.map((convo)=>{
               const userChat = convo.participants[0] !== profile.username ? convo.participants[0] : convo.participants[1];
               let messageRead;
-              if(!convo.lastMessage.read && convo.lastMessage.sender !== profile.username) messageRead = <svg className={messagesStyles.readLogo} height="10" width="10"><circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" /></svg>
-              // console.log(convo.lastMessage);
+              if(convo.lastMessage)
+                if(!convo.lastMessage.read && convo.lastMessage.sender !== profile.username) messageRead = <svg className={messagesStyles.readLogo} height="10" width="10"><circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" /></svg>
               return (
                 <li className={convo.participants.includes(currentConvo.userToChat) ? messagesStyles.personToChat + " " + messagesStyles.selectedConvo : messagesStyles.personToChat} key={convo._id} onClick={() => {chatFriend(userChat, convo._id, convo.lastMessage, convo.collabId)}}> 
                   {userChat}
                   {messageRead}
-                  <div>{convo.lastMessage.content}</div>
+                  <div>{convo.lastMessage ? convo.lastMessage.content : null}</div>
                 </li>
               )
             })}
@@ -190,8 +197,8 @@ const Messages = (props:Props) => {
             <div className={messagesStyles.input_group}> 
               <form >
               <input className={messagesStyles.messageInput} onChange={onChange} aria-label="Message" value={currentConvo.message} name="Message" placeholder="Send a message"/>
-              <button onClick={sendMessage}>Send</button>
-              <button onClick={screenShare}>Share</button>
+              <button className={messagesStyles.sendButton} onClick={sendMessage}>Send</button>
+              <button className={messagesStyles.shareButton} onClick={screenShare}>Share</button>
               </form>
             </div>
           </div>

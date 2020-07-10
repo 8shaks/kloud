@@ -13,13 +13,15 @@ interface Props {
 }
 export default (props: Props) => {
     return (
-        <div className={postComp.postCard}>
-            <div className={postComp.flexCardHeader}>
-                    <Link href={`/posts/${props._id}`}><h3>{props.title}</h3></Link>
-                    <span className={postComp.genre}>{props.genre} </span>
-                    <Link href={`/profiles/${props.user}`}><a className={postComp.profileLink}>{props.username}</a></Link> 
+        <Link href={`/posts/${props._id}`}>
+            <div className={postComp.postCard}>
+                <div className={postComp.flexCardHeader}>
+                        <Link href={`/posts/${props._id}`}><h3>{props.title}</h3></Link>
+                        <span className={postComp.genre}>{props.genre} </span>
+                        <Link href={`/profiles/${props.user}`}><a className={postComp.profileLink}>{props.username}</a></Link> 
+                </div>
+                <p className={postComp.description}>{props.description.substring(0,30)}...</p>
             </div>
-            <p className={postComp.description}>{props.description.substring(0,30)}...</p>
-        </div>
+        </Link>
     )
 }

@@ -85,9 +85,10 @@ const Profile = (props:Props) => {
           )
       }
       if(profile.collabRequestsSent.length > 0){
+        console.log(profile)
         collabReqs = (
         <Fragment>
-          {profile.collabRequestsRecieved.map((collabRec)=>{
+          {profile.collabRequestsSent.map((collabRec)=>{
               return <CollabReqCard cancelCollabReq={props.sendCollabReq} date={collabRec.date} collaborator={{username:collabRec.username, userId:collabRec.userId}} title={collabRec.title} description={collabRec.description}/>
           })}
         </Fragment>

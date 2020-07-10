@@ -110,7 +110,7 @@ const Post = (props:Props) => {
     
     if(!collabStatus.collabRequestSent && props.posts.post.user !== props.auth.user.user.id){
       collabButton = (
-        <button className={postStyles.startCollab} onClick={toggleModal}>Start Collab</button>
+        <button className={postStyles.startCollab} onClick={toggleModal}>Send Collab Request</button>
       )
     }else if(collabStatus.collabRequestSent){
       collabButton = (
@@ -130,24 +130,24 @@ const Post = (props:Props) => {
     }
   }
   
-    if(props.posts.post !== null){
-      const { post } = props.posts
-      postContent = (
-        <div className={postStyles.page}> 
-          <h1 className={postStyles.heading}>
-            {post.title} 
-            <Link href={`/profiles/username/${post.username}`}><a >{post.username}</a></Link>
-          </h1>
-          <div className={postStyles.content}>
-            <span className={postStyles.genre}>{post.genre}</span>
-            <br/>
-            <p className={postStyles.description}>{post.description}</p>
-            {collabButton}
-            {editPost}
-            {authError ? <span className={postStyles.error}>You do not own this post!</span> : null}
-            {collabModal ? <CollabReqModal toggleModal={toggleModal} username={props.profile.profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
-          </div>
-        </div>);
+  if(props.posts.post !== null){
+    const { post } = props.posts
+    postContent = (
+      <div className={postStyles.page}> 
+        <h1 className={postStyles.heading}>
+          {post.title} 
+          <Link href={`/profiles/username/${post.username}`}><a >{post.username}</a></Link>
+        </h1>
+        <div className={postStyles.content}>
+          <span className={postStyles.genre}>{post.genre}</span>
+          <br/>
+          <p className={postStyles.description}>{post.description}</p>
+          {editPost}
+          {authError ? <span className={postStyles.error}>You do not own this post!</span> : null}
+          {collabButton}
+          {collabModal ? <CollabReqModal toggleModal={toggleModal} username={props.profile.profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
+        </div>
+      </div>);
     }
     return (
         <Layout>

@@ -65,16 +65,17 @@
             border: 1px solid $grey;
             border-right: none;
         }
-        button{
-            width: 8%;
-            // @extend .button
-            padding: 5px 15px;
-            font-size:16px;
-            margin-right: 20px;
-        }
     }
 }
-
+.sendButton, .shareButton{
+    width: 8%;
+    padding: 5px 15px;
+    font-size:16px;
+    margin-right: 20px;
+    @extend .button;
+    background-color: $blue;
+    color:white;
+}
 .collabOnEnter{
     display: flex;
     justify-content: center;

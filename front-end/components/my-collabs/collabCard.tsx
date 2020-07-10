@@ -14,7 +14,6 @@ interface Props {
 }
 export default (props: Props) => {
     let dateObj = moment( new Date(props.date)).format('YYYY-MM-DD')
-    console.log(props.notification)
     return (
         <div className={collabComps.collabCard}>
             <div className={collabComps.flexCardHeader}>
