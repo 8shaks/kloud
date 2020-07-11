@@ -10,9 +10,11 @@
     margin: 0 auto;
     width: 50%;
     text-align: center;
+    color: white;
     h1{
         margin-bottom: 40px;
         font-size: 60px;
+        color: white;
     }
     a{
         @extend .button;

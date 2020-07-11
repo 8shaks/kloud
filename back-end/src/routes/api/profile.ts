@@ -4,6 +4,21 @@ import auth from '../../middleware/auth';
 import validateProfileInput from "../../validation/profile";
 import Profile from '../../models/Profile';
 
+
+// @route    GET api/profile
+// @desc     Get all profiles
+// @access   Public
+router.get('/', async (req, res) => {
+  try {
+    const profiles = await Profile.find().sort({ date: -1 });
+    return res.json(profiles)
+
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({errors: { server: 'Server error' }});
+  }
+});
+
 // @route    GET api/profile/me
 // @desc     Get current users profile
 // @access   Private

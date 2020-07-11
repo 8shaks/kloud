@@ -93,9 +93,7 @@ const Profile = (props:Props) => {
       setSocial({...social, [e.target.name]: e.target.value});
     }
     let profileContent = <div className={profileStyles.page}>Loading...</div>
-    // if(profile === null && !props.loading){
-    //   profileContent = <div className={profileStyles.page}>Login to make a profile!</div>
-    // }
+
     let myPostsContent, friends, friendRecs;
 
     if(profile !== null){
@@ -105,7 +103,7 @@ const Profile = (props:Props) => {
           <h2>My Posts</h2>
             {
               myPosts.map((myPost)=>{
-                return <PostCard genre={myPost.genre} user={myPost.user} username={myPost.username} _id={myPost._id} title={myPost.title} description={myPost.description}/>
+                return <PostCard genre={myPost.genre} key={myPost._id} user={myPost.user} username={myPost.username} _id={myPost._id} title={myPost.title} description={myPost.description}/>
               })
             }
           </div>

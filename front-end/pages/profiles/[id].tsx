@@ -56,7 +56,7 @@ const Profile = (props:Props) => {
       }
     }, [props.loading])
     useEffect(() => {
-      if(props.profile.profile !==null){
+      if(props.profile.profile !== null){
         if(props.profile.profile.posts.length > 0){
           axios.get(`${host}/api/posts/user/${props.profile.profile.user}`).then((res)=>{
             setUserPosts(res.data)
@@ -72,6 +72,7 @@ const Profile = (props:Props) => {
       }
 
     }, [props.profile.profile])
+    
     useEffect(() => {
       return setErrors(props.errors);
     }, [props.errors])
@@ -129,7 +130,7 @@ const Profile = (props:Props) => {
           <h2>{profile.username} Posts</h2>
             {
               userPosts.map((userPost)=>{
-                return <PostCard genre={userPost.genre} user={userPost.user} username={userPost.username} _id={userPost._id} title={userPost.title} description={userPost.description}/>
+                return <PostCard key={userPost._id} genre={userPost.genre} user={userPost.user} username={userPost.username} _id={userPost._id} title={userPost.title} description={userPost.description}/>
               })
             }
           </div>

@@ -1,3 +1,4 @@
+@import "../styles/comps";
 .contentWrapper{
     padding: 1em 2em;
     // display: flex;
@@ -6,4 +7,36 @@
 }
 .page{
     margin: 0 auto;
+}
+.search_type_cont{
+    margin: 1em auto 0 auto;
+    width: 20%;
+    text-align: center;
+    button{
+        @extend .button;
+        border-radius:5px;
+    }
+}
+.postsButton{
+    margin-right: 10px;
+}
+.profilesButton{
+    margin-left: 10px;
+}
+.selectedButton{
+    @extend .default_button
+}
+.search{
+    width: 100%;
+    text-align: center;
+    margin-top: 40px;
+    input{
+        font-size: 18px;
+        &:focus{
+            outline: none;
+        }
+    }
+    button{
+        @extend .default_button
+    }
 }

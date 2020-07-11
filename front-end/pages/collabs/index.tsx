@@ -65,8 +65,10 @@ const Messages = (props:Props) => {
     }, [currentConvo])
 
     socket.on("message", ({message}: {message:MessageType}) => {
-      // console.log(message)
+
       if(message.conversationId === currentConvo.conversationId){
+        console.log(message.conversationId)
+        console.log(currentConvo.conversationId)
         let newMessage = message;
         newMessage.read = true;
         if(message.sender !== props.auth.user.user.username){
@@ -117,24 +119,31 @@ const Messages = (props:Props) => {
 
     const chatFriend = ( username:string, convoId:string, lastMessage:MessageType, collabId?:string) => {
       try{
-        if(!lastMessage.read){
-          axios.post(`${host}/api/conversations/changeMessageStatus`, {message:lastMessage}).then(() =>{
+        if(lastMessage){
+          if(!lastMessage.read){
+            axios.post(`${host}/api/conversations/changeMessageStatus`, {message:lastMessage}).then(() =>{
+              axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
+                let newConvo = conversations[conversations.findIndex(x => x._id == lastMessage.conversationId)]
+                newConvo.lastMessage.read = true;
+                let new_array = conversations.filter((convo)=>{
+                return convo._id !== newConvo._id;
+                });
+                 new_array.unshift(newConvo);
+                setConversations(new_array);
+                setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
+              })
+            })
+          }else{
             axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
-              let newConvo = conversations[conversations.findIndex(x => x._id == lastMessage.conversationId)]
-              newConvo.lastMessage.read = true;
-              let new_array = conversations.filter((convo)=>{
-              return convo._id !== newConvo._id;
-              });
-               new_array.unshift(newConvo);
-              setConversations(new_array);
               setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
             })
-          })
+          }
         }else{
           axios.get(`${host}/api/conversations/messages/${convoId}`).then((res) => {
             setCurrentConvo({message:"", userToChat: username.trim(), messages:res.data.messages, conversationId:convoId!, collabId:collabId});
           })
         }
+        
       }catch (err) {
         console.log(err)
       }

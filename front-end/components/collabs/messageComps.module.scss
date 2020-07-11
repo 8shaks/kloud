@@ -13,9 +13,9 @@
     border: 1px solid $grey;
     max-width: 30%;
     margin: 10px 0;
-    // display: block;
     border-radius: 10px;
 }
+
 .receiver{
     margin-right: auto;
 
@@ -35,16 +35,13 @@
     padding: 0 2em;
     width: 70%;
     height: 60px;
-    // border-bottom: 2px black solid;
-    button{
-        height: 40px;
-        margin: 0 auto;
-        @extend .default_button;
-    }
     input{
         margin: 0 auto;
-        
     }
+}
+.fileInput_title{
+    text-align: center;
+    margin-bottom: 20px;
 }
 .viewFilesModal{
     // display: none; /* Hidden by default */
@@ -74,7 +71,18 @@
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
-  }
-  .uploadFile{
-      @extend .default_button
-  }
+}
+.uploadFile{
+    display: block;
+    margin-top: 20px;
+    @extend .default_button
+}
+.leftInput, .rightFiles{
+    display: inline-block;
+
+}
+
+.fileCont{
+    display: flex;
+    justify-content: space-between;
+}

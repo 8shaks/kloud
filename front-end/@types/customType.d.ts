@@ -40,6 +40,7 @@ export interface ProfileType {
     date:number
   }[],
   conversations:{date?:string, conversationId:string, username:string}[],
+  _id:string,
   date:Date
 }
 export interface CollabType{

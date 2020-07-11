@@ -27,4 +27,27 @@
 .flexCardHeader{
     display: flex;
     justify-content: space-between;
+    h3{
+        cursor: pointer;
+        margin-bottom: 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+.bio{
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.profileCard{
+        position: relative;
+        border: 2px solid $grey;
+        padding: 1em;
+        border-radius: 5px;
+        margin: 2em auto;
+        width: 27%;
+        display: inline-block;
+        margin: 1em;
 }

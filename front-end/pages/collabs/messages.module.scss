@@ -50,7 +50,7 @@
 .chat{
     width: 100%;
     position: relative ;
-    
+    font-size:16px;
     .input_group{
         position: absolute;
         bottom: 0;
@@ -63,18 +63,20 @@
             width:  75%;
             margin:0;
             border: 1px solid $grey;
-            border-right: none;
         }
     }
 }
 .sendButton, .shareButton{
     width: 8%;
     padding: 5px 15px;
-    font-size:16px;
+    font-size:17px;
     margin-right: 20px;
     @extend .button;
     background-color: $blue;
     color:white;
+}
+.sendButton{
+    margin-left: 10px;
 }
 .collabOnEnter{
     display: flex;

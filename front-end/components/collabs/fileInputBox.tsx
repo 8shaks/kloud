@@ -30,10 +30,10 @@ export default (props: Props) => {
     }
     const onSubmitFile = () => {
         if(files){
+            toggleViewFiles();
             let formData = new FormData();
             formData.append("file", files);
             axios.post(`${host}/api/collabs/upload_file/${props.collabId}`, formData).then(() => {
-                
                 setCollab({...collab, files:[...collab.files, { fileName : files.name, fileKey: `${props.collabId}/${files.name}`, date:Date.now()}]})
             }).catch(err => {
                 console.log(err)
@@ -48,61 +48,23 @@ export default (props: Props) => {
                     window.open(res.data)
         })  
     }
-    
-    // let messageContent, fileContent;
-    // const { message, user } = props
-    
-    // const onClickLink = (e:any ,fileLoc:string) => {
-    //     e.preventDefault();
-    //     console.log("bruv")
-    //     console.log(message)
-    //     axios.post(`${host}/api/conversations/file`,{fileLoc, conversationId:message.conversationId}).then((res) =>{
-    //         console.log(res.data);
-    //         window.open(res.data, "_blank")
-    //     })  
-    // }
-    // if(message.sender === user){
-     
-    //     messageContent = ( 
-    //     <div className={messageComp.messageWrapper}>
-    //         <span className={messageComp.messageBubble + " " + messageComp.sender}>
-                
-    //                 {/* {message.files.map((file:any) =>{
-    //                     const fileLink = <a href={""} onClick={(e) => {onClickLink(e,file.file)}} download={file.name}><b> FILE: {file.fileName}<br/><br/></b></a>
-    //                     return fileLink
-    //                 })} */}
-    //             {message.content}
-    //         </span>
-    //     </div>
-    //     )
-    // }else{
 
-    //     messageContent = ( 
-    //         <div className={messageComp.messageWrapper}>
-    //             <span className={messageComp.messageBubble + " " + messageComp.receiver}>
-    //                 {/* {message.files.map((file) =>{
-    //                     let test = window.URL.createObjectURL(new Blob([file], {type: "audio/mpeg"}))
-    //                     return <a href={test} download><b> FILE: {file.name}<br/><br/></b></a>
-    //                 })} */}
-    //                 {message.content}
-    //             </span>
-    //         </div>
-    //         )
-    // }
-    // console.log(collab)
     let viewFiles = (
         <div className={messageComp.viewFiles}>
             <span onClick={toggleViewFiles} className={messageComp.close} >&times;</span>
-            <h2> {collab.title} files</h2>
-            <div>
-                {collab.files.map((file) => {
-                    return <div><a download={file.fileName} onClick={() => {getFile(file.fileName)}}>{file.fileName}</a></div>
-                })}
+            <h2 className={messageComp.fileInput_title}>Files</h2>
+            <div className={messageComp.fileCont}>
+                <div className={messageComp.leftInput}> 
+                    <input  type="file" onChange={onFileChange} name="Files" />  
+                    <button className={messageComp.uploadFile} onClick={onSubmitFile}>Upload File</button>
+                </div>
+                <div className={messageComp.rightFiles}>
+                    {collab.files.map((file) => {
+                        return <div><a download={file.fileName} onClick={() => {getFile(file.fileName)}}>{file.fileName}</a></div>
+                    })}
+                </div>
             </div>
-            <div> 
-                <input  type="file" onChange={onFileChange} name="Files" />  
-              <button className={messageComp.uploadFile} onClick={onSubmitFile}>Upload File</button>
-            </div>
+            
         </div>
     )
     return (

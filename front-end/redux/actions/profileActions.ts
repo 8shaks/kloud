@@ -81,6 +81,26 @@ export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
   dispatch({type:LOADING_DONE})
 };
 
+// Get allProfiles
+export const getAllProfiles = () => async (dispatch:Dispatch) => {
+  // dispatch({type:IS_LOADING})
+  try {
+    const res = await axios.get(`${host}/api/profile`);
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data
+    });
+  } catch (err) {
+    if(err.response){
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    }else alert("There was a server error, please try again later")
+  }
+  dispatch({type:LOADING_DONE})
+};
+
 // Get profile by username
 export const getProfileByUsername = (username:string) => async (dispatch:Dispatch) => {
   try {
