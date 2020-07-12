@@ -129,7 +129,7 @@ const Profile = (props:Props) => {
           <h2>{profile.username} Posts</h2>
             {
               userPosts.map((userPost)=>{
-                return <PostCard genre={userPost.genre} user={userPost.user} username={userPost.username} _id={userPost._id} title={userPost.title} description={userPost.description}/>
+                return <PostCard key={userPost._id} genre={userPost.genre} user={userPost.user} username={userPost.username} _id={userPost._id} title={userPost.title} description={userPost.description}/>
               })
             }
           </div>
