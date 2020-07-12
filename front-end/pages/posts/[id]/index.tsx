@@ -108,7 +108,7 @@ const Post = (props:Props) => {
 
   if (props.auth.isAuthenticated){
     
-    if(!collabStatus.collabRequestSent && props.posts.post.user !== props.auth.user.user.id){
+    if(!collabStatus.collabRequestSent && props.posts.post.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
       collabButton = (
         <button className={postStyles.startCollab} onClick={toggleModal}>Send Collab Request</button>
       )
@@ -118,7 +118,7 @@ const Post = (props:Props) => {
       )
     }else if(collabStatus.collabInProgress) {
       collabButton = (
-        <Link href="/collabs"><a>View Collab</a></Link>
+        <Link href="/collabs"><a className={postStyles.startCollab}>View Collab</a></Link>
       )
     }
     if(myPost){

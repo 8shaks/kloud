@@ -109,7 +109,7 @@ const Profile = (props:Props) => {
       const { profile } = props.profile
       let socialLinks;
 
-      if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id){
+      if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
         collabButton = (
           <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
         )
@@ -119,7 +119,7 @@ const Profile = (props:Props) => {
         )
       }else if(collabStatus.collabInProgress) {
         collabButton = (
-          <Link href="/collabs"><a>View Collab</a></Link>
+          <Link href="/collabs"><a className={profileStyles.addFriendButton}>View Collab</a></Link>
         )
       }
   

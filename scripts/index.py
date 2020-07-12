@@ -46,6 +46,7 @@ print('\n\n\n\nERRORS:\n\n\n\n')
 for x in stderr.readlines():
     print(x)
 
+cmd = "npm run --prefix kloud/back-end build"
 stdin, stdout, stderr = ssh_client.exec_command(cmd)
 stdout = stdout.readlines()
 print('RUNNING BACK END BUILD \n\n')
