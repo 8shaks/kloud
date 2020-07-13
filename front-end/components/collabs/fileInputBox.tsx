@@ -19,7 +19,7 @@ export default (props: Props) => {
                 setCollab(res.data)
             })
         }
-    }, [])
+    }, [props.collabId])
     const toggleViewFiles = () => {
         changeViewFiles(!viewFilesStatus);
     }
@@ -44,11 +44,9 @@ export default (props: Props) => {
 
     const getFile = (fileName: string) => {
         axios.post(`${host}/api/collabs/getfile`,{fileName, collab_id: props.collabId }).then((res) =>{
-                    // console.log(res.data);
                     window.open(res.data)
         })  
     }
-
     let viewFiles = (
         <div className={messageComp.viewFiles}>
             <span onClick={toggleViewFiles} className={messageComp.close} >&times;</span>
@@ -60,7 +58,7 @@ export default (props: Props) => {
                 </div>
                 <div className={messageComp.rightFiles}>
                     {collab.files.map((file) => {
-                        return <div><a download={file.fileName} onClick={() => {getFile(file.fileName)}}>{file.fileName}</a></div>
+                        return <div className={messageComp.fileLink}><a download={file.fileName} key={file.fileName} onClick={() => {getFile(file.fileName)}}>{file.fileName}</a></div>
                     })}
                 </div>
             </div>
@@ -69,7 +67,9 @@ export default (props: Props) => {
     )
     return (
         <div className={messageComp.fileInput}> 
-            <button onClick={toggleViewFiles}>View files</button>
+            <div className={messageComp.collabHeader}>
+                <h2 className={messageComp.collabTitle}>{collab.title}</h2><button className={messageComp.viewFiles_button} onClick={toggleViewFiles}>View files</button>
+            </div>
             {viewFilesStatus ? <div className={messageComp.viewFilesModal}>{viewFiles}</div> : null}
         </div>
     )

@@ -6,6 +6,7 @@
     align-items: center;
     padding-top: 5em;
     flex-wrap: wrap;
+
 }
 .heading{
     display: block;
@@ -79,6 +80,28 @@
 
 }
 .description{
-    width: 50%;
+    width: 100%;
     margin: 20px auto 40px auto;
 }
+@media only screen and (max-width: 550px) {
+    .form{
+        label{
+            margin:15px 0;
+        }
+    }
+    .heading{
+        margin-top: 2em;
+        font-size: 30px;
+    }
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+ 
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

@@ -81,8 +81,9 @@ export const setCurrentUser = (decoded:{exp?:number}) => {
 //   }
 // }
 export const logoutUser = () => (dispatch: Dispatch) => {
+  Router.push("/");
   setAuthToken(undefined);
   dispatch(setCurrentUser({}));
-  Router.push("/");
+
   // navigate('/')
 };

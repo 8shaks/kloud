@@ -2,10 +2,12 @@
 
 .page{
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    padding-top: 5em;
+    height: 100vh;
     flex-wrap: wrap;
+    background-color: $default_bg;
+    color: white;
 }
 .heading{
     display: block;
@@ -14,12 +16,18 @@
     text-align: center;
     margin-bottom: 20px;
 }
+.cont{
+    width: 100%;
+}
 .form {
+    margin: 0 auto;
+
     label{
         display: block;
         margin: 5px 0;
     }
     textarea, input{
+        border: 1px solid $grey;
         resize: none;
         display: block;
         width: 100%;
@@ -33,3 +41,21 @@
 .genreSelect{
     padding: 2px 10px;
 }
+@media only screen and (max-width: 550px) {
+    .form{
+        label{
+            margin:15px 0;
+        }
+    }
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+ 
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

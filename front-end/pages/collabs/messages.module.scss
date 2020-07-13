@@ -56,7 +56,6 @@
         bottom: 0;
         margin:0;
         width: calc(100% - 20px);
-        background-color: white;
         z-index: 1;
         .messageInput{
             @extend .input;

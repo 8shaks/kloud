@@ -8,6 +8,8 @@
     width: 27%;
     display: inline-block;
     margin: 1em;
+    box-sizing: border-box;
+    background-color: $second_bg;
 
 }
 .acceptButton, .denyButton{
@@ -57,3 +59,32 @@
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+@media only screen and (max-width: 550px) {
+    .postCard{
+        width: 100%;
+        margin: 2em 0;
+    }
+
+}
+  
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    .postCard{
+        width: 40%;
+        margin: 2em 1em;
+    }
+
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+    .heading{
+        width: 70%;
+        h1{
+            font-size: 50px;
+        }
+    }
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

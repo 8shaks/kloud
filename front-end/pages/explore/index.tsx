@@ -59,7 +59,7 @@ const Explore = (props:Props) => {
     if (!props.loading){
       if(postSearch){
         content = (
-          <div className={exploreStyles.contentWrapper}>
+          <div className={exploreStyles.content}>
             {posts.map((post)=>{
               return <PostCard user={post.user} username={post.username} key={post._id} _id={post._id} genre={post.genre} title={post.title} description={post.description}/>
             })}
@@ -67,10 +67,10 @@ const Explore = (props:Props) => {
         )
       }else{
         content = (
-          <div className={exploreStyles.contentWrapper}>
-            {profiles.map((profile)=>{
-              return <ProfileCard profile={profile} key={profile._id}/>
-            })}
+          <div className={exploreStyles.content}>
+              {profiles.map((profile)=>{
+                return <ProfileCard profile={profile} key={profile._id}/>
+              })}
           </div>
         )
       }
@@ -82,13 +82,15 @@ const Explore = (props:Props) => {
         <Layout>
             <div className={exploreStyles.page}>
               <div className={exploreStyles.search}>
-                <form onSubmit={onSearch}><input placeholder="Search" value={search} onChange={onChange} /> <button type="submit">Search</button></form>
+                <div className={exploreStyles.serach_cont}>
+                  <form onSubmit={onSearch}><input placeholder="Search" value={search} onChange={onChange} /> <button className={exploreStyles.search_button} type="submit">Search</button></form>
+                  <div className={exploreStyles.search_type_cont}>
+                    <button onClick={() => setPostSearch(true)} className={postSearch ? `${exploreStyles.postsButton} ${exploreStyles.selectedButton}` : exploreStyles.postsButton}>Posts</button>
+                    <button onClick={() => setPostSearch(false)} className={!postSearch ? `${exploreStyles.profilesButton} ${exploreStyles.selectedButton}` : exploreStyles.profilesButton}>Profiles</button>
+                  </div>
+                </div>
               </div>
-              <div className={exploreStyles.search_type_cont}>
-                <button onClick={() => setPostSearch(true)} className={postSearch ? `${exploreStyles.postsButton} ${exploreStyles.selectedButton}` : exploreStyles.postsButton}>Posts</button>
-                <button onClick={() => setPostSearch(false)} className={!postSearch ? `${exploreStyles.profilesButton} ${exploreStyles.selectedButton}` : exploreStyles.profilesButton}>Profiles</button>
-              </div>
-              {content}
+              <div className={exploreStyles.contentWrapper}>{content}</div>
             </div>
         </Layout>
   )

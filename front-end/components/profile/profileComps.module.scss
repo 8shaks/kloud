@@ -42,12 +42,43 @@
     text-overflow: ellipsis;
 }
 .profileCard{
-        position: relative;
-        border: 2px solid $grey;
-        padding: 1em;
-        border-radius: 5px;
-        margin: 2em auto;
-        width: 27%;
-        display: inline-block;
-        margin: 1em;
+    position: relative;
+    border: 2px solid $grey;
+    padding: 1em;
+    border-radius: 5px;
+    margin: 2em auto;
+    width: 27%;
+    display: inline-block;
+    margin: 1em;
+    background-color: $second_bg;
+    box-sizing: border-box;
 }
+
+@media only screen and (max-width: 550px) {
+    .profileCard{
+        width: 100%;
+        margin: 2em 0;
+    }
+
+}
+  
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    .profileCard{
+        width: 40%;
+        margin: 2em 1em;
+    }
+
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+    .heading{
+        width: 70%;
+        h1{
+            font-size: 50px;
+        }
+    }
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

@@ -107,8 +107,7 @@ router.get('/getcollab/:collab_id', auth, async (req, res) => {
       const collab = await Collab.findById(req.params.collab_id);
       
       if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
-      if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'Cou are not n this collab'} });
-
+      if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'You are not in this collab'} });
       return res.json(collab);
     } catch (err) {
       console.error(err.message);

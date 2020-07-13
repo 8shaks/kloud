@@ -34,13 +34,16 @@
     .heading{
         width: 95%;
         h1{
-            font-size: 40px;
+            font-size: 44px;
+        }
+        a{
+            width: 50%;
         }
     }
 
 }
   
-/* Tablet */
+
 @media only screen and (max-width:769px) and (min-width:551px) {
     .heading{
         width: 85%;
@@ -56,6 +59,11 @@
         h1{
             font-size: 50px;
         }
+    }
+}
+@media only screen and  (min-width:1600px) {
+    .heading{
+        margin-top:6em;
     }
 }
   

@@ -6,6 +6,8 @@
     align-items: center;
     padding-top: 5em;
     flex-wrap: wrap;
+    background-color: $default_bg;
+    color: white;
 }
 .heading{
     display: block;
@@ -15,7 +17,6 @@
     margin-bottom: 20px;
 }
 .form {
-    width: 100%;
     label{
         display: block;
         margin: 5px 0;
@@ -27,7 +28,8 @@
         font-family: 'Montserrat', sans-serif;
     }
     button{
-        @extend .default_button
+        @extend .default_button;
+        margin: 20px 0;
     }
    width: 40%;
 }
@@ -82,3 +84,22 @@
     width: 50px;
     margin-right: 10px;
 }
+@media only screen and (max-width: 550px) {
+    .form{
+        width: 80%;
+        .label{
+            margin: 20px 0;
+        }
+    }
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+ 
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

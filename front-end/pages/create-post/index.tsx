@@ -58,30 +58,32 @@ const createPost = (props:Props) => {
     return (
       <Layout>
         <div className={postStyles.page}>
+          <div className={postStyles.cont}>
             <h1 className={postStyles.heading}>Create a post</h1>
-          <form  className={postStyles.form} method="POST" onSubmit={onSubmit}>
-              <label>Title</label>
-              <input onChange={onChange} aria-label="Title" value={postValues.title} name="title" placeholder="Looking for Travis Scott type beat"/>
-              {<span className={postStyles.error}>{errors.title}</span>}
-              <label>Genre</label>
-              <select name="genre" value={postValues.genre} onChange={onChange} className={postStyles.genreSelect}>
-                <option value="" selected disabled hidden>Choose genre</option>
-                <option value="Trap">Trap</option>
-                <option value="R&B">R&B</option>
-                <option value="EDM" >EDM</option>
-                <option value="Drill" >Drill</option>
-                <option value="Synthwave" >Synthwave</option>
-                <option value="Classical" >Classical</option>
-                <option value="Pop" >Pop</option>
-                <option value="Future Bass" >Future Bass</option>
-                <option value="Orchestral" >Orchestral</option>
-              </select>
-              {<span className={postStyles.error}>{errors.genre}</span>}
-              <label>Description</label>
-              <textarea onChange={onChange} aria-label="Description" value={postValues.description} name="description" placeholder="Looking for a producer who can do this this and this" />
-              {<span className={postStyles.error}>{errors.description}</span>}
-              <button>Create Post</button>
-          </form>
+            <form  className={postStyles.form} method="POST" onSubmit={onSubmit}>
+                <label>Title</label>
+                <input onChange={onChange} aria-label="Title" value={postValues.title} name="title" placeholder="Looking for Travis Scott type beat"/>
+                {<span className={postStyles.error}>{errors.title}</span>}
+                <label>Genre</label>
+                <select name="genre" value={postValues.genre} onChange={onChange} className={postStyles.genreSelect}>
+                  <option value="" disabled hidden>Choose genre</option>
+                  <option value="Trap">Trap</option>
+                  <option value="R&B">R&B</option>
+                  <option value="EDM" >EDM</option>
+                  <option value="Drill" >Drill</option>
+                  <option value="Synthwave" >Synthwave</option>
+                  <option value="Classical" >Classical</option>
+                  <option value="Pop" >Pop</option>
+                  <option value="Future Bass" >Future Bass</option>
+                  <option value="Orchestral" >Orchestral</option>
+                </select>
+                {<span className={postStyles.error}>{errors.genre}</span>}
+                <label>Description</label>
+                <textarea onChange={onChange} aria-label="Description" value={postValues.description} name="description" placeholder="Looking for a producer who can do this this and this" />
+                {<span className={postStyles.error}>{errors.description}</span>}
+                <button>Create Post</button>
+            </form>
+          </div>
         </div>
       </Layout>
     )

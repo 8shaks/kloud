@@ -1,34 +1,22 @@
 @import "../styles/comps";
-.contentWrapper{
+.content{
     padding: 1em 2em;
-    // display: flex;
-    // justify-content: space-between;
-   
+    width: 90%;
+    margin: 0 auto;
+}
+.contentWrapper{
+    text-align: center;
+    
 }
 .page{
     margin: 0 auto;
-}
-.search_type_cont{
-    margin: 1em auto 0 auto;
-    width: 20%;
-    text-align: center;
-    button{
-        @extend .button;
-        border-radius:5px;
-    }
-}
-.postsButton{
-    margin-right: 10px;
-}
-.profilesButton{
-    margin-left: 10px;
-}
-.selectedButton{
-    @extend .default_button
+    overflow-x: hidden;
+    background-color: $default_bg;
+    color: $text;
 }
 .search{
     width: 100%;
-    text-align: center;
+    // text-align: center;
     margin-top: 40px;
     input{
         font-size: 18px;
@@ -37,6 +25,63 @@
         }
     }
     button{
-        @extend .default_button
+        @extend .button;
     }
 }
+.serach_cont{
+    text-align: center;
+}
+.search_type_cont{
+    margin: 1em auto 0 auto;
+    width: 100%;
+
+}
+.postsButton{
+    margin-right: 10px;
+}
+.profilesButton{
+    margin-left: 10px;
+}
+.selectedButton{
+    @extend .default_button;
+}
+.search_button{
+    @extend .default_button;
+}
+
+
+@media only screen and (max-width: 550px) {
+    .search_type_cont{
+        width:100%;
+    }
+    .contentWrapper{
+        width: 100%;
+    }
+    .content{
+        padding: 0;
+    }
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    .search_type_cont{
+        width:100%;
+    }
+    .contentWrapper{
+        width: 100%;
+    }
+    .content{
+        padding: 0;
+    }
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+    .heading{
+        width: 70%;
+        h1{
+            font-size: 50px;
+        }
+    }
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

@@ -6,15 +6,17 @@
     align-items: center;
     padding-top: 5em;
     flex-wrap: wrap;
+    background-color: $default_bg;
+    color: $text;
 }
 .heading{
     display: block;
-    font-size: 30px;
+    font-size: 24px;
     width: 100%;
     text-align: center;
     h3{
         width: 70%;
-        font-size: 18px;
+        font-size: 16px;
         margin: 10px auto 0 auto;
         font-weight: 500;
     }
@@ -56,3 +58,23 @@
     display: block;
     margin: 0 auto;
 }
+
+@media only screen and (max-width: 550px) {
+    .heading{
+        font-size: 16px;
+        h3{
+            font-size: 12px;
+        }
+    }
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+ 
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  
