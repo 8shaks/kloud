@@ -188,7 +188,7 @@ const Messages = (props:Props) => {
                 </li>
               )
             })}
-            <button onClick={toggleFriendList} className={messagesStyles.newConversation}>New Convo</button>
+            {/* <button onClick={toggleFriendList} className={messagesStyles.newConversation}>New Convo</button> */}
           </ul>
           {currentConvo.userToChat === "" ? <h3>Choose a collab to your left</h3> : 
           <div className={messagesStyles.chat}>

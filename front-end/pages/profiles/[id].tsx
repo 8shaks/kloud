@@ -150,11 +150,10 @@ const Profile = (props:Props) => {
       }
       profileContent = (
         <div className={profileStyles.page}> 
-          <h1 className={profileStyles.heading}>{profile.username}</h1>
-         
+          <h1 className={profileStyles.heading}>{profile.username}</h1> 
           <div className={profileStyles.content}>
             {socialLinks}
-            <p>{profile.bio}</p>
+            <p className={profileStyles.bio}>{profile.bio}</p>
             {collabButton}
           </div>
           {userPostsContent}

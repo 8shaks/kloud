@@ -104,3 +104,38 @@
     color: white;
   }
 
+@media only screen and (max-width: 550px) {
+    .leftBar{
+        width: 100%;
+        padding-bottom: 20px;
+        overflow-y:scroll;
+    }
+    .chatContainer{
+        display: block;
+    }
+    .chat{
+        .input_group{
+            width: calc(100% - 20px);
+            .messageInput{
+                width:  60%;
+            }
+        }
+    }
+    .sendButton{
+        width: 25%;
+    }
+    .shareButton{
+        display: none;
+    }
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+ 
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

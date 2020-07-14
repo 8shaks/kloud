@@ -4,10 +4,10 @@
     overflow-y: scroll;
     height: 50vh;
     box-sizing: border-box;
+    background-color: $default_bg;
 }
 .messageWrapper{
     display: flex;
-
 }
 .messageBubble{
     padding: 10px;
@@ -100,3 +100,17 @@
     padding: 10px 0;
     text-align: center;
 }
+@media only screen and (max-width: 550px) {
+ 
+}
+
+@media only screen and (max-width:769px) and (min-width:551px) {
+    
+}
+@media only screen and (max-width:1024px) and (min-width:770px) {
+ 
+}
+@media only screen and  (min-width:1600px) {
+
+}
+  

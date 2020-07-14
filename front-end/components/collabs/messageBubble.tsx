@@ -28,7 +28,7 @@ export default (props: Props) => {
     if(message.sender === user){
         messageContent = ( 
         <div ref={userSent}  className={messageComp.messageWrapper}>
-            <span className={messageComp.messageBubble + " " + messageComp.sender}>
+            <span key={message.content} className={messageComp.messageBubble + " " + messageComp.sender}>
                 {message.content}
             </span>
         </div>
@@ -36,7 +36,7 @@ export default (props: Props) => {
     }else{
         messageContent = ( 
             <div ref={userReceieved} className={messageComp.messageWrapper}>
-                <span className={messageComp.messageBubble + " " + messageComp.receiver}>
+                <span key={message.content} className={messageComp.messageBubble + " " + messageComp.receiver}>
                     {message.content}
                 </span>
             </div>

@@ -26,6 +26,7 @@
     }
     button{
         @extend .button;
+        border-radius: 5px;
     }
 }
 .serach_cont{

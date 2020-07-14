@@ -164,14 +164,14 @@ const Messages = (props:Props) => {
               if(convo.lastMessage)
                 if(!convo.lastMessage.read && convo.lastMessage.sender !== profile.username) messageRead = <svg className={messagesStyles.readLogo} height="10" width="10"><circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" /></svg>
               return (
-                <li className={convo.participants.includes(currentConvo.userToChat) ? messagesStyles.personToChat + " " + messagesStyles.selectedConvo : messagesStyles.personToChat} key={convo._id} onClick={() => {chatFriend(userChat, convo._id, convo.lastMessage, convo.collabId)}}> 
+                <li key={convo._id} className={convo.participants.includes(currentConvo.userToChat) ? messagesStyles.personToChat + " " + messagesStyles.selectedConvo : messagesStyles.personToChat} onClick={() => {chatFriend(userChat, convo._id, convo.lastMessage, convo.collabId)}}> 
                   {userChat}
                   {messageRead}
                   <div>{convo.lastMessage ? convo.lastMessage.content : null}</div>
                 </li>
               )
             })}
-            <button onClick={toggleFriendList} className={messagesStyles.newConversation}>New Convo</button>
+            {/* <button onClick={toggleFriendList} className={messagesStyles.newConversation}>New Convo</button> */}
           </ul>
           {currentConvo.userToChat === "" ? <div className={messagesStyles.collabOnEnter}><h3>Choose a collab to your left</h3></div> : 
           <div className={messagesStyles.chat}>

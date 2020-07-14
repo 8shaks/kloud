@@ -153,7 +153,7 @@ const Profile = (props:Props) => {
          
           <div className={profileStyles.content}>
             {socialLinks}
-            <p>{profile.bio}</p>
+            <p className={profileStyles.bio}>{profile.bio}</p>
             {collabButton}
           </div>
           {userPostsContent}
