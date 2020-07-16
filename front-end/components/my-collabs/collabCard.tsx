@@ -17,8 +17,8 @@ export default (props: Props) => {
     return (
         <div className={collabComps.collabCard}>
             <div className={collabComps.flexCardHeader}>
-                <h3><Link href={`/collabs/${props._id}`}><a>{props.title}{props.notification ? <svg className={collabComps.readLogo} height="15" width="15"><circle cx="8" cy="8" r="6" stroke="black" stroke-width="1" fill="red" /></svg> : null}</a></Link></h3>
-                <Link href={`/profiles/${props.collaborator.username}`}><a className={collabComps.profileLink}>Collab with {props.user.username}</a></Link> 
+                <h3><Link as={`/collabs/${props._id}`} href={`/collabs/[id]`}><a>{props.title}{props.notification ? <svg className={collabComps.readLogo} height="15" width="15"><circle cx="8" cy="8" r="6" stroke="black" stroke-width="1" fill="red" /></svg> : null}</a></Link></h3>
+                <Link as={`/profiles/${props.collaborator.user}`} href={`/profiles/[id]`} ><a className={collabComps.profileLink}>Collab with {props.user.username}</a></Link> 
             </div>
             <span>{dateObj}</span>
             <p className={collabComps.description}>{props.description}</p>

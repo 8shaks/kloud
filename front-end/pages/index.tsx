@@ -14,6 +14,9 @@ const Home = () => {
           <span>The ultimate collaboration tool</span>
           <Link href="/register"><a>Register Today</a></Link>
         </div>
+        <div className={indexStyles.announcements}>
+          <h1>Announcements</h1>
+        </div>
       </div>
     </Layout>
   )

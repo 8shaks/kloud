@@ -62,12 +62,13 @@ const Profile = (props:Props) => {
             setUserPosts(res.data)
           })
         }
- 
-        if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...collabStatus, collabRequestSent:true});
-        }
-        if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...collabStatus, collabInProgress:true});
+        if(props.auth.isAuthenticated){
+            if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
+              setStatus({...collabStatus, collabRequestSent:true});
+            }
+            if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
+              setStatus({...collabStatus, collabInProgress:true});
+            }
         }
       }
 
@@ -110,18 +111,20 @@ const Profile = (props:Props) => {
       const { profile } = props.profile
       let socialLinks;
 
-      if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
-        collabButton = (
-          <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
-        )
-      }else if(collabStatus.collabRequestSent){
-        collabButton = (
-          <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
-        )
-      }else if(collabStatus.collabInProgress) {
-        collabButton = (
-          <Link href="/collabs"><a className={profileStyles.addFriendButton}>View Collab</a></Link>
-        )
+      if(props.auth.isAuthenticated){
+        if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
+          collabButton = (
+            <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
+          )
+        }else if(collabStatus.collabRequestSent){
+          collabButton = (
+            <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+          )
+        }else if(collabStatus.collabInProgress) {
+          collabButton = (
+            <Link href="/collabs"><a className={profileStyles.addFriendButton}>View Collab</a></Link>
+          )
+        }
       }
   
       if(profile.posts.length > 0){

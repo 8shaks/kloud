@@ -10,7 +10,7 @@ interface Props {
 export default (props: Props) => {
     const { profile } = props;
     return (
-        <Link href={`/profiles/${profile.user}`}>
+        <Link as={`/profiles/${profile.user}`}  href={`/profiles/[id]`}>
             <div key={profile._id} className={profileComps.profileCard}>
                 <div className={profileComps.flexCardHeader}>
                     <h3>{profile.username}</h3>

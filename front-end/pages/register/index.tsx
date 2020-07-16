@@ -33,9 +33,10 @@ const Register = (props:Props) => {
         let errorsNew:registerError = {username:null, password: null, email: null, password2: null};
         formValues.password === '' ? errorsNew.password = 'Please enter a password' : errorsNew.password = null;
         formValues.username === '' ? errorsNew.username = 'Please enter a username' : errorsNew.username = null;
+        formValues.username.length < 4 || formValues.username.length > 15 ? errorsNew.username = 'Usernames must be between 4 and 15 characters' : errorsNew.password2 = null;
         formValues.email === '' ? errorsNew.email = 'Please enter an email' : errorsNew.email = null;
         formValues.password2 === '' ? errorsNew.password2 = 'Please enter your password' : errorsNew.password2 = null;
-        formValues.password.length < 6 || formValues.password.length > 30 ? errorsNew.password = 'Please must be between 6 and 30 characters' : errorsNew.password2 = null;
+        formValues.password.length < 6 || formValues.password.length > 30 ? errorsNew.password = 'Password must be between 6 and 30 characters' : errorsNew.password2 = null;
         formValues.password2 !== formValues.password ? errorsNew.password2 = 'Passwords must match' : errorsNew.password2 = null;
         !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formValues.email)? errorsNew.email = 'Please enter a valid email' : errorsNew.email = null;
         setErrors(errorsNew);
