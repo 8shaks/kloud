@@ -98,21 +98,23 @@ io.on('connection', function (socket) {
         console.log("user had left");
     });
     socket.on("chat", function (data, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var conservationObj, newMessage, err_1;
+        var conversationObj, newMessage, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, Conversation_1.default.findOne({ _id: data.conversationId })];
                 case 1:
-                    conservationObj = _a.sent();
+                    conversationObj = _a.sent();
                     _a.label = 2;
                 case 2:
                     _a.trys.push([2, 5, , 6]);
-                    if (!(conservationObj !== null)) return [3 /*break*/, 4];
-                    newMessage = new Message_1.default({ sender: data.profile.username, content: data.message, conversationId: conservationObj._id });
+                    if (!(conversationObj !== null)) return [3 /*break*/, 4];
+                    newMessage = new Message_1.default({ sender: data.profile.username, content: data.message, conversationId: conversationObj._id, read: false });
                     return [4 /*yield*/, newMessage.save()];
                 case 3:
                     _a.sent();
-                    io.to(conservationObj._id).emit("message", { message: newMessage, username: data.profile.username, userToChat: data.userToChat });
+                    conversationObj.lastActive = Date.now();
+                    conversationObj.save();
+                    io.to(conversationObj._id).emit("message", { message: newMessage, username: data.profile.username, userToChat: data.userToChat });
                     _a.label = 4;
                 case 4: return [3 /*break*/, 6];
                 case 5:
@@ -124,12 +126,3 @@ io.on('connection', function (socket) {
         });
     }); });
 });
-// const params = {
-//   Bucket: 'kloud-storage', // pass your bucket name
-//   Key: `conversations/${conservationObj._id}`, // file will be saved as testBucket/contacts.csv
-//   Body: JSON.stringify(data, null, 2)
-// };
-// s3.upload(params, function(s3Err, data) {
-//     if (s3Err) throw s3Err
-//     console.log(`File uploaded successfully at ${data.Location}`)
-// });

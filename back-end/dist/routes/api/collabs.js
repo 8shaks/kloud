@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,6 +58,7 @@ var Collab_1 = __importDefault(require("../../models/Collab"));
 var Profile_1 = __importDefault(require("../../models/Profile"));
 var fileFuncs_1 = require("../../utils/fileFuncs");
 var Conversation_1 = __importDefault(require("../../models/Conversation"));
+var Message_1 = __importDefault(require("../../models/Message"));
 var multer_1 = __importDefault(require("multer"));
 // @route    GET api/collabs
 // @desc     Get all a users collabs
@@ -58,14 +70,27 @@ function getMyCollabs(profile) {
         if (profile.collabs.length === 0)
             resolve(myCollabs);
         profile.collabs.forEach(function (collabObj) { return __awaiter(_this, void 0, void 0, function () {
-            var collab;
+            var collab, lastMessage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, Collab_1.default.findById(collabObj.collabId)];
                     case 1:
                         collab = _a.sent();
-                        if (collab)
+                        if (!collab) return [3 /*break*/, 3];
+                        return [4 /*yield*/, Message_1.default.find({ conversationId: collab.conversation }).limit(1).sort({ date: -1 })];
+                    case 2:
+                        lastMessage = _a.sent();
+                        if (lastMessage.length === 0)
                             myCollabs.push(collab);
+                        else {
+                            if (!lastMessage[0].read && profile.username !== lastMessage[0].sender)
+                                collab.notification = true;
+                            else
+                                collab.notification = false;
+                            myCollabs.push(collab);
+                        }
+                        _a.label = 3;
+                    case 3:
                         if (myCollabs.length === profile.collabs.length)
                             resolve(myCollabs);
                         return [2 /*return*/];
@@ -112,16 +137,28 @@ function getMyConvos(collabs) {
         if (collabs.length === 0)
             resolve(myConversations);
         collabs.forEach(function (collabObj) { return __awaiter(_this, void 0, void 0, function () {
-            var conversation;
+            var conversation, lastMessage, conversationObj;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, Conversation_1.default.findById(collabObj.conversation)];
                     case 1:
                         conversation = _a.sent();
-                        if (conversation)
+                        if (!conversation) return [3 /*break*/, 3];
+                        return [4 /*yield*/, Message_1.default.find({ conversationId: conversation._id }).limit(1).sort({ date: -1 })];
+                    case 2:
+                        lastMessage = _a.sent();
+                        conversationObj = void 0;
+                        if (lastMessage) {
+                            conversationObj = __assign(__assign({}, conversation._doc), { lastMessage: lastMessage[0] });
+                            myConversations.push(conversationObj);
+                        }
+                        else {
                             myConversations.push(conversation);
+                        }
+                        _a.label = 3;
+                    case 3:
                         if (myConversations.length === collabs.length) {
-                            resolve(myConversations.sort(function (a, b) { return new Date(b.date).getTime() - new Date(a.date).getTime(); }));
+                            resolve(myConversations.sort(function (a, b) { return new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime(); }));
                         }
                         return [2 /*return*/];
                 }
@@ -178,7 +215,7 @@ router.get('/getcollab/:collab_id', auth_1.default, function (req, res) { return
                 if (!collab)
                     return [2 /*return*/, res.status(400).json({ errors: { collab: 'Collab not found' } })];
                 if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id)
-                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'Cou are not n this collab' } })];
+                    return [2 /*return*/, res.status(400).json({ errors: { collab: 'You are not in this collab' } })];
                 return [2 /*return*/, res.json(collab)];
             case 3:
                 err_3 = _a.sent();

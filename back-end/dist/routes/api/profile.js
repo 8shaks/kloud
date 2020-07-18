@@ -44,11 +44,32 @@ var router = express_1.default.Router();
 var auth_1 = __importDefault(require("../../middleware/auth"));
 var profile_1 = __importDefault(require("../../validation/profile"));
 var Profile_1 = __importDefault(require("../../models/Profile"));
+// @route    GET api/profile
+// @desc     Get all profiles
+// @access   Public
+router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var profiles, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Profile_1.default.find().sort({ date: -1 })];
+            case 1:
+                profiles = _a.sent();
+                return [2 /*return*/, res.json(profiles)];
+            case 2:
+                err_1 = _a.sent();
+                console.error(err_1.message);
+                return [2 /*return*/, res.status(500).json({ errors: { server: 'Server error' } })];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 // @route    GET api/profile/me
 // @desc     Get current users profile
 // @access   Private
 router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, profile, err_1;
+    var user, profile, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -65,8 +86,8 @@ router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0,
                     // res.json(profile.populate('user'));
                 ];
             case 2:
-                err_1 = _a.sent();
-                console.error(err_1.message);
+                err_2 = _a.sent();
+                console.error(err_2.message);
                 return [2 /*return*/, res.status(500).json({ errors: { server: 'Server error' } })];
             case 3: return [2 /*return*/];
         }
@@ -76,7 +97,7 @@ router.get('/me', auth_1.default, function (req, res) { return __awaiter(void 0,
 // @desc     Create or update user profile
 // @access   Private
 router.post('/', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, _a, bio, social, credits, friendRequestsRecieved, friendRequestsSent, profileFields, _b, errors, isValid, profile, err_2;
+    var user, _a, bio, social, credits, friendRequestsRecieved, friendRequestsSent, profileFields, _b, errors, isValid, profile, err_3;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
@@ -106,8 +127,8 @@ router.post('/', auth_1.default, function (req, res) { return __awaiter(void 0, 
                 res.json(profile);
                 return [3 /*break*/, 4];
             case 3:
-                err_2 = _c.sent();
-                console.error(err_2.message);
+                err_3 = _c.sent();
+                console.error(err_3.message);
                 res.status(500).send('Server Error');
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
@@ -120,7 +141,7 @@ router.post('/', auth_1.default, function (req, res) { return __awaiter(void 0, 
 router.get('/user/:id', function (_a, res) {
     var id = _a.params.id;
     return __awaiter(void 0, void 0, void 0, function () {
-        var profile, err_3;
+        var profile, err_4;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -129,11 +150,11 @@ router.get('/user/:id', function (_a, res) {
                 case 1:
                     profile = _b.sent();
                     if (!profile)
-                        return [2 /*return*/, res.status(400).json({ msg: 'Profile not found' })];
+                        return [2 /*return*/, res.status(404).json({ msg: 'Profile not found' })];
                     return [2 /*return*/, res.json(profile)];
                 case 2:
-                    err_3 = _b.sent();
-                    console.error(err_3.message);
+                    err_4 = _b.sent();
+                    console.error(err_4.message);
                     return [2 /*return*/, res.status(500).json({ msg: 'Server error' })];
                 case 3: return [2 /*return*/];
             }
@@ -146,7 +167,7 @@ router.get('/user/:id', function (_a, res) {
 router.get('/username/:username', function (_a, res) {
     var username = _a.params.username;
     return __awaiter(void 0, void 0, void 0, function () {
-        var profile, err_4;
+        var profile, err_5;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -155,11 +176,11 @@ router.get('/username/:username', function (_a, res) {
                 case 1:
                     profile = _b.sent();
                     if (!profile)
-                        return [2 /*return*/, res.status(400).json({ msg: 'Profile not found' })];
+                        return [2 /*return*/, res.status(404).json({ msg: 'Profile not found' })];
                     return [2 /*return*/, res.json(profile)];
                 case 2:
-                    err_4 = _b.sent();
-                    console.error(err_4.message);
+                    err_5 = _b.sent();
+                    console.error(err_5.message);
                     return [2 /*return*/, res.status(500).json({ msg: 'Server error' })];
                 case 3: return [2 /*return*/];
             }

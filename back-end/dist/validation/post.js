@@ -13,6 +13,7 @@ function validateProfileInput(data) {
     var errors = {};
     is_empty_1.default(data.description) ? data.description === '' : data.description;
     is_empty_1.default(data.title) ? data.title === '' : data.title;
+    is_empty_1.default(data.genre) ? errors.genre = "Please include a genre" : null;
     if (data.description) {
         if (((_a = data.description) === null || _a === void 0 ? void 0 : _a.length) > 300 || ((_b = data.description) === null || _b === void 0 ? void 0 : _b.length) < 20) {
             errors.description = "Please enter a description below 300 characters";

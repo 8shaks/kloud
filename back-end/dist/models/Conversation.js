@@ -15,6 +15,9 @@ var ConversationSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    lastActive: {
+        type: Date,
+    }
 });
 var Conversation = mongoose_1.default.model("conversations", ConversationSchema);
 exports.default = Conversation;

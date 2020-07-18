@@ -25,7 +25,7 @@ var ProfileSchema = new Schema({
         twitter: {
             type: String
         },
-        facebook: {
+        beatstars: {
             type: String
         },
         instagram: {

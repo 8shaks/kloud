@@ -114,6 +114,58 @@ router.get('/messages/:id', auth_1.default, function (req, res) { return __await
         }
     });
 }); });
+router.get('/lastMessage/:conversationId', auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var message, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.user)
+                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Message_1.default.find({ conversationId: req.params.conversationId }).limit(1).sort({ date: 1 })];
+            case 2:
+                message = _a.sent();
+                return [2 /*return*/, res.json({ message: message })];
+            case 3:
+                err_2 = _a.sent();
+                console.error(err_2.message);
+                res.status(500).send('Server Error');
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/changeMessageStatus", auth_1.default, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var message, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.user)
+                    return [2 /*return*/, res.status(400).json({ errors: { user: 'Invalid User' } })];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, Message_1.default.findById(req.body.message._id)];
+            case 2:
+                message = _a.sent();
+                if (!message)
+                    return [2 /*return*/, res.status(404).json({ errors: { message: 'Message not found' } })];
+                message.read = true;
+                return [4 /*yield*/, message.save()];
+            case 3:
+                _a.sent();
+                return [2 /*return*/, res.json({ message: message })];
+            case 4:
+                err_3 = _a.sent();
+                console.error(err_3.message);
+                res.status(500).send('Server Error');
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
 // // MAKE A FILE UPLOAD ENDPOINT
 // const upload = multer({
 //   storage: storage,

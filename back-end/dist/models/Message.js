@@ -7,12 +7,25 @@ var mongoose_1 = __importDefault(require("mongoose"));
 // import { IUser } from './User'
 var Schema = mongoose_1.default.Schema;
 var MessageSchema = new Schema({
-    sender: String,
-    content: String,
-    conversationId: String,
+    sender: {
+        required: true,
+        type: String
+    },
+    content: {
+        required: true,
+        type: String
+    },
+    conversationId: {
+        required: true,
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now
+    },
+    read: {
+        required: true,
+        type: Boolean
     }
 });
 var Message = mongoose_1.default.model("messages", MessageSchema);

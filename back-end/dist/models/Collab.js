@@ -31,6 +31,9 @@ var CollabSchema = new Schema({
         type: String,
         required: true
     },
+    notification: {
+        type: Boolean
+    },
     description: {
         type: String,
         required: true

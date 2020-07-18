@@ -23,6 +23,10 @@ var PostSchema = new Schema({
         type: String,
         required: true
     },
+    genre: {
+        type: String,
+        required: true
+    },
     date: {
         type: Date,
         default: Date.now

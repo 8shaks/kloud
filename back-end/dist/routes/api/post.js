@@ -66,6 +66,7 @@ router.post('/', auth_1.default, function (req, res) { return __awaiter(void 0, 
                     description: req.body.description,
                     title: req.body.title,
                     username: req.user.username,
+                    genre: req.body.genre,
                     user: req.user.id
                 });
                 return [4 /*yield*/, Profile_1.default.findOne({ user: req.user.id })];
@@ -109,7 +110,7 @@ router.post('/edit', auth_1.default, function (req, res) { return __awaiter(void
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, Post_1.default.findOneAndUpdate({ _id: req.body.id }, { $set: { title: req.body.title, description: req.body.description } }, { new: true, upsert: true })];
+                return [4 /*yield*/, Post_1.default.findOneAndUpdate({ _id: req.body.id }, { $set: { title: req.body.title, description: req.body.description, genre: req.body.genre, username: req.user.username, user: req.user.id } }, { new: true, upsert: true })];
             case 2:
                 newPost = _b.sent();
                 return [4 /*yield*/, newPost.save()];
