@@ -13,6 +13,9 @@ export default (props: Props) => {
     const [viewFilesStatus, changeViewFiles] = useState(false);
     const [collab, setCollab] = useState<CollabType | null>(null);
     const [files, setFiles] = useState<File>();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
     useEffect(() => {
         if(props.collabId){
             axios.get(`${host}/api/collabs/getcollab/${props.collabId}`).then((res) => {
@@ -20,8 +23,16 @@ export default (props: Props) => {
             })
         }
     }, [props.collabId])
-    const toggleViewFiles = () => {
-        changeViewFiles(!viewFilesStatus);
+
+    const toggleViewFiles = async () => {
+        if(!viewFilesStatus){
+            axios.get(`${host}/api/collabs/getcollab/${props.collabId}`).then((res) => {
+                setCollab(res.data)
+                changeViewFiles(!viewFilesStatus);
+            })
+        }else{
+            changeViewFiles(!viewFilesStatus);
+        }
     }
     if(!collab) return <div> Loading...</div>
 
@@ -30,12 +41,16 @@ export default (props: Props) => {
     }
     const onSubmitFile = () => {
         if(files){
-            toggleViewFiles();
+            setLoading(true);
             let formData = new FormData();
             formData.append("file", files);
             axios.post(`${host}/api/collabs/upload_file/${props.collabId}`, formData).then(() => {
+                setLoading(false);
+                toggleViewFiles();
                 setCollab({...collab, files:[...collab.files, { fileName : files.name, fileKey: `${props.collabId}/${files.name}`, date:Date.now()}]})
             }).catch(err => {
+                setLoading(false);
+                setError("Only mp3 and wav files under 10mb!");
                 console.log(err)
             })
         }
@@ -53,8 +68,10 @@ export default (props: Props) => {
             <h2 className={messageComp.fileInput_title}>Files</h2>
             <div className={messageComp.fileCont}>
                 <div className={messageComp.leftInput}> 
-                    <input  type="file" onChange={onFileChange} name="Files" />  
+                    <input accept=".mp3, .wav"  type="file" onChange={onFileChange} name="Files" />  
                     <button className={messageComp.uploadFile} onClick={onSubmitFile}>Upload File</button>
+                    { loading ? <div style={{marginTop:"10px"}}>Loading...</div> : null}
+                    { error.length > 0 ? <div className={messageComp.error}>{error}</div> : null}
                 </div>
                 <div className={messageComp.rightFiles}>
                     {collab.files.map((file) => {

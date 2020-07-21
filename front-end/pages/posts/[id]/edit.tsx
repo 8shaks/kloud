@@ -65,7 +65,6 @@ const createPost = (props:Props) => {
      }, [props.auth.isAuthenticated, props.loading])
 
     useEffect(() => {
-      console.log(props.errors)
       if (props.errors) return setErrors(props.errors)
       return setErrors({ title:null, description: null, server: null, genre:null});
     }, [props.errors])

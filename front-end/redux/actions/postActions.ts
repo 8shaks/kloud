@@ -13,9 +13,11 @@ import Router from 'next/router'
 import host from "../../vars"
 
 // Get posts
-export const getPosts = () => async (dispatch:Dispatch) => {
+export const getPosts = (genre?:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.get(`${host}/api/posts`);
+    let res;
+    if(genre) res =  await axios.get(`${host}/api/posts/genre/${genre}`);
+    else res =  await axios.get(`${host}/api/posts`);
 
     dispatch({
       type: GET_POSTS,

@@ -103,6 +103,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route    GET api/posts/genre
+// @desc     Get all posts by genre
+// @access   Private
+router.get('/genre/:genre', async (req, res) => {
+  try {
+    const posts = await Post.find({genre:req.params.genre}).sort({ date: -1 });
+    res.json(posts);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route    GET api/posts/:id
 // @desc     Get post by ID
 // @access   Private

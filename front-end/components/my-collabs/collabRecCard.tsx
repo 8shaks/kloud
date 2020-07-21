@@ -22,7 +22,6 @@ export default (props: Props) => {
         <div className={collabCompStyles.collabRecCard}>
             <div className={collabCompStyles.flexCardHeader}>
                 <h3>{props.title}</h3>
-                {console.log(props)}
                 <Link href={`/profiles/${props.collaborator.username}`}><a className={collabCompStyles.profileLink}>View {props.collaborator.username}'s profile</a></Link> 
             </div>
             <span>{dateObj}</span>

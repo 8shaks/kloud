@@ -131,23 +131,16 @@ router.post('/upload_file/:collab_id', auth, upload.single("file"),  async  (req
     const collab = await Collab.findById(req.params.collab_id);
     if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
     if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'You are not in this collab'} });
+    if(checkFileType(req.file) && req.file.size <= 10000000){
+      await uploadFile(req.file, req.params.collab_id);
 
-    await uploadFile(req.file, req.params.collab_id);
+      collab.files.push({fileName:req.file.originalname, fileKey:`${req.params.collab_id}/${req.file.originalname}` })
+      collab.save();
 
-    collab.files.push({fileName:req.file.originalname, fileKey:`${req.params.collab_id}/${req.file.originalname}` })
-    collab.save();
-    return res.json({sucess:true, msg:"File sucesfully uploaded"})
-    
-    
-    // getFile(req.body.fileLoc).then((el)=>{
-    //   res.setHeader('content-type', 'application/octet-stream')
-    //   res.setHeader('content-disposition', "test.mp3")
-    //   return res.send(el)
-    //  }).catch((err) => {
-    //     console.log(err)
-    //     return res.status(500).json({errors: { server: "There was a server error"}})
-    //  })
-
+      return res.json({sucess:true, msg:"File sucesfully uploaded"})
+    }else{
+      return res.status(400).json({errors:{fileType:"Invalid File Type"}});
+    }
    
   } catch (err) {
     console.error(err.message);

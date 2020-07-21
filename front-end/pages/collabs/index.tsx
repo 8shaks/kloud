@@ -58,18 +58,13 @@ const Messages = (props:Props) => {
     }, [props.profile.profile])
 
 
-// console.log(currentConvo)
-    useEffect(() => {
 
-
-    }, [])
 
     socket.on("message", ({message}: {message:MessageType}) => {
 
       if(message.conversationId === currentConvo.conversationId){
         let newMessage = message;
         newMessage.read = true;
-        console.log("message")
         if(message.sender !== props.auth.user.user.username){
           axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
              setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})

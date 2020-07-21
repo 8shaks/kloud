@@ -85,7 +85,7 @@ const Messages = (props:Props) => {
     }, [conversations])
 
     socket.on("message", ({message}: {message:MessageType}) => {
-      console.log(message)
+
       if(message.conversationId === currentConvo.conversationId){
         let newMessage = message;
         newMessage.read = true;
@@ -96,14 +96,16 @@ const Messages = (props:Props) => {
         }else{
           setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
         }
-      }else if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
-        let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
-        newConvo.lastMessage = message;
-         let new_array = conversations.filter((convo)=>{
-          return convo._id !== newConvo._id;
-        });
-        new_array.unshift(newConvo);
-        setConversations(new_array);
+      }else if(currentConvo.message.length > 0){
+        if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
+          let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
+          newConvo.lastMessage = message;
+          let new_array = conversations.filter((convo)=>{
+            return convo._id !== newConvo._id;
+          });
+          new_array.unshift(newConvo);
+          setConversations(new_array);
+        }
       }
     });
   
@@ -129,9 +131,7 @@ const Messages = (props:Props) => {
       e.preventDefault();
       window.open("https://meet.google.com/new?hs=190&utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-bkws-all-all-trial-b-dr-1009156&utm_content=text-ad-none-any-DEV_c-CRE_435246731960-ADGP_Hybrid+%7C+AW+SEM+%7C+BKWS+%7E+BMM+%2F%2F+Google+Meet+%2F%2F+Google+Meet-KWID_43700053715469092-kwd-405456583893&utm_term=KW_%2Bmeet+%2Bgoogle-ST_%2Bmeet+%2Bgoogle");
     }
-    const toggleFriendList = () => {
-      changeFriendListStatus(!friendListStatus);
-    }
+ 
 
     const chatFriend = ( username:string, convoId:string, lastMessage:MessageType, collabId?:string) => {
       try{

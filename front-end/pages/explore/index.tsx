@@ -18,7 +18,7 @@ interface Props {
     posts:{post : PostType, posts: PostType[]},
     profile:{ profile: ProfileType, profiles:ProfileType[]}
     getAllProfiles : () => void,
-    getPosts:() => void
+    getPosts:(genre?:string) => void
 }
 const Explore = (props:Props) => {
 
@@ -41,9 +41,13 @@ const Explore = (props:Props) => {
       setProfiles(props.profile.profiles)
     },[props.profile.profiles]);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
       setSearch(e.target.value);
     }
+    const onGenreChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+      props.getPosts(e.target.value);
+    }
+
     const onSearch = (e: React.ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
       if(postSearch) {
@@ -78,6 +82,23 @@ const Explore = (props:Props) => {
     }else{
        content = <div style={{fontSize:'20px'}}> Loading...</div>
     }
+    let genreSelect = (
+      <div className={exploreStyles.genreSelect}>
+        Filter:
+        <select name="genre"  onChange={onGenreChange} >
+          <option value="" >Any</option>
+          <option value="Trap">Trap</option>
+          <option value="R&B">R&B</option>
+          <option value="EDM" >EDM</option>
+          <option value="Drill" >Drill</option>
+          <option value="Synthwave" >Synthwave</option>
+          <option value="Classical" >Classical</option>
+          <option value="Pop" >Pop</option>
+          <option value="Future Bass" >Future Bass</option>
+          <option value="Orchestral" >Orchestral</option>
+        </select>
+      </div>
+    )
     return (
         <Layout>
             <div className={exploreStyles.page}>
@@ -88,6 +109,7 @@ const Explore = (props:Props) => {
                     <button onClick={() => setPostSearch(true)} className={postSearch ? `${exploreStyles.postsButton} ${exploreStyles.selectedButton}` : exploreStyles.postsButton}>Posts</button>
                     <button onClick={() => setPostSearch(false)} className={!postSearch ? `${exploreStyles.profilesButton} ${exploreStyles.selectedButton}` : exploreStyles.profilesButton}>Profiles</button>
                   </div>
+                  {postSearch ? genreSelect : null}
                 </div>
               </div>
               <div className={exploreStyles.contentWrapper}>{content}</div>

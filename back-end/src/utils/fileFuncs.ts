@@ -43,9 +43,9 @@ export const storage = multerS3({
 });
 
 // Check File Type
-export function checkFileType(file:any, cb:any) {
+export function checkFileType(file:any) {
   // Allowed ext
-  const filetypes = /mp3|mpeg/;
+  const filetypes = /mp3|mpeg|wav/;
 
   // Check ext
 
@@ -54,9 +54,9 @@ export function checkFileType(file:any, cb:any) {
   const mimetype = filetypes.test(file.mimetype);
 
   if (mimetype && extname) {
-    return cb(null, true);
+    return true
   } else {
-    cb("Error: Audio Only!");
+    return false
   }
 }
 
@@ -78,7 +78,6 @@ export function checkFileType(file:any, cb:any) {
 //   ]
 // }
 export const uploadFile = (file:any, collabId:string) => {
-    console.log(keys)
     return new Promise<any>((resolve, reject) => {
         // let fileData:any = []
         // for( let i = 0; i< files.length; i++){
@@ -109,11 +108,6 @@ export const uploadFile = (file:any, collabId:string) => {
   };
 
 
-  function encode(data:any)
-{
-    var str = data.reduce(function(a:any,b:any){ return a+String.fromCharCode(b) },'');
-    return Buffer.from(str, 'base64').toString().replace(/.{76}(?=.)/g,'$&\n');
-}
 export const getFile = (fileLoc:string) => {
     
     return new Promise<any>(async (resolve, reject) => {
