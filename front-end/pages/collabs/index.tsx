@@ -62,32 +62,31 @@ const Messages = (props:Props) => {
     useEffect(() => {
 
 
-    }, [currentConvo])
+    }, [])
 
     socket.on("message", ({message}: {message:MessageType}) => {
 
       if(message.conversationId === currentConvo.conversationId){
-        console.log(message.conversationId)
-        console.log(currentConvo.conversationId)
         let newMessage = message;
         newMessage.read = true;
+        console.log("message")
         if(message.sender !== props.auth.user.user.username){
-          console.log(message)
           axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
              setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
           );
         }else{
           setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
         }
-        
-      }else if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
-        let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
-        newConvo.lastMessage = message;
-         let new_array = conversations.filter((convo)=>{
-          return convo._id !== newConvo._id;
-        });
-        new_array.unshift(newConvo);
-        setConversations(new_array);
+      }else if(currentConvo.message.length > 0){
+        if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
+          let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
+          newConvo.lastMessage = message;
+          let new_array = conversations.filter((convo)=>{
+            return convo._id !== newConvo._id;
+          });
+          new_array.unshift(newConvo);
+          setConversations(new_array);
+        }
       }
     });
   

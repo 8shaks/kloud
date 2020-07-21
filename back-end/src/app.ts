@@ -90,6 +90,7 @@ io.on('connection', (socket) => {
           await newMessage.save();
           conversationObj.lastActive = Date.now();
           conversationObj.save();
+          console.log("bob")
           io.to(conversationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat } );
         }
       }catch(err){
