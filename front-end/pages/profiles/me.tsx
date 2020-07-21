@@ -31,6 +31,7 @@ const Profile = (props:Props) => {
     const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", beatstars:""});
     const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
     const [myPosts, setMyPosts] = useState<PostType[]>([]);
+    const [profileSaved, setProfileSaved] = useState(false);
 
     useEffect(() => {
       if(!props.loading){
@@ -82,8 +83,9 @@ const Profile = (props:Props) => {
     const onSubmit = (e: FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         if(checkValid()){
-            profile.social = social
+            profile.social = social;
             props.createProfile(profile);
+            setProfileSaved(true);
         }
     }
     const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) =>{
@@ -94,7 +96,7 @@ const Profile = (props:Props) => {
     }
     let profileContent = <div className={profileStyles.page}>Loading...</div>
 
-    let myPostsContent, friends, friendRecs;
+    let myPostsContent
 
     if(profile !== null){
       if(props.profile.profile.posts.length > 0){
@@ -112,13 +114,15 @@ const Profile = (props:Props) => {
     
       profileContent = (
       <div className={profileStyles.page}> 
-        <h1 className={profileStyles.heading}>Welcome {profile.username}</h1>
+        <h1 className={profileStyles.heading}>Welcome {profile.username} {profileSaved ? <span className={profileStyles.profileSaved}>Profile Saved!</span> : null}</h1>
+        
         <form className={profileStyles.form}  method="POST" onSubmit={onSubmit}>
           <label>Bio</label>
           <textarea onChange={onChange} aria-label="Bio" value={profile.bio} name="bio" placeholder="Give us some info about your self!"/>
           {<span className="error">{errors.bio}</span>}
           <SocialLinksForm onChange={onChangeSocial} errors={errors.social ? errors.social : {}} social={social} />
-          <button>Save Profile</button>
+          <button type="submit">Save Profile</button>
+         
         </form>
         {myPostsContent}
       </div>
