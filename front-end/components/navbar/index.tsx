@@ -37,7 +37,6 @@ const Navbar = (props:Props) => {
             <ul className={navbarStyles.linksList}>
                 <li className={navbarStyles.logo + " " + navbarClass} ><Link href="/"><a><img className={navbarStyles.logo} src="/images/logo.png"/>Kloud</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/explore"><a>Explore</a></Link></li>
-                <li className={navbarStyles.item + " " + navbarClass} ><a>About Us</a></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/login"><a>Sign In</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarStyles.getKloudButton + " " + navbarClass}><Link href="/register"><a className={""}>Register Today</a></Link></li>
                 <li className={navbarStyles.toggle}> <a onClick={toggleNavbar} >Toggle</a></li>
