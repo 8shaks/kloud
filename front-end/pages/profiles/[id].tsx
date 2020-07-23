@@ -3,7 +3,7 @@ import profileStyles from"./profile.module.scss";
 import Layout from '../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq } from '../../redux/actions/profileActions'
+import { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq, clearProfile } from '../../redux/actions/profileActions';
 import React, { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { ProfileType, PostType } from "../../@types/customType";
@@ -20,6 +20,7 @@ interface Props{
   loading:boolean,
   unfriendUser: (username:string) => void,
   sendFriendReq: (username:string) => void,
+  clearProfile: () => void,
   sendCollabReq: (username:string, title: string, description:string) => void,
   changeFriendReqStatus:(friendReq:{username:string, accept:boolean}) => void,
   // profile:{profile: any, profiles:[any], isLoading:boolean },
@@ -40,7 +41,7 @@ interface collabError{
 const Profile = (props:Props) => {
     const router = useRouter()
     const { id } = router.query
-    const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false });
+    const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false,  collabRequestReceieved: false });
     const [userPosts, setUserPosts] = useState<PostType[]>([])
     const [errors, setErrors] = useState<friendError>({ friends:null, server: null});
     const [collabModal, setCollabModal] = useState(false);
@@ -51,7 +52,6 @@ const Profile = (props:Props) => {
       if(!props.loading){
         if(typeof id === "string"){
           props.getProfileById(id);
-
         }
       }
     }, [props.loading])
@@ -63,6 +63,9 @@ const Profile = (props:Props) => {
           })
         }
         if(props.auth.isAuthenticated){
+            if(props.profile.profile.collabRequestsSent.filter(u => u.username === props.auth.user.user.username ).length === 1){
+              setStatus({...collabStatus, collabRequestReceieved:true});
+            }
             if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
               setStatus({...collabStatus, collabRequestSent:true});
             }
@@ -78,16 +81,23 @@ const Profile = (props:Props) => {
       return setErrors(props.errors);
     }, [props.errors])
 
+    useEffect(() => {
+      return () => {
+        clearProfile();
+      }
+    }, [])
+
+
     const toggleModal = () => {
       setCollabModal(!collabModal);
     }
 
     const checkCollabReqInfo = () => {
       let errorsNew:collabError = {description:null, title: null};
-      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description below 300 characters" : null;
-      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title below 300 characters" : null;
+      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description between 300 and 20 characters" : null;
+      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title between 100 and 10 characters" : null;
       setCollabReqErrors(errorsNew);
-      if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true;
+      if (!errorsNew.title  && !errorsNew.description && !errorsNew.server) return true;
       else return false
     }
     const sendCollabReq = (e: FormEvent<HTMLFormElement>) => {
@@ -112,13 +122,17 @@ const Profile = (props:Props) => {
       let socialLinks;
 
       if(props.auth.isAuthenticated){
-        if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
+        if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress && !collabStatus.collabRequestReceieved){
           collabButton = (
             <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
           )
         }else if(collabStatus.collabRequestSent){
           collabButton = (
             <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+          )
+        }else if(collabStatus.collabRequestReceieved){
+          collabButton = (
+            <Link href="/my-collabs"><a className={profileStyles.addFriendButton} >View Collab Request</a></Link>
           )
         }else if(collabStatus.collabInProgress) {
           collabButton = (
@@ -143,11 +157,11 @@ const Profile = (props:Props) => {
       if (profile.social){
         socialLinks=(
           <div className={profileStyles.socialLinks}>
-           {profile.social.youtube ? <a target="_blank" href={profile.social.youtube}><img className={profileStyles.socialLogo} alt="Youtube" src={"/images/youtube.png"}/></a> : null}
-            {profile.social.soundcloud ? <a target="_blank" href={profile.social.soundcloud}><img className={profileStyles.socialLogo} alt="Soundcloud" src={"/images/soundcloud.png"}/></a> : null}
-            {profile.social.twitter ? <a target="_blank" href={profile.social.twitter}><img className={profileStyles.socialLogo} alt="Twitter" src={"/images/twitter.png"}/></a> : null}
-            {profile.social.instagram ? <a target="_blank" href={profile.social.instagram}><img className={profileStyles.socialLogo} alt="Instagram" src={"/images/instagram.png"}/></a> : null}
-            {profile.social.beatstars ? <a target="_blank" href={profile.social.beatstars}><img className={profileStyles.socialLogo} alt="Beatstars"  src={"/images/beatstars.png"}/></a> : null}
+            {profile.social.youtube ? <a target="_blank" href={profile.social.youtube}><img className={profileStyles.socialLogo} alt="Youtube" src={"/images/youtube.png"}/></a> : null}
+            {profile.social.soundcloud ? <a target="_blank" href={`https://www.soundcloud.com/${profile.social.soundcloud}`}><img className={profileStyles.socialLogo} alt="Soundcloud" src={"/images/soundcloud.png"}/></a> : null}
+            {profile.social.twitter ? <a target="_blank" href={`https://www.twitter.com/${profile.social.twitter}`}><img className={profileStyles.socialLogo} alt="Twitter" src={"/images/twitter.png"}/></a> : null}
+            {profile.social.instagram ? <a target="_blank" href={`https://www.instagram.com/${profile.social.instagram}`}><img className={profileStyles.socialLogo} alt="Instagram" src={"/images/instagram.png"}/></a> : null}
+            {profile.social.beatstars ? <a target="_blank" href={`https://www.beatstars.com/${profile.social.beatstars}`}><img className={profileStyles.socialLogo} alt="Beatstars"  src={"/images/beatstars.png"}/></a> : null}
           </div>
         )
       }
@@ -181,5 +195,5 @@ const mapStateToProps = (state: Props) => ({
 
 export default connect(
   mapStateToProps,
-  { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq }
+  { getProfileById, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq, clearProfile }
 )(Profile);

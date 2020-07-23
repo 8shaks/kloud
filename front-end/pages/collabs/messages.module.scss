@@ -27,7 +27,6 @@
     width: 30%;
     border-right: 1px solid $grey;
     overflow-y: scroll;
-    // flex: 1 1 auto;
     display: inline-block;
     position: relative;
     list-style-type: none;
@@ -63,6 +62,9 @@
             border: 1px solid $grey;
         }
     }
+}
+.preview{
+    
 }
 .sendButton, .shareButton{
     width: 8%;

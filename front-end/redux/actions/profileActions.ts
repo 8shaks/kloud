@@ -33,6 +33,7 @@ export const getCurrentProfile = () => async (dispatch:Dispatch) => {
       })
     }else alert("There was a server error, please try again later")
   }
+  dispatch({type:LOADING_DONE});
 };
 
 // CLear Profile
@@ -41,44 +42,33 @@ export const clearProfile = () => async (dispatch:Dispatch) => {
 };
 
 
-
-// // Get all profiles
-// export const getProfiles = () => async dispatch => {
-//   dispatch({ type: CLEAR_PROFILE });
-
-//   try {
-//     const res = await api.get('/profile');
-
-//     dispatch({
-//       type: GET_PROFILES,
-//       payload: res.data
-//     });
-//   } catch (err) {
-//     dispatch({
-//       type: PROFILE_ERROR,
-//       payload: { msg: err.response.statusText, status: err.response.status }
-//     });
-//   }
-// };
-
 // Get profile by ID
 export const getProfileById = (userId:string) => async (dispatch:Dispatch) => {
-  // dispatch({type:IS_LOADING})
+  dispatch({type:IS_LOADING})
   try {
-    const res = await axios.get(`${host}/api/profile/user/${userId}`);
-    dispatch({
-      type: GET_PROFILE,
-      payload: res.data
-    });
+    if(userId.length === 0){
+      dispatch({
+        type: GET_PROFILE,
+        payload: null
+      });
+    }else{
+      const res = await axios.get(`${host}/api/profile/user/${userId}`);
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      });
+    }
+   
   } catch (err) {
+    console.log(err)
     if(err.response){
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
       })
-    }else alert("There was a server error, please try again later")
+    }
   }
-  dispatch({type:LOADING_DONE})
+  // dispatch({type:LOADING_DONE})
 };
 
 // Get allProfiles
@@ -104,11 +94,19 @@ export const getAllProfiles = () => async (dispatch:Dispatch) => {
 // Get profile by username
 export const getProfileByUsername = (username:string) => async (dispatch:Dispatch) => {
   try {
-    const res = await axios.get(`${host}/api/profile/username/${username}`);
-    dispatch({
-      type: GET_PROFILE,
-      payload: res.data
-    });
+    if(username.length === 0){
+      dispatch({
+        type: GET_PROFILE,
+        payload: null
+      });
+    }else{
+      const res = await axios.get(`${host}/api/profile/username/${username}`);
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data
+      });
+    }
+    
   } catch (err) {
     if(err.response){
       dispatch({

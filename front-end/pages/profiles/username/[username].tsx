@@ -3,7 +3,7 @@ import profileStyles from"../profile.module.scss";
 import Layout from '../../../components/layout/layout';
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getProfileByUsername, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq } from '../../../redux/actions/profileActions'
+import { getProfileByUsername, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq, clearProfile } from '../../../redux/actions/profileActions'
 import React, { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { ProfileType, PostType } from "../../../@types/customType";
@@ -18,6 +18,7 @@ interface Props{
   errors: any,
   profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean},
   loading:boolean,
+  clearProfile: () => void,
   unfriendUser: (username:string) => void,
   sendFriendReq: (username:string) => void,
   sendCollabReq: (username:string, title: string, description:string) => void,
@@ -40,7 +41,7 @@ interface collabError{
 const Profile = (props:Props) => {
     const router = useRouter()
     const { username } = router.query
-    const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false });
+    const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false,  collabRequestReceieved: false, });
     const [userPosts, setUserPosts] = useState<PostType[]>([])
     const [errors, setErrors] = useState<friendError>({ friends:null, server: null});
     const [collabModal, setCollabModal] = useState(false);
@@ -62,12 +63,16 @@ const Profile = (props:Props) => {
             setUserPosts(res.data)
           })
         }
- 
-        if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...collabStatus, collabRequestSent:true});
-        }
-        if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
-          setStatus({...collabStatus, collabInProgress:true});
+        if(props.auth.isAuthenticated){
+          if(props.profile.profile.collabRequestsSent.filter(u => u.username === props.auth.user.user.username ).length === 1){
+            setStatus({...collabStatus, collabRequestReceieved:true});
+          }
+          if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
+            setStatus({...collabStatus, collabRequestSent:true});
+          }
+          if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
+            setStatus({...collabStatus, collabInProgress:true});
+          }
         }
       }
 
@@ -76,18 +81,24 @@ const Profile = (props:Props) => {
       return setErrors(props.errors);
     }, [props.errors])
 
+    useEffect(() => {
+      return () => {
+        clearProfile();
+      }
+    }, [])
     const toggleModal = () => {
       setCollabModal(!collabModal);
     }
-
+    
     const checkCollabReqInfo = () => {
       let errorsNew:collabError = {description:null, title: null};
-      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description below 300 characters" : null;
-      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title below 300 characters" : null;
+      collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description between 300 and 20 characters" : null;
+      collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title between 100 and 10 characters" : null;
       setCollabReqErrors(errorsNew);
-      if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true;
+      if (!errorsNew.title  && !errorsNew.description && !errorsNew.server) return true;
       else return false
     }
+
     const sendCollabReq = (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if(checkCollabReqInfo()){
@@ -109,18 +120,24 @@ const Profile = (props:Props) => {
       const { profile } = props.profile
       let socialLinks;
 
-      if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
-        collabButton = (
-          <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
-        )
-      }else if(collabStatus.collabRequestSent){
-        collabButton = (
-          <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
-        )
-      }else if(collabStatus.collabInProgress) {
-        collabButton = (
-          <Link href="/collabs"><a className={profileStyles.addFriendButton}>View Collab</a></Link>
-        )
+      if(props.auth.isAuthenticated){
+        if(!collabStatus.collabRequestSent && profile.user !== props.auth.user.user.id && !collabStatus.collabInProgress && !collabStatus.collabRequestReceieved){
+          collabButton = (
+            <button className={profileStyles.addFriendButton} onClick={toggleModal}>Send Collab Request</button>
+          )
+        }else if(collabStatus.collabRequestSent){
+          collabButton = (
+            <button className={profileStyles.removeFriendButton} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+          )
+        }else if(collabStatus.collabRequestReceieved){
+          collabButton = (
+            <Link href="/my-collabs"><a className={profileStyles.addFriendButton} >View Collab Request</a></Link>
+          )
+        }else if(collabStatus.collabInProgress) {
+          collabButton = (
+            <Link href="/collabs"><a className={profileStyles.addFriendButton}>View Collab</a></Link>
+          )
+        }
       }
   
       if(profile.posts.length > 0){
@@ -178,5 +195,5 @@ const mapStateToProps = (state: Props) => ({
 
 export default connect(
   mapStateToProps,
-  { getProfileByUsername, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq }
+  { getProfileByUsername, unfriendUser, changeFriendReqStatus, sendFriendReq, sendCollabReq, clearProfile }
 )(Profile);

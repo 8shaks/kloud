@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { social } from "../../@types/customType";
+import profileCompStyles from "./profileComps.module.scss";
 
 interface Props {
     social:social,
@@ -14,20 +15,20 @@ export default function socialLinksForm(props:Props) {
     return (
         <Fragment>
             <label>Youtube</label>
-            <input onChange={onChange} aria-label="Youtube" value={social.youtube} name="youtube" placeholder="Youtube"/>
+            <div className={profileCompStyles.input_group}><span></span><input onChange={onChange} aria-label="Youtube" value={social.youtube} name="youtube" placeholder="Youtube"/></div>
             {<span className="error">{errors.youtube}</span>}
             <label>Instagram</label>
-            <input onChange={onChange} aria-label="Instagram" value={social.instagram} name="instagram" placeholder="Instagram"/>
+            <div className={profileCompStyles.input_group}><span>https://www.instagram.com/</span><input onChange={onChange} aria-label="Instagram" value={social.instagram} name="instagram" placeholder="Instagram"/></div>
             {<span className="error">{errors.instagram}</span>}
             <label>SoundCloud</label>
             {<span className="error">{errors.soundcloud}</span>}
-            <input onChange={onChange} aria-label="Soundcloud" value={social.soundcloud} name="soundcloud" placeholder="Soundcloud"/>
+            <div className={profileCompStyles.input_group}><span>https://soundcloud.com/</span><input onChange={onChange} aria-label="Soundcloud" value={social.soundcloud} name="soundcloud" placeholder="Soundcloud"/></div>
             <label>Twitter</label>
             {<span className="error">{errors.twitter}</span>}
-            <input onChange={onChange} aria-label="Twitter" value={social.twitter} name="twitter" placeholder="Twitter"/>
+            <div className={profileCompStyles.input_group}><span>https://twitter.com/</span><input onChange={onChange} aria-label="Twitter" value={social.twitter} name="twitter" placeholder="Twitter"/></div>
             <label>Beatstars</label>
             {<span className="error">{errors.beatstars}</span>}
-            <input onChange={onChange} aria-label="Beatstars" value={social.beatstars} name="beatstars" placeholder="Beatstars"/>
+            <div className={profileCompStyles.input_group}><span>https://www.beatstars.com/</span><input onChange={onChange} aria-label="Beatstars" value={social.beatstars} name="beatstars" placeholder="Beatstars"/></div>
         </Fragment>
     )
 }

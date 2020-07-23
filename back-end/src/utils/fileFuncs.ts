@@ -45,7 +45,7 @@ export const storage = multerS3({
 // Check File Type
 export function checkFileType(file:any) {
   // Allowed ext
-  const filetypes = /mp3|mpeg|wav/;
+  const filetypes = /mp3|mpeg|wav|flac|midi/;
 
   // Check ext
 

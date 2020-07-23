@@ -14,6 +14,7 @@ interface Props {
 export default function collabReqModal(props:Props) {
 
     const {collabReqInfo, onChange, errors, onSubmit} = props;
+    
     return (
       <div className={collabCompStyles.collabReqModal}>
         <div className={collabCompStyles.collabReqModal_content}>

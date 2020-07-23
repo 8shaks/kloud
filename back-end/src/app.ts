@@ -13,13 +13,21 @@ import friends from "./routes/api/friends";
 import collabs from "./routes/api/collabs";
 import conversation from "./routes/api/conversation";
 import cors from "cors";
-
+import nodemailer from 'nodemailer';
 import Conversation from "./models/Conversation";
-import Profile from "./models/Profile";
+import User from "./models/User";
 import Message from "./models/Message";
 import { IProfile, SocketMessage } from "./@types/custom";
+const keys = require("./config/keys");
 
-import { uploadFile } from "./utils/fileFuncs";
+
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: keys.email,
+    pass: keys.emailPassword
+  }
+});
 
 const app: Express = express();
 
@@ -84,13 +92,40 @@ io.on('connection', (socket) => {
   socket.on("chat", async (data:{profile:IProfile, userToChat:string, message:string, conversationId:string}, callback) => {
     // if(data.profile.conversations.filter(u => u.username === data.userToChat).length > 0){
       let conversationObj = await Conversation.findOne({_id:data.conversationId});
+      let userToChatObj = await User.findOne({username:data.userToChat});
       try{
-        if(conversationObj !== null){
+        if(conversationObj !== null && userToChatObj ){
           const newMessage = new Message({sender: data.profile.username, content:data.message, conversationId: conversationObj._id, read:false});
           await newMessage.save();
           conversationObj.lastActive = Date.now();
           conversationObj.save();
-          console.log("bob")
+
+          const emailNewMessage = `
+          Hey ${userToChatObj.username}
+          <br/><br/>
+          You have a new message from ${data.profile.username}.
+          <br/><br/>
+          ${data.message}
+          <br/><br/>
+          <a href="https://kloud.live/my-collabs">Click here to check your collabs</a>
+          <br/><br/>
+          From,<br/>
+          The Kloud Team
+          `
+          const mailOptions = {
+            from: "Kloud",
+            to: userToChatObj!.email,
+            subject: `New message from ${data.profile.username}`,
+            //Email to Be sent
+            html: emailNewMessage
+          };
+          //Send Email
+          transporter.sendMail(mailOptions, function(err, info) {
+            //handle email errors
+            if (err) console.log(err);
+            else console.log(info);
+          });
+          
           io.to(conversationObj._id).emit("message", {message:newMessage, username: data.profile.username, userToChat: data.userToChat } );
         }
       }catch(err){

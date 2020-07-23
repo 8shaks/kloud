@@ -27,20 +27,20 @@ interface Props{
   createProfile:(profile:ProfileType) => void
 }
 const Profile = (props:Props) => {
-    const [profile, setProfile] = useState(props.profile.profile);
+    const [profile, setProfile] = useState<ProfileType>();
     const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", beatstars:""});
     const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
     const [myPosts, setMyPosts] = useState<PostType[]>([]);
     const [profileSaved, setProfileSaved] = useState(false);
 
+
+
     useEffect(() => {
-      if(!props.loading){
         if (!props.auth.isAuthenticated ) Router.push('/');
         else props.getCurrentProfile();
-      }
     }, [props.loading])
     useEffect(() => {
-      if (props.profile.profile) {
+      if (props.profile.profile && !props.loading ) {
         setProfile(props.profile.profile);
         props.profile.profile.social ? setSocial(props.profile.profile.social) : null;
         if(props.profile.profile.posts.length > 0){
@@ -56,40 +56,46 @@ const Profile = (props:Props) => {
     
     const checkValid = () =>{
       let errorsNew:profileError = {bio:null, social:null, server:null};
-      if(profile.bio){
-        profile.bio.length > 300 ? errorsNew.bio = "Please enter a bio below 300 characters" : null;
+      if(profile!.bio){
+        profile!.bio.length > 300 ? errorsNew.bio = "Please enter a bio below 300 characters" : null;
       }
-      if(profile.social){
-        if(social.youtube && social.youtube.length !== 0){
-          !urlRegex.test(social.youtube) ? errorsNew.social!.youtube = "Please enter a valid youtube url" : null
-        }
-        if(social.twitter && social.twitter.length !== 0){
-          !urlRegex.test(social.twitter) ? errorsNew.social!.twitter = "Please enter a valid twitter url" : null
-        }
-        if(social.soundcloud && social.soundcloud.length !== 0){
-          !urlRegex.test(social.soundcloud) ? errorsNew.social!.soundcloud = "Please enter a valid soundcloud url" : null
-        }
-        if(social.beatstars && social.beatstars.length !== 0){
-          !urlRegex.test(social.beatstars) ? errorsNew.social!.beatstars = "Please enter a valid beatstars url" : null
-        }
-        if(social.instagram && social.instagram.length !== 0){
-          !urlRegex.test(social.instagram) ? errorsNew.social!.instagram = "Please enter a valid instagram url" : null
-        }
-      }
+      // if(profile.social){
+      //   if(social.youtube && social.youtube.length !== 0){
+      //     !urlRegex.test(social.youtube) ? errorsNew.social!.youtube = "Please enter a valid youtube url" : null
+      //   }
+      //   if(social.twitter && social.twitter.length !== 0){
+      //     !urlRegex.test(social.twitter) ? errorsNew.social!.twitter = "Please enter a valid twitter url" : null
+      //   }
+      //   if(social.soundcloud && social.soundcloud.length !== 0){
+      //     !urlRegex.test(social.soundcloud) ? errorsNew.social!.soundcloud = "Please enter a valid soundcloud url" : null
+      //   }
+      //   if(social.beatstars && social.beatstars.length !== 0){
+      //     !urlRegex.test(social.beatstars) ? errorsNew.social!.beatstars = "Please enter a valid beatstars url" : null
+      //   }
+      //   if(social.instagram && social.instagram.length !== 0){
+      //     !urlRegex.test(social.instagram) ? errorsNew.social!.instagram = "Please enter a valid instagram url" : null
+      //   }
+      // }
       setErrors(errorsNew);
-      if (!errors.social  && !errors.bio && !errors.server) return true
+      if ( !errors.bio && !errors.server) return true
       else return false
     }
     const onSubmit = (e: FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         if(checkValid()){
-            profile.social = social;
-            props.createProfile(profile);
+
+            // if (social.youtube) profile!.social.youtube = `https://www.youtube.com/${social.youtube}`;
+            // if (social.instagram) profile!.social.instagram = `https://www.instagram.com/${social.instagram}`;
+            // if (social.twitter) profile!.social.twitter = `https://www.twitter.com/${social.twitter}`;
+            // if (social.soundcloud) profile!.social.soundcloud = `https://www.soundcloud.com/${social.soundcloud}`;
+            // if (social.beatstars) profile!.social.beatstars = `https://www.beatstars.com/${social.beatstars}`;
+            profile!.social = social;
+            props.createProfile(profile!);
             setProfileSaved(true);
         }
     }
     const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) =>{
-      setProfile({...profile, [e.target.name]: e.target.value});
+      setProfile({...profile!, [e.target.name]: e.target.value});
     }
     const onChangeSocial = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) =>{
       setSocial({...social, [e.target.name]: e.target.value});
@@ -97,9 +103,9 @@ const Profile = (props:Props) => {
     let profileContent = <div className={profileStyles.page}>Loading...</div>
 
     let myPostsContent
-
-    if(profile !== null){
-      if(props.profile.profile.posts.length > 0){
+    
+    if(profile){
+      if(profile.posts.length > 0){
         myPostsContent=(
           <div className={profileStyles.myPosts}>
           <h2>My Posts</h2>

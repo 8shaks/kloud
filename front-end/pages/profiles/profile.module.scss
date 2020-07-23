@@ -23,7 +23,6 @@
     }
     textarea, input{
         resize: none;
-        display: block;
         width: 100%;
         font-family: 'Montserrat', sans-serif;
     }
@@ -33,6 +32,7 @@
     }
    width: 40%;
 }
+
 .friends{
     margin: 2em auto;
     width: 80%;
@@ -73,8 +73,6 @@
 
 }
 .socialLinks{
-    display: flex;
-    justify-content: space-between;
     width: 20%;
     margin:0 auto;
     align-items: flex-end;

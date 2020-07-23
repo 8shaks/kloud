@@ -33,32 +33,31 @@ const Post = (props:Props) => {
   const { id } = router.query
   const [myPost, setPostStatus] = useState(false);
   const [authError, setAuthError] = useState(false);
-  const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false });
+  const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false,  collabRequestReceieved: false });
   const [collabModal, setCollabModal] = useState(false);
   const [collabReqInfo, setCollabReqInfo] = useState({title:"", description:""})
   const [collabReqErrors, setCollabReqErrors] = useState<collabError>({ title:null, description:null, server:null});
 
   useEffect(() => {
     if(props.profile.profile !==null){
-  
+      if(props.profile.profile.collabRequestsSent.filter(u => u.username === props.auth.user.user.username ).length === 1){
+        setStatus({...collabStatus, collabRequestReceieved:true});
+      }
       if(props.profile.profile.collabRequestsRecieved.filter(u => u.username === props.auth.user.user.username ).length === 1){
         setStatus({...collabStatus, collabRequestSent:true});
       }
       if(props.profile.profile.collabs.filter(u => u.username === props.auth.user.user.username ).length === 1){
         setStatus({...collabStatus, collabInProgress:true});
       }
-
     }
 
   }, [props.profile])
 
   useEffect(() => {
-    if(!props.loading){
      if(typeof id === "string"){
         props.getPost(id);
       }
-    }
-  }, [props.loading])
+  }, [])
   useEffect(() => {
     if(props.auth.isAuthenticated){
       if(props.posts.post.user ===  props.auth.user.user.id){
@@ -82,12 +81,13 @@ const Post = (props:Props) => {
 
   const checkCollabReqInfo = () => {
     let errorsNew:collabError = {description:null, title: null};
-    collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description below 300 characters" : null;
-    collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title below 300 characters" : null;
+    collabReqInfo.description.length > 300 || collabReqInfo.description.length < 20 ? errorsNew.description = "Please enter a description between 300 and 20 characters" : null;
+    collabReqInfo.title.length > 100 || collabReqInfo.title.length < 10 ? errorsNew.title = "Please enter a title between 100 and 10 characters" : null;
     setCollabReqErrors(errorsNew);
-    if (!collabReqErrors.title  && !collabReqErrors.description && !collabReqErrors.server) return true;
+    if (!errorsNew.title  && !errorsNew.description && !errorsNew.server) return true;
     else return false
   }
+  
   const sendCollabReq = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(checkCollabReqInfo()){
@@ -108,13 +108,17 @@ const Post = (props:Props) => {
 
   if (props.auth.isAuthenticated){
     
-    if(!collabStatus.collabRequestSent && props.posts.post.user !== props.auth.user.user.id && !collabStatus.collabInProgress){
+    if(!collabStatus.collabRequestSent && props.posts.post.user !== props.auth.user.user.id && !collabStatus.collabInProgress && !collabStatus.collabRequestReceieved){
       collabButton = (
         <button className={postStyles.startCollab} onClick={toggleModal}>Send Collab Request</button>
       )
     }else if(collabStatus.collabRequestSent){
       collabButton = (
         <button className={postStyles.endCollab} onClick={cancelCollabRequest}>Cancel Collab Request</button>
+      )
+    }else if(collabStatus.collabRequestReceieved){
+      collabButton = (
+        <Link href="/my-collabs"><a className={postStyles.startCollab} >View Collab Request</a></Link>
       )
     }else if(collabStatus.collabInProgress) {
       collabButton = (

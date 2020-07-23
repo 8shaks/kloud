@@ -58,32 +58,34 @@ const Messages = (props:Props) => {
     }, [props.profile.profile])
 
 
+    useEffect(() => {
+      
+      socket.once("message", ({message}: {message:MessageType}) => {
 
-
-    socket.on("message", ({message}: {message:MessageType}) => {
-
-      if(message.conversationId === currentConvo.conversationId){
-        let newMessage = message;
-        newMessage.read = true;
-        if(message.sender !== props.auth.user.user.username){
-          axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
-             setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
-          );
-        }else{
-          setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
+        if(message.conversationId === currentConvo.conversationId){
+          let newMessage = message;
+          newMessage.read = true;
+          if(message.sender !== props.auth.user.user.username){
+            axios.post(`${host}/api/conversations/changeMessageStatus`, {message}).then(() => 
+              setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
+            );
+          }else{
+            setCurrentConvo({...currentConvo, messages:[...currentConvo.messages, newMessage]})
+          }
+        }else if(currentConvo.message.length > 0){
+          if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
+            let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
+            newConvo.lastMessage = message;
+            let new_array = conversations.filter((convo)=>{
+              return convo._id !== newConvo._id;
+            });
+            new_array.unshift(newConvo);
+            setConversations(new_array);
+          }
         }
-      }else if(currentConvo.message.length > 0){
-        if(conversations.filter(u => u.lastMessage.content === message.content).length === 0 && conversations.length > 0){
-          let newConvo = conversations[conversations.findIndex(x => x._id == message.conversationId)]
-          newConvo.lastMessage = message;
-          let new_array = conversations.filter((convo)=>{
-            return convo._id !== newConvo._id;
-          });
-          new_array.unshift(newConvo);
-          setConversations(new_array);
-        }
-      }
-    });
+      });
+    }, [currentConvo])
+
   
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
@@ -109,6 +111,7 @@ const Messages = (props:Props) => {
     }
    
     const chatFriend = ( username:string, convoId:string, lastMessage:MessageType, collabId?:string) => {
+      console.log("hey")
       try{
         if(lastMessage){
           if(!lastMessage.read){
@@ -151,14 +154,18 @@ const Messages = (props:Props) => {
           <ul className={messagesStyles.leftBar}>
             {conversations.map((convo)=>{
               const userChat = convo.participants[0] !== profile.username ? convo.participants[0] : convo.participants[1];
-              let messageRead;
-              if(convo.lastMessage)
+              let messageRead, messagePreview;
+              
+              if(convo.lastMessage){
+                if(convo.lastMessage.content.length > 25) messagePreview = `${convo.lastMessage.content.substring(0,25)}...`;
+                else messagePreview = convo.lastMessage.content;
                 if(!convo.lastMessage.read && convo.lastMessage.sender !== profile.username) messageRead = <svg className={messagesStyles.readLogo} height="10" width="10"><circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="red" /></svg>
+              }
               return (
                 <li key={convo._id} className={convo.participants.includes(currentConvo.userToChat) ? messagesStyles.personToChat + " " + messagesStyles.selectedConvo : messagesStyles.personToChat} onClick={() => {chatFriend(userChat, convo._id, convo.lastMessage, convo.collabId)}}> 
                   {userChat}
                   {messageRead}
-                  <div>{convo.lastMessage ? convo.lastMessage.content : null}</div>
+                  <div className={messagesStyles.preview}>{messagePreview}</div>
                 </li>
               )
             })}

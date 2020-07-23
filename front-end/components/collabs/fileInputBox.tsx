@@ -50,7 +50,7 @@ export default (props: Props) => {
                 setCollab({...collab, files:[...collab.files, { fileName : files.name, fileKey: `${props.collabId}/${files.name}`, date:Date.now()}]})
             }).catch(err => {
                 setLoading(false);
-                setError("Only mp3 and wav files under 10mb!");
+                setError("Only mp3, wav, flac, and midi under 10mb!");
                 console.log(err)
             })
         }
@@ -68,7 +68,7 @@ export default (props: Props) => {
             <h2 className={messageComp.fileInput_title}>Files</h2>
             <div className={messageComp.fileCont}>
                 <div className={messageComp.leftInput}> 
-                    <input accept=".mp3, .wav"  type="file" onChange={onFileChange} name="Files" />  
+                    <input accept="audio/*"  type="file" onChange={onFileChange} name="Files" />  
                     <button className={messageComp.uploadFile} onClick={onSubmitFile}>Upload File</button>
                     { loading ? <div style={{marginTop:"10px"}}>Loading...</div> : null}
                     { error.length > 0 ? <div className={messageComp.error}>{error}</div> : null}

@@ -4,12 +4,35 @@ import auth from '../../middleware/auth';
 import validateCollabRequest from "../../validation/friendRequest";
 import Collab from "../../models/Collab";
 import Profile from "../../models/Profile";
+import User from "../../models/User";
 import { IProfile, ICollab, IConversation, ConversationType } from "../../@types/custom";
 import { storage, checkFileType, uploadFile, getFile } from "../../utils/fileFuncs";
 import Conversation from '../../models/Conversation';
 import Message from '../../models/Message';
 import multer from "multer";
 import { profile } from 'console';
+const keys = require("../../config/keys");
+import nodemailer from 'nodemailer';
+
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: keys.email,
+    pass: keys.emailPassword
+  }
+});
+
+const emailCollabReq = `
+Hey [username]!
+<br/><br/>
+It looks you have received a request for collaboration! Visit the link below, decide whether or not you would like to work with the person who accepted your request, and start collaborating!
+<br/><br/>
+<a href="https://kloud.live/my-collabs" target="_blank"> Click here to see the Collab</a>
+<br/><br/>
+From,<br/>
+The Kloud Team
+`
+
 
 
 // @route    GET api/collabs
@@ -159,6 +182,7 @@ router.post('/getfile', auth, upload.single("file"),  async  (req, res) => {
   try {
     const collab = await Collab.findById(req.body.collab_id);
     if (!collab) return res.status(400).json({ errors: {collab: 'Collab not found'} });
+
     if (collab.user1.user !== req.user.id && collab.user2.user !== req.user.id) return res.status(400).json({ errors: {collab: 'You are not in this collab'} });
    getFile(`${req.body.collab_id}/${req.body.fileName}`).then((el)=>{
       res.setHeader('content-type', 'application/octet-stream')
@@ -193,7 +217,8 @@ router.post('/send_req', auth, async (req, res) => {
       const profileToCollab = await Profile.findOne({username:req.body.username});
       if(!profileToCollab)  return res.status(400).json({errors: { collabs: 'We could not find the user you wanted to collab with' }});
       if(profileToCollab.username === user.username) return res.status(400).json({errors: { collabs: 'You cannot collab with yourself' }});
-      if(profileToCollab.collabs.filter(u => u.username === userProfile.username).length > 0) return res.status(400).json({errors: { collabs: 'You already have a collab with this guy'  }});
+      if(profileToCollab.collabs.filter(u => u.username === userProfile.username).length > 0) return res.status(400).json({errors: { collabs: 'You already have a collab with this user'  }});
+      if(profileToCollab.collabRequestsSent.filter(u => u.username === userProfile.username).length > 0) return res.status(400).json({errors: { collabs: 'This user has already sent you a collab request'  }});
       if(profileToCollab.collabRequestsRecieved.filter(u => u.username === user.username).length > 0 || userProfile.collabRequestsSent.filter(u => u.username === profileToCollab.username).length > 0){
 
         userProfile.collabRequestsSent = userProfile.collabRequestsSent.filter((reqSent)=>{
@@ -203,7 +228,7 @@ router.post('/send_req', auth, async (req, res) => {
         profileToCollab.collabRequestsRecieved = profileToCollab.collabRequestsRecieved.filter((reqRecieve)=>{
           return reqRecieve.userId !== user.id;
         });
-
+        
         await profileToCollab.save();
         await userProfile.save();
         return res.json({ success: true, msg: "Cancelled your collab request with " + profileToCollab.username });
@@ -211,7 +236,21 @@ router.post('/send_req', auth, async (req, res) => {
         profileToCollab.collabRequestsRecieved.push({userId: user.id, username:user.username, title:req.body.title, description:req.body.title, date:Date.now()});
         userProfile.collabRequestsSent.push({userId: profileToCollab.user, username:profileToCollab.username, title:req.body.title, description:req.body.title, date:Date.now()});
         
-        // console.log(userProfile)
+        const userToCollab =  await User.findOne({username:req.body.username});
+        const mailOptions = {
+          from: "Kloud",
+          to: userToCollab!.email,
+          subject: "New Collab Request",
+          //Email to Be sent
+          html: emailCollabReq.replace("[username]",profileToCollab.username )
+        };
+        //Send Email
+        transporter.sendMail(mailOptions, function(err, info) {
+          //handle email errors
+          if (err) console.log(err);
+          else console.log(info);
+        });
+
         await profileToCollab.save();
         await userProfile.save();
         return res.json({ success: true, msg: "Your collab request to " + profileToCollab.username + " has been sent" });
@@ -273,6 +312,31 @@ router.post('/status', auth, async (req, res) => {
       userProfile.collabs.push({collabId:newCollab._id, username:collabToAccept.username});
       collabToAccept.collabs.push({collabId:newCollab._id, username:userProfile.username});
       conversation.save();
+
+      const emailCollabAccepted = `
+      Hey ${collabToAccept.username}!
+      <br/><br/>
+      The collab request you sent to ${userProfile.username} has been accepted! Visit the link below to start your collaboration.
+      <br/><br/>
+      <a href="https://kloud.live/collabs/${newCollab._id}" target="_blank"> Click here to see the Collab</a>
+      <br/><br/>
+      From,<br/>
+      The Kloud Team
+      `
+      const userToAccept =  await User.findOne({username:collabToAccept.username});
+      const mailOptions = {
+        from: "Kloud",
+        to: userToAccept!.email,
+        subject: `${userProfile.username} accepted your request!`,
+        //Email to Be sent
+        html: emailCollabAccepted
+      };
+      //Send Email
+      transporter.sendMail(mailOptions, function(err, info) {
+        //handle email errors
+        if (err) console.log(err);
+        else console.log(info);
+      });
 
       await collabToAccept.save();
       await userProfile.save();
