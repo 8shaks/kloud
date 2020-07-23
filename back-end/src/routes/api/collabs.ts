@@ -244,6 +244,7 @@ router.post('/send_req', auth, async (req, res) => {
           //Email to Be sent
           html: emailCollabReq.replace("[username]",profileToCollab.username )
         };
+        console.log(keys)
         //Send Email
         transporter.sendMail(mailOptions, function(err, info) {
           //handle email errors
