@@ -10,7 +10,6 @@ import { storage, checkFileType, uploadFile, getFile } from "../../utils/fileFun
 import Conversation from '../../models/Conversation';
 import Message from '../../models/Message';
 import multer from "multer";
-import { profile } from 'console';
 const keys = require("../../config/keys");
 import nodemailer from 'nodemailer';
 
@@ -248,7 +247,6 @@ router.post('/send_req', auth, async (req, res) => {
           //Email to Be sent
           html: emailCollabReq.replace("[username]",profileToCollab.username )
         };
-        console.log(keys)
         //Send Email
         transporter.sendMail(mailOptions, function(err, info) {
           //handle email errors

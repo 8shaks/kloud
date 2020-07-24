@@ -16,6 +16,9 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  resetPwToken: {
+    type: String
+  },
   date: {
     type: Date,
     default: Date.now
