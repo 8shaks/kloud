@@ -1,9 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import bcrypt from 'bcryptjs';
-import User from '../../models/User'
-import validateRegisterInput from "../../validation/register"
-import Profile from '../../models/Profile'
+import User from '../../models/User';
+import validateRegisterInput from "../../validation/register";
+import Profile from '../../models/Profile';
 
 
 // @route    POST api/users

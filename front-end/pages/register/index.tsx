@@ -52,6 +52,7 @@ const Register = (props:Props) => {
     useEffect(() => {
         if (props.auth.isAuthenticated) Router.push('/');
      }, [props.auth.isAuthenticated])
+     
     useEffect(() => {
       if (props.errors) return setErrors(props.errors)
       return setErrors({ email:null, username: null, password: null, password2:null, server: null});

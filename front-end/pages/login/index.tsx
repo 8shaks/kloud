@@ -60,6 +60,7 @@ const Login = (props:Props) => {
             {<span className={loginStyles.error}>{errors.password}</span>}
             <div><button className={loginStyles.loginButton} type="submit">Login</button></div>
             {<span className={loginStyles.error}>{errors.auth}</span>}
+            <Link href="/reset-password"><a className={loginStyles.forgotPassword}>Forgot Password</a></Link>
         </form>
       </div>
     </Layout>

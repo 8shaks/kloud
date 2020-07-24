@@ -6,10 +6,8 @@ import { connect } from "react-redux";
 import { getPost, deletePost } from '../../../redux/actions/postActions';
 import { sendCollabReq, getProfileById } from '../../../redux/actions/profileActions';
 import React, { useState, useEffect, FormEvent } from 'react';
-import Router from 'next/router';
-import { useRouter } from 'next/router'
-import { PostType, ProfileType } from "../../../@types/customType"
-import axios from "axios";
+import { useRouter } from 'next/router';
+import { PostType, ProfileType } from "../../../@types/customType";
 import CollabReqModal from "../../../components/my-collabs/collabReqModal";
 
 interface Props{
@@ -29,8 +27,8 @@ interface collabError{
   server? : null|string
 }
 const Post = (props:Props) => {
-  const router = useRouter()
-  const { id } = router.query
+  const router = useRouter();
+  const { id } = router.query;
   const [myPost, setPostStatus] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [collabStatus, setStatus] = useState({ collabRequestSent: false, collabInProgress: false,  collabRequestReceieved: false });

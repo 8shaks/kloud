@@ -24,6 +24,7 @@ const Navbar = (props:Props) => {
         navbarOptions = (
             <ul className={navbarStyles.linksList}>
                 <li className={navbarStyles.logo + " " + navbarClass} ><Link href="/"><a><img className={navbarStyles.logo} src="/images/logo.png"/>Kloud</a></Link></li>
+                <li className={navbarStyles.item + " " + navbarClass}><Link href="/about-us"><a>About Us</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/explore"><a>Explore</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/my-collabs"><a>Collabs</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass} ><Link href="/create-post"><a>Make a post</a></Link></li>
@@ -36,6 +37,7 @@ const Navbar = (props:Props) => {
         navbarOptions = (
             <ul className={navbarStyles.linksList}>
                 <li className={navbarStyles.logo + " " + navbarClass} ><Link href="/"><a><img className={navbarStyles.logo} src="/images/logo.png"/>Kloud</a></Link></li>
+                <li className={navbarStyles.item + " " + navbarClass}><Link href="/about-us"><a>About Us</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/explore"><a>Explore</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/login"><a>Sign In</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarStyles.getKloudButton + " " + navbarClass}><Link href="/register"><a className={""}>Register Today</a></Link></li>

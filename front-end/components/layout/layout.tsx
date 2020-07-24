@@ -22,7 +22,7 @@ interface layoutProps{
   loading:boolean,
   children: React.ReactNode
 }
-const socket = io(host);
+// const socket = io(host);
 const Layout =  ( props : layoutProps) => {
     const test = async (decoded:{exp:number}) =>{
       await store.dispatch(setCurrentUser(decoded));

@@ -50,6 +50,7 @@ export interface IUser extends mongoose.Document {
   email: string,
   username:string,
   password: string,
+  resetPwToken?:string,
   date:Date
   // leave the company field
 

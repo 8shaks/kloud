@@ -25,8 +25,8 @@ interface Props{
   changeCollabRecStatus : (collabReq:{username:string, accept:boolean}) => void
 }
 const Profile = (props:Props) => {
+    const [myCollabs, setMyCollabs] = useState<CollabType[]>([]);
 
-    const [myCollabs, setMyCollabs] = useState<CollabType[]>([])
     useEffect(() => {
       if(!props.loading){
         if (!props.auth.isAuthenticated ) Router.push('/');

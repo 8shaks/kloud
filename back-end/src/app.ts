@@ -17,7 +17,7 @@ import nodemailer from 'nodemailer';
 import Conversation from "./models/Conversation";
 import User from "./models/User";
 import Message from "./models/Message";
-import { IProfile, SocketMessage } from "./@types/custom";
+import { IProfile } from "./@types/custom";
 const keys = require("./config/keys");
 
 var transporter = nodemailer.createTransport({

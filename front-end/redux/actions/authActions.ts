@@ -80,8 +80,8 @@ export const setCurrentUser = (decoded:{exp?:number}) => {
 //     type: CLEAR_ERRORS,
 //   }
 // }
-export const logoutUser = () => (dispatch: Dispatch) => {
-  Router.push("/");
+export const logoutUser = () => async(dispatch: Dispatch) => {
+  await Router.push("/");
   setAuthToken(undefined);
   dispatch(setCurrentUser({}));
 
