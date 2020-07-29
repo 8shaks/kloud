@@ -32,6 +32,9 @@ const ProfileSchema = new Schema({
       type: String
     }
   },
+  bannerImage:{
+    type: String
+  },
   posts:[String],
   collabs:[{collabId:{required:true, type:String}, username:{required:true, type:String}}],
   credits:[String],

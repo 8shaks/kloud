@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { logoutUser } from '../../redux/actions/authActions'
 
 interface Props{
-    auth: {isAuthenticated: boolean, user:{ id:string, username: string}},
+    auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}},
     logoutUser:any
 }
 const Navbar = (props:Props) => {
@@ -28,7 +28,7 @@ const Navbar = (props:Props) => {
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/explore"><a>Explore</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><Link href="/my-collabs"><a>Collabs</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass} ><Link href="/create-post"><a>Make a post</a></Link></li>
-                <li className={navbarStyles.item + " " + navbarClass}><Link href="/profiles/me"><a>Profile</a></Link></li>
+                <li className={navbarStyles.item + " " + navbarClass}><Link  href={`/profiles/me`} ><a>Profile</a></Link></li>
                 <li className={navbarStyles.item + " " + navbarClass}><a onClick={props.logoutUser}>Sign Out</a></li>
                 <li className={navbarStyles.toggle}> <a onClick={toggleNavbar} >Toggle</a></li>
             </ul>
@@ -53,7 +53,7 @@ const Navbar = (props:Props) => {
 }
 
 
-const mapStateToProps = (state: { auth: {isAuthenticated: boolean, user:{ id:string, username: string}}; errors: any; }) => ({
+const mapStateToProps = (state: Props) => ({
     auth: state.auth,
   });
   

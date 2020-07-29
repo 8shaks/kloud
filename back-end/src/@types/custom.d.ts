@@ -11,6 +11,7 @@ export interface IProfile extends mongoose.Document {
     beatstars?:string,
     soundcloud?:string
   },
+  bannerImage? : string,
   credits?: string[],
   collabs:{collabId:string, username:string}[],
   posts:string[],
@@ -68,6 +69,7 @@ export interface IPost extends mongoose.Document {
 }
 
 export interface ICollab extends mongoose.Document {
+  lastActive?: string;
   user1:{
     user:string,
     username:string

@@ -3,7 +3,7 @@ const router = express.Router();
 import auth from '../../middleware/auth';
 import validateProfileInput from "../../validation/profile";
 import Profile from '../../models/Profile';
-
+import imageUpload from '../../utils/imageUpload';
 
 // @route    GET api/profile
 // @desc     Get all profiles
@@ -104,7 +104,7 @@ router.get(
     try {
       const profile = await Profile.findOne({username:username});
       
-      if (!profile) return res.status(404).json({ msg: 'Profile not found' });
+      if (!profile) return res.status(404).json({errors:{profile:"Profile not found"}});
 
       return res.json(profile);
     } catch (err) {
@@ -114,7 +114,46 @@ router.get(
   }
 );
 
+const multer = require("multer");
+const upload = multer({
+  storage: imageUpload.storage,
+  limits: { fileSize: 1000000 },
+  fileFilter: function(req: any, file: any, cb: any) {
+    imageUpload.checkFileType(file, cb);
+  }
+});
+// @route    POST api/profile/banner-upload
+// @desc     Change profile banner image
+// @access   Private
+router.post("/banner-upload", auth, upload.single("image"), async (req, res) => {
 
+    const profile = await Profile.findOne({user:req.user!.id});
+
+    if (!profile) return res.status(404).json({errors:{profile:"Profile not found"}});
+    profile.bannerImage = req.file.originalname;
+    await profile.save();
+    return res.status(200).json({ sucess: true }); 
+  }
+);
+
+// @route    get api/profile/banner-upldeleteoad
+// @desc     Delete banner Image
+// @access   Private
+router.get("/banner-delete", auth, async (req, res) => {
+
+  const profile = await Profile.findOne({user:req.user!.id});
+
+  if (!profile) return res.status(404).json({errors:{profile:"Profile not found"}});
+
+  if(profile.bannerImage){
+    imageUpload.deleteImage(profile.bannerImage)
+    profile.bannerImage = undefined;
+    await profile.save();
+  }
+
+  return res.status(200).json({ sucess: true }); 
+}
+);
 
 // // @route    DELETE api/profile
 // // @desc     Delete profile, user & posts
@@ -134,6 +173,8 @@ router.get(
 //     res.status(500).send('Server Error');
 //   }
 // });
+
+
 
 
 

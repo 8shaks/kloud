@@ -9,36 +9,36 @@ import Router from 'next/router';
 import FriendReqCard from "../../components/profile/friendReqCard";
 import FriendCard from "../../components/profile/friendCard";
 import SocialLinksForm from "../../components/profile/socialLinksForm";
-import { ProfileType, profileError, social, PostType } from "../../@types/customType"
+import { ProfileType, ProfileError, social, PostType } from "../../@types/customType";
 import axios from "axios";
 import PostCard from "../../components/posts/postCard"
 import host from "../../vars"
+import Axios from 'axios';
 
 interface Props{
-  auth: {isAuthenticated: boolean, user:{ id:string, username: string}},
+  auth: {isAuthenticated: boolean, user:{ user: {id:string, username: string}}},
   errors: any,
   profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean},
   loading:boolean,
   unfriendUser: (username:string) => void,
   changeFriendReqStatus:(friendReq:{username:string, accept:boolean}) => void,
-  // profile:{profile: any, profiles:[any], isLoading:boolean },
-//  loginUser:  ({username, password}: loginError) => void,
   getCurrentProfile:() => void,
   createProfile:(profile:ProfileType) => void
 }
 const Profile = (props:Props) => {
     const [profile, setProfile] = useState<ProfileType>();
     const [social, setSocial] = useState<social>({youtube: "", twitter:"", soundcloud:"", instagram:"", beatstars:""});
-    const [errors, setErrors] = useState<profileError>({ bio:null, social: null, server: null});
+    const [bannerImage, setBannerImage] = useState<File | null>(null);
+    const [errors, setErrors] = useState<ProfileError>({ bio:null, social: null, server: null, bannerImage:null});
     const [myPosts, setMyPosts] = useState<PostType[]>([]);
     const [profileSaved, setProfileSaved] = useState(false);
-
-
+    const [editProfile, setEditProfile] = useState(false);
 
     useEffect(() => {
-        if (!props.auth.isAuthenticated ) Router.push('/');
+        if (!props.auth.isAuthenticated &&  !props.loading) Router.push('/');
         else props.getCurrentProfile();
     }, [props.loading])
+
     useEffect(() => {
       if (props.profile.profile && !props.loading ) {
         setProfile(props.profile.profile);
@@ -53,45 +53,61 @@ const Profile = (props:Props) => {
     }, [props.profile.profile])
 
     const urlRegex =  new RegExp(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
+
+    const imageChecker = (image:File) => {
+      console.log(image.size)
+      if (image.size > 36481 || (image.type !== "image/jpeg" && image.type !== "image/jpg" && image.type !== "image/png") ) return false;
+      else return true;
+    };
+
+    const onChangeImage = (e:any) => setBannerImage(e.target.files[0]);
     
+    const uploadBannerImage = () => {
+      setProfileSaved(false);
+      if(bannerImage){
+        if(!imageChecker(bannerImage)){
+            const formData = new FormData();
+            formData.append("image", bannerImage);
+            axios.post(`${host}/api/profile/banner-upload`, formData).then((res) => {
+              setErrors({ bio:null, social: null, server: null, bannerImage:null});
+              setProfileSaved(true);
+            }).catch((err) => {
+              console.log(err)
+              setErrors({...errors, bannerImage:err.response.data.errors.bannerImage})
+            })
+        }else setErrors({...errors, bannerImage:"Please upload a valid image(jpg or png) under 10mb"});
+      }
+    }
+
+    const deleteBannerImage = () => {
+      setProfileSaved(false);
+      axios.get(`${host}/api/profile/banner-delete`).then((res) => {
+        setErrors({ bio:null, social: null, server: null, bannerImage:null});
+        setProfileSaved(true);
+      }).catch((err) => {
+        console.log(err)
+        setErrors({...errors, bannerImage:err.response.data.errors.bannerImage})
+      })
+    }
+
     const checkValid = () =>{
-      let errorsNew:profileError = {bio:null, social:null, server:null};
+      let errorsNew:ProfileError = {bio:null, social:null, server:null, bannerImage : null};
       if(profile!.bio){
         profile!.bio.length > 300 ? errorsNew.bio = "Please enter a bio below 300 characters" : null;
       }
-      // if(profile.social){
-      //   if(social.youtube && social.youtube.length !== 0){
-      //     !urlRegex.test(social.youtube) ? errorsNew.social!.youtube = "Please enter a valid youtube url" : null
-      //   }
-      //   if(social.twitter && social.twitter.length !== 0){
-      //     !urlRegex.test(social.twitter) ? errorsNew.social!.twitter = "Please enter a valid twitter url" : null
-      //   }
-      //   if(social.soundcloud && social.soundcloud.length !== 0){
-      //     !urlRegex.test(social.soundcloud) ? errorsNew.social!.soundcloud = "Please enter a valid soundcloud url" : null
-      //   }
-      //   if(social.beatstars && social.beatstars.length !== 0){
-      //     !urlRegex.test(social.beatstars) ? errorsNew.social!.beatstars = "Please enter a valid beatstars url" : null
-      //   }
-      //   if(social.instagram && social.instagram.length !== 0){
-      //     !urlRegex.test(social.instagram) ? errorsNew.social!.instagram = "Please enter a valid instagram url" : null
-      //   }
-      // }
+
       setErrors(errorsNew);
       if ( !errors.bio && !errors.server) return true
       else return false
     }
     const onSubmit = (e: FormEvent<HTMLFormElement>) =>{
+      setProfileSaved(false);
         e.preventDefault();
         if(checkValid()){
-
-            // if (social.youtube) profile!.social.youtube = `https://www.youtube.com/${social.youtube}`;
-            // if (social.instagram) profile!.social.instagram = `https://www.instagram.com/${social.instagram}`;
-            // if (social.twitter) profile!.social.twitter = `https://www.twitter.com/${social.twitter}`;
-            // if (social.soundcloud) profile!.social.soundcloud = `https://www.soundcloud.com/${social.soundcloud}`;
-            // if (social.beatstars) profile!.social.beatstars = `https://www.beatstars.com/${social.beatstars}`;
             profile!.social = social;
             props.createProfile(profile!);
             setProfileSaved(true);
+            setEditProfile(false)
         }
     }
     const onChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) =>{
@@ -102,7 +118,7 @@ const Profile = (props:Props) => {
     }
     let profileContent = <div className={profileStyles.page}>Loading...</div>
 
-    let myPostsContent
+    let myPostsContent, socialLinks;
     
     if(profile){
       if(profile.posts.length > 0){
@@ -118,21 +134,66 @@ const Profile = (props:Props) => {
         )
       }
     
-      profileContent = (
-      <div className={profileStyles.page}> 
-        <h1 className={profileStyles.heading}>Welcome {profile.username} {profileSaved ? <span className={profileStyles.profileSaved}>Profile Saved!</span> : null}</h1>
-        
-        <form className={profileStyles.form}  method="POST" onSubmit={onSubmit}>
-          <label>Bio</label>
-          <textarea onChange={onChange} aria-label="Bio" value={profile.bio} name="bio" placeholder="Give us some info about your self!"/>
-          {<span className="error">{errors.bio}</span>}
-          <SocialLinksForm onChange={onChangeSocial} errors={errors.social ? errors.social : {}} social={social} />
-          <button type="submit">Save Profile</button>
-         
-        </form>
-        {myPostsContent}
-      </div>
-      );
+      if (profile.social){
+        socialLinks=(
+          <div className={profileStyles.socialLinks}>
+            {profile.social.youtube ? <a target="_blank" href={profile.social.youtube}><img className={profileStyles.socialLogo} alt="Youtube" src={"/images/youtube.png"}/></a> : null}
+            {profile.social.soundcloud ? <a target="_blank" href={`https://www.soundcloud.com/${profile.social.soundcloud}`}><img className={profileStyles.socialLogo} alt="Soundcloud" src={"/images/soundcloud.png"}/></a> : null}
+            {profile.social.twitter ? <a target="_blank" href={`https://www.twitter.com/${profile.social.twitter}`}><img className={profileStyles.socialLogo} alt="Twitter" src={"/images/twitter.png"}/></a> : null}
+            {profile.social.instagram ? <a target="_blank" href={`https://www.instagram.com/${profile.social.instagram}`}><img className={profileStyles.socialLogo} alt="Instagram" src={"/images/instagram.png"}/></a> : null}
+            {profile.social.beatstars ? <a target="_blank" href={`https://www.beatstars.com/${profile.social.beatstars}`}><img className={profileStyles.socialLogo} alt="Beatstars"  src={"/images/beatstars.png"}/></a> : null}
+          </div>
+        )
+      }
+      if (editProfile){
+        profileContent = (
+          <div className={profileStyles.page}> 
+            <div className={profileStyles.banner}>
+              <div className={profileStyles.bannerImageCont}>
+              {profile.bannerImage && profile.bannerImage !== "" ? <img className={profileStyles.profileImage} src={`https://kloud-banners.s3.us-east-2.amazonaws.com/${profile.user}/${profile.bannerImage}`}/> : null}
+                <h1>{profile.username}</h1>
+              </div>
+              {socialLinks}
+            </div>
+            <form className={profileStyles.form}  method="POST" onSubmit={onSubmit}>
+              <div>
+                <input accept="image/*"  type="file" onChange={onChangeImage} name="Files" />  
+                <button onClick={uploadBannerImage} className={profileStyles.imageUpload_button}>Upload Banner</button>{profile.bannerImage ? <button onClick={deleteBannerImage} className={profileStyles.imageDelete_button}>Delete Banner</button> : null}
+                <span className={profileStyles.error}>{errors.bannerImage}</span>
+              </div>
+              <label>Bio</label>
+              <textarea onChange={onChange} aria-label="Bio" value={profile.bio} name="bio" placeholder="Give us some info about your self!"/>
+              {<span className="error">{errors.bio}</span>}
+              <SocialLinksForm onChange={onChangeSocial} errors={errors.social ? errors.social : {}} social={social} />
+              <button type="submit">Save Profile</button>
+            </form>
+            <button className={profileStyles.editProfile} onClick={() => setEditProfile(!editProfile)}>Edit Profile</button>
+            {myPostsContent}
+          </div>
+          );
+      }else{
+        profileContent = (
+          <div className={profileStyles.page}> 
+            <div className={profileStyles.banner}>
+              <div className={profileStyles.bannerImageCont}>
+                {profile.bannerImage && profile.bannerImage !== "" ? <img className={profileStyles.profileImage} src={`https://kloud-banners.s3.us-east-2.amazonaws.com/${profile.user}/${profile.bannerImage}`}/> : null}
+                <h1>{profile.username}</h1>
+              </div>
+              {socialLinks}
+            </div>
+            {profileSaved ? <span className={profileStyles.profileSaved}>Profile saved</span> : null}
+            <div className={profileStyles.bioCont}>
+              <p className={profileStyles.bio}>
+                {profile.bio}
+              </p>
+              <button className={profileStyles.editProfile} onClick={() => setEditProfile(!editProfile)}>Edit Profile</button>
+            </div>
+            <div className={profileStyles.shareProfile}><span>https://kloud.live/profiles/{props.auth.user.user.id}</span><button onClick={() => {navigator.clipboard.writeText(`https://kloud.live/profiles/${props.auth.user.user.id}`)}}>Copy Link</button></div>
+            {myPostsContent}
+          </div>
+          );
+      }
+      
     }
     return (
         <Layout>
@@ -142,7 +203,7 @@ const Profile = (props:Props) => {
 }
 
 
-const mapStateToProps = (state: { loading: boolean, profile:{ profile:ProfileType, profiles:ProfileType[], loading: boolean}, auth: {isAuthenticated: boolean, user:{ id:string, username: string}}; errors: any; }) => ({
+const mapStateToProps = (state: Props) => ({
   auth: state.auth,
   profile: state.profile,
   errors: state.errors,

@@ -31,10 +31,10 @@ const Login = (props:Props) => {
     }
     const checkValid = () =>{
         let errorsNew:loginError = { username: null, password: null, server: null};
-        formValues.password === '' ? errorsNew.password = 'Please enter a password' : errorsNew.password = null;
-        formValues.username === '' ? errorsNew.username = 'Please enter a username' : errorsNew.username = null;
+        formValues.password.length  === 0 ? errorsNew.password = 'Please enter a password' : errorsNew.password = null;
+        formValues.username.length  === 0 ? errorsNew.username = 'Please enter a username' : errorsNew.username = null;
         setErrors(errorsNew);
-        if (!errors.username  && !errors.password ) return true
+        if (!errorsNew.username  && !errorsNew.password ) return true
         else return false
     }
     const onSubmit = (e: FormEvent<HTMLFormElement>) =>{

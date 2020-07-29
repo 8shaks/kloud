@@ -164,18 +164,26 @@ const Profile = (props:Props) => {
           </div>
         )
       }
+     
       profileContent = (
         <div className={profileStyles.page}> 
-          <h1 className={profileStyles.heading}>{profile.username}</h1>
-         
-          <div className={profileStyles.content}>
+          <div className={profileStyles.banner}>
+            <div className={profileStyles.bannerImageCont}>
+            {profile.bannerImage && profile.bannerImage !== "" ? <img className={profileStyles.profileImage} src={`https://kloud-banners.s3.us-east-2.amazonaws.com/${profile.user}/${profile.bannerImage}`}/> : null}
+              <h1>{profile.username}</h1>
+            </div>
             {socialLinks}
-            <p className={profileStyles.bio}>{profile.bio}</p>
-            {collabButton}
           </div>
-          {userPostsContent}
           {collabModal ? <CollabReqModal toggleModal={toggleModal} username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
-        </div>);
+          <div className={profileStyles.bioCont}>
+            <p className={profileStyles.bio}>
+              {profile.bio}
+            </p>
+          </div>
+          <div className={profileStyles.shareProfile}><span>https://kloud.live/profiles/{props.auth.user.user.id}</span><button onClick={() => {navigator.clipboard.writeText(`https://kloud.live/profiles/${props.auth.user.user.id}`)}}>Copy Link</button></div>
+          {userPostsContent}
+        </div>
+      );
     }
   
     return (

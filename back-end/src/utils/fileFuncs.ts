@@ -14,21 +14,6 @@ const s3 = new aws.S3({
     region: 'us-east-2'
 });
 
-// var kms = new AWS.KMS({apiVersion: '2014-11-01'});
-
-//IMAGE UPLOAD
-// aws.config.update({
-//   // Your SECRET ACCESS KEY from AWS should go here,
-//   // Never share it!
-//   // Setup Env Variable, e.g: process.env.SECRET_ACCESS_KEY
-//   secretAccessKey: "Kud+HU5kEzRFvXj5LKrur9E1ANUuo/ThHa+K5H9I",
-//   // Not working key, Your ACCESS KEY ID from AWS should go here,
-//   // Never share it!
-//   // Setup Env Variable, e.g: process.env.ACCESS_KEY_ID
-//   accessKeyId: "AKIAJH52AAB5XEIEZQXQ",
-//   region: "us-east-2" // region of your bucket
-// });
-
 export const storage = multerS3({
   s3: s3,
   bucket: "kloud-storage",
@@ -61,48 +46,19 @@ export function checkFileType(file:any) {
 }
 
 
-
-// {
-//   "Version": "2012-10-17",
-//   "Statement": [
-//       {
-//           "Sid": "VisualEditor0",
-//           "Effect": "Allow",
-//           "Action": [
-//               "s3:PutObject",
-//               "s3:PutObjectAcl"
-//           ],
-//           "Resource": "arn:aws:s3:::kloud-storage/*",
-//           "Principal": "*"
-//       }
-//   ]
-// }
 export const uploadFile = (file:any, collabId:string) => {
     return new Promise<any>((resolve, reject) => {
-        // let fileData:any = []
-        // for( let i = 0; i< files.length; i++){
-        //     // console.log(files[i])
-        //     const j = Buffer.from(files[i])
+          const params = {
+              Bucket: 'kloud-storage', // pass your bucket name
+              Key: `${collabId}/${file.originalname}`, // file will be saved as testBucket/contacts.csv
+              Body: file.buffer
+          };
 
-            const params = {
-                Bucket: 'kloud-storage', // pass your bucket name
-                Key: `${collabId}/${file.originalname}`, // file will be saved as testBucket/contacts.csv
-                Body: file.buffer
-            };
-        //     s3.putObject(params, function(s3Err:any, data:any) {
-        //         if (s3Err) throw s3Err;
-        //        fileData.push(data);
-        //     });
-        //     if (i === files.length-1) resolve(fileData)
-        // }
-        // files.forEach((file, i) => {
-          // const j = Buffer.from(files[i])
-        // }) 
-             s3.putObject(params, function(s3Err:any, data:any) {
-                if (s3Err) throw s3Err;
-                resolve(data);
-              //  fileData.push(data);
-            });
+            s3.putObject(params, function(s3Err:any, data:any) {
+              if (s3Err) throw s3Err;
+              resolve(data);
+            //  fileData.push(data);
+          });
     });
 
   };

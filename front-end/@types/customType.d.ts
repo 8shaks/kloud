@@ -9,6 +9,7 @@ export interface ProfileType {
     beatstars?:string,
     soundcloud?:string
   },
+  bannerImage? : string,
   credits?: string[],
   collabs:{collabId:string, username:string}[],
   posts:string[],
@@ -65,7 +66,7 @@ export interface CollabType{
   date:number
 }
   
-export interface profileError{
+export interface ProfileError{
     bio?:string| null, 
     social?:{
       youtube?:string| null, 
@@ -74,6 +75,7 @@ export interface profileError{
       soundcloud?:string| null, 
       beatstars?:string| null, 
     }|null,
+    bannerImage:string | null,
     server:string|null
 }
   

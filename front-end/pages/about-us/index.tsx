@@ -8,6 +8,10 @@ import Router, { useRouter } from 'next/router';
 export default function index() {
     return (
         <Layout>
+            <Head>
+                <title>About Us | Kloud</title>
+                <meta name="description" content="The about us page"/>
+            </Head>
             <div className={aboutStyles.page}>
                 <div className={aboutStyles.content}>
                     <h1 className={aboutStyles.heading}>We are Kloud.</h1>

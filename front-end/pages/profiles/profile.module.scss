@@ -1,22 +1,56 @@
 @import "../styles//comps";
 // Me page
 .page{
-    display: flex;
+    // display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 5em;
     flex-wrap: wrap;
     background-color: $default_bg;
     color: white;
+    padding-bottom: 1em;
 }
 .heading{
-    display: block;
-    font-size: 40px;
+    display: flex;
     width: 100%;
     text-align: center;
     margin-bottom: 20px;
+    align-items: center;
+    // justify-content: center;
+    // background-repeat: no-repeat;
+    // background-position: center center;
+    // min-height: 40vh;
+    // -webkit-background-size: contain;
+    // -moz-background-size: contain;
+    // -o-background-size: contain;
+    // background-size: contain;
+
+    h1{
+
+        font-size: 4em;
+        display: block;
+    }
+}
+.banner{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 80px;
+    box-sizing: border-box;
+    background-color: $second_bg;
+    h1{
+        margin-top: 10px;
+    }
+    .bannerImageCont{
+        text-align: center;
+    }
+}
+.profileImage{
+    width: 100px;
+    border-radius: 50%;
 }
 .form {
+    margin: 3em auto 0 auto;
     label{
         display: block;
         margin: 5px 0;
@@ -32,7 +66,19 @@
     }
    width: 40%;
 }
-
+.editProfile{
+    @extend .default_button;
+    margin: 0em auto 1em auto;
+    display: block;
+}
+.bioCont{
+    margin-top: 50px;
+    width: 100%;
+}
+.bio{
+    text-align: center;
+    font-size: 1.5em;
+}
 .friends{
     margin: 2em auto;
     width: 80%;
@@ -46,6 +92,7 @@
     margin-bottom: 2em;
 }
 .myPosts{
+    margin: 2em auto 0 auto;
     width: 80%;
 }
 
@@ -73,30 +120,52 @@
 
 }
 .socialLinks{
-    width: 20%;
-    margin:0 auto;
-    align-items: flex-end;
+    text-align: center;
 }
 .socialLogo{
-    vertical-align: bot;
-    width: 50px;
-    margin-right: 10px;
+    vertical-align: bottom;
+    width: 70px;
+    margin-right: 2.5em;
 }
 .bio{
     width: 50%;
     display: block;
-    margin: 2em auto 3em auto;
+    margin: 2em auto 2em auto;
 }
 
 .profileSaved{
     @extend .button;
     background-color: $green;
     display: block;
-    width: 150px;
+    width: 140px;
     padding: 6px;
     border-radius: 10px;
     margin: 10px auto 0 auto;
     font-weight: 500;
+    text-align: center;
+}
+.imageUpload_button, .imageDelete_button{
+    @extend .default_button;
+}
+.imageDelete_button{
+    background-color: red !important;
+    margin-left: 20px !important;
+}
+.shareProfile{
+    margin-top: 2em;
+    text-align: center;
+    span{
+        background-color: white;
+        color: black !important;
+        font-size: 16px ;
+        padding: 6px;
+    }
+    button{
+        @extend .default_button;
+        font-size: 14px;
+        display: block;
+        margin: 2em auto 1em auto;
+    }
 }
 
 @media only screen and (max-width: 550px) {

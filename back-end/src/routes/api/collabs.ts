@@ -54,11 +54,12 @@ function getMyCollabs(profile:IProfile):Promise<any>{
         else{
           if (!lastMessage[0].read && profile.username !== lastMessage[0].sender) collab.notification = true;
           else collab.notification = false;
+          collab.lastActive = lastMessage[0].date;
           myCollabs.push(collab);
         }
       }
       if (myCollabs.length === profile!.collabs.length)
-        resolve(myCollabs);
+      resolve(myCollabs.sort((a, b) => { return new Date(b.lastActive!).getTime() - new Date(a.lastActive!).getTime()}));
     });
   });
 }

@@ -51,6 +51,7 @@ const Profile = (props:Props) => {
     if(props.profile.profile !== null){
       const { profile } = props.profile;
       if(profile.collabs.length > 0){
+        console.log(myCollabs)
         collabs=(
             <Fragment>
               <h2 id="collabs">Collabs</h2>

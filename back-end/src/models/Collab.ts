@@ -31,6 +31,9 @@ const CollabSchema = new Schema({
   notification:{
     type:Boolean
   },
+  lastActive:{
+    type:String
+  },
   description:{
     type: String,
     required:true

@@ -14,6 +14,7 @@ import { ProfileType, ConversationType } from "../../@types/customType";
 import host from '../../vars';
 import axios from 'axios'
 import io from "socket.io-client";
+import Head from 'next/head';
 
 interface layoutProps{
   auth: {isAuthenticated: boolean, user:{ user:{id:string, username: string}}},
@@ -63,6 +64,9 @@ const Layout =  ( props : layoutProps) => {
       // }, [props.loading])
     return (
         <Fragment>
+            <Head>
+              <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            </Head>
             <Navbar/>
             <main className={layoutStyles.main}>{props.children}</main>
         </Fragment>
