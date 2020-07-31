@@ -180,7 +180,7 @@ const Profile = (props:Props) => {
               {profile.bio}
             </p>
           </div>
-          <div className={profileStyles.shareProfile}><span>https://kloud.live/profiles/{props.auth.user.user.id}</span><button onClick={() => {navigator.clipboard.writeText(`https://kloud.live/profiles/${props.auth.user.user.id}`)}}>Copy Link</button></div>
+          <div className={profileStyles.shareProfile}><span>https://kloud.live/profiles/{profile.user}</span><button onClick={() => {navigator.clipboard.writeText(`https://kloud.live/profiles/${props.auth.user.user.id}`)}}>Copy Link</button></div>
           {userPostsContent}
         </div>
       );
