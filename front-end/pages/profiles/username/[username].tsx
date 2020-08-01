@@ -52,7 +52,6 @@ const Profile = (props:Props) => {
       if(!props.loading){
         if(typeof username === "string"){
           props.getProfileByUsername(username);
-
         }
       }
     }, [props.loading])
@@ -115,7 +114,6 @@ const Profile = (props:Props) => {
  
     let profileContent = <div className={profileStyles.page}>Loading...</div>
     let userPostsContent, collabButton;
-  
     if(props.profile.profile !== null){
       const { profile } = props.profile
       let socialLinks;
@@ -174,6 +172,7 @@ const Profile = (props:Props) => {
             </div>
             {socialLinks}
           </div>
+          {collabButton}
           {collabModal ? <CollabReqModal toggleModal={toggleModal} username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
           <div className={profileStyles.bioCont}>
             <p className={profileStyles.bio}>

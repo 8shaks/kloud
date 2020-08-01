@@ -109,12 +109,17 @@
 }
 .addFriendButton{
     @extend .default_button;
+    margin: 20px auto 0 auto;
+    display: block;
     padding: 10px;
+
 }
 .removeFriendButton{
     @extend .button;
     background-color: red;
     border-radius: 10px;
+    margin: 20px auto 0 auto;
+    display: block;
     color: white;
     padding: 10px;
 

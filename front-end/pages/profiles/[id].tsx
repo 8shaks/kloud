@@ -175,6 +175,7 @@ const Profile = (props:Props) => {
               </div>
               {socialLinks}
             </div>
+            {collabButton}
             {collabModal ? <CollabReqModal toggleModal={toggleModal} username={profile.username} onChange={onCollabReqChange} onSubmit={sendCollabReq} collabReqInfo={collabReqInfo} errors={collabReqErrors}/> : null}
             <div className={profileStyles.bioCont}>
               <p className={profileStyles.bio}>
